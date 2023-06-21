@@ -45,12 +45,13 @@ int main()
 
     if (Start_Flow_Evolution == true)
     {
+
+        //Redistricting1();
         do
         {
-            //Redistricting();
             Iter_Glob++;
 
-            Flow_Evolution("array"); //"line" или "array"
+            Flow_Evolution("line"); //"line" или "array"
             Time();
 
         } while (_time <= final_time);

@@ -130,7 +130,7 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 9, out_2
+    out_1 = 67, out_2
 };
 
 /* Вектор точек и вектор элементов */
@@ -160,21 +160,21 @@ int count_angle = 0;
 vector<double> x_m, y_m;
 vector<vector<double>>x_ang;
 vector<vector<double>>y_ang;
-double dt_m = 0.001;
+double dt_m = 0.01;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2_(El=259).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=2921).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 bool Read_From_Save = false;
 string File_Save_Name =
 "Documents/Save/Re=90.000000/El = 1991/Save_(El=1991)_Steady.DAT";
 
-bool Start_Flow_Evolution = true;
+bool Start_Flow_Evolution = false;
 
 /* Шаг и счетчик времени */
-double dt = 0.01;
+double dt = 0.005;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 

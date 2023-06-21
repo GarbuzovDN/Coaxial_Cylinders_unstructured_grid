@@ -654,10 +654,13 @@ double Firsov_M(int num_i, string param)
             {
                 int jj_temp = j + 1;
                 if (j + 1 == 3) jj_temp = 0;
-                /*coord_vertex_David[j][0] = 0.5 * (vectorElement[num_i].Coord_vert[j].x + vectorElement[num_i].Coord_vert[jj_temp].x);
-                coord_vertex_David[j][1] = 0.5 * (vectorElement[num_i].Coord_vert[j].y + vectorElement[num_i].Coord_vert[jj_temp].y);*/
-                coord_vertex_David[j][0] = (vectorElement[num_i].Coord_vert[j].x + vectorElement[num_i].Coord_vert[jj_temp].x) - vectorElement[num_i].Coord_center_el.x;
-                coord_vertex_David[j][1] = (vectorElement[num_i].Coord_vert[j].y + vectorElement[num_i].Coord_vert[jj_temp].y) - vectorElement[num_i].Coord_center_el.y;
+                coord_vertex_David[j][0] = 0.5 * (vectorElement[num_i].Coord_vert[j].x + vectorElement[num_i].Coord_vert[jj_temp].x);
+                coord_vertex_David[j][1] = 0.5 * (vectorElement[num_i].Coord_vert[j].y + vectorElement[num_i].Coord_vert[jj_temp].y);
+
+                //coord_vertex_David[j][0] = (vectorElement[num_i].Coord_vert[j].x + vectorElement[num_i].Coord_vert[jj_temp].x) - vectorElement[num_i].Coord_center_el.x;
+                //coord_vertex_David[j][1] = (vectorElement[num_i].Coord_vert[j].y + vectorElement[num_i].Coord_vert[jj_temp].y) - vectorElement[num_i].Coord_center_el.y;
+                /*coord_vertex_David[j][0] = vectorElement[num_i].Coord_center_el.x;
+                coord_vertex_David[j][1] = vectorElement[num_i].Coord_center_el.y;*/
             }
         }
         else
@@ -743,17 +746,20 @@ double Firsov_M(int num_i, string param)
         if (vectorElement[num_i].Neighb_el[j] == -1)
         {
 
-            int jj_temp = j + 1;
+            /*int jj_temp = j + 1;
             if (j + 1 == 3) jj_temp = 0;
             double tmp_xx = 0.5 * (vectorElement[num_i].Coord_vert[j].x + vectorElement[num_i].Coord_vert[jj_temp].x);
             double tmp_yy = 0.5 * (vectorElement[num_i].Coord_vert[j].y + vectorElement[num_i].Coord_vert[jj_temp].y);
 
             if (param == "U_x/dx" || param == "U_x/dy") UU_vert[j] = 2.0 * Value_bound(tmp_xx, tmp_yy, num_i, j, "U_x") - vectorElement[num_i].U_x;
-            if (param == "U_y/dx" || param == "U_y/dy") UU_vert[j] = 2.0 * Value_bound(tmp_xx, tmp_yy, num_i, j, "U_y") - vectorElement[num_i].U_y;
+            if (param == "U_y/dx" || param == "U_y/dy") UU_vert[j] = 2.0 * Value_bound(tmp_xx, tmp_yy, num_i, j, "U_y") - vectorElement[num_i].U_y;*/
 
-            /*if (param == "U_x/dx" || param == "U_x/dy") UU_vert[j] = Value_bound(coord_vertex_David[j][0], coord_vertex_David[j][1], num_i, j, "U_x");
+            if (param == "U_x/dx" || param == "U_x/dy") UU_vert[j] = Value_bound(coord_vertex_David[j][0], coord_vertex_David[j][1], num_i, j, "U_x");
             if (param == "U_y/dx" || param == "U_y/dy") UU_vert[j] = Value_bound(coord_vertex_David[j][0], coord_vertex_David[j][1], num_i, j, "U_y");
-            */
+            
+            /*if (param == "U_x/dx" || param == "U_x/dy") UU_vert[j] = vectorElement[num_i].U_x;
+            if (param == "U_y/dx" || param == "U_y/dy") UU_vert[j] = vectorElement[num_i].U_y;*/
+
             if (param == "P/dx" || param == "P/dy") UU_vert[j] = vectorElement[num_i].P;
             if (param == "P'/dx" || param == "P'/dy") UU_vert[j] = vectorElement[num_i].P_Correction;
         }
@@ -1544,14 +1550,14 @@ void Flow_Evolution(string param) {
             {
 
                 double r = R0 + ii * h;
-                double angle = 0 * Pi / 180;
+                double angle = 45 * Pi / 180;
 
                 x_m.push_back(r * cos(angle));
                 y_m.push_back(r * sin(angle));
 
                 ii++;
 
-            } while ((0.2 + ii * h) < 1.0);
+            } while ((0.2 + ii * h) <= 1.0);
 
             count_marker = x_m.size();
         }
@@ -1586,8 +1592,8 @@ void Flow_Evolution(string param) {
             double debug_1 = Section_value_MUSCL(x_m[i], y_m[i], "U_x");
             double debug_2 = Section_value_MUSCL(x_m[i], y_m[i], "U_y");
 
-            double x_tmp_n = x_m[i] + Section_value_MUSCL(x_m[i], y_m[i], "U_x") * dt_m;
-            double y_tmp_n = y_m[i] + Section_value_MUSCL(x_m[i], y_m[i], "U_y") * dt_m;
+            double x_tmp_n = x_m[i] + Section_value_MUSCL(x_m[i] + 0.5 * debug_1 * dt_m, y_m[i] + 0.5 * debug_2 * dt_m, "U_x") * dt_m;
+            double y_tmp_n = y_m[i] + Section_value_MUSCL(x_m[i] + 0.5 * debug_1 * dt_m, y_m[i] + 0.5 * debug_2 * dt_m, "U_y") * dt_m;
 
             /*Section_value_MUSCL(x_m[i], y_m[i], "NULL");
 
@@ -1925,7 +1931,7 @@ void Write_End()
     do
     {
 
-        double angle = Pi / 4.0;
+        double angle = 0*Pi / 4.0;
         double test_1 = cos(angle);
         double test_2 = sin(angle);
 
