@@ -1,13 +1,7 @@
-﻿  Procedures.cpp
-D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1155,46): warning C4101: a: неиспользованная локальная переменная
-D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1155,49): warning C4101: b: неиспользованная локальная переменная
-D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1155,52): warning C4101: c: неиспользованная локальная переменная
-D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1562,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1724,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1725,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+﻿  Сoaxial Сylinders v_1.11.cpp
   Создание кода
-  1 of 579 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+  4 of 589 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    9 functions had inline decision re-evaluated but remain unchanged
+    3 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
-  Сoaxial Сylinders v_1.11.vcxproj -> D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Release\Сoaxial Сylinders v_1.11.exe
+  Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Release\Сoaxial Сylinders v_1.11.exe

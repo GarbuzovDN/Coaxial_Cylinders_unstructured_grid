@@ -142,7 +142,7 @@ int num_el_1, num_el_2, num_el_3;
 int num_el_1_MUSCL;
 
 /* Координаты контрольного элемента */
-double xx_1 = 0.1414, yy_1 = 0.1414;
+double xx_1 = 0.6, yy_1 = 0.6;
 
 /* Параметр установления */
 double E_U;
@@ -164,17 +164,17 @@ double dt_m = 0.01;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=2921).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=1891).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=90.000000/El = 1991/Save_(El=1991)_Steady.DAT";
+"Documents/Save/Re=90.000000/El = 1891/Save_(El=1891)_Steady.DAT";
 
-bool Start_Flow_Evolution = false;
+bool Start_Flow_Evolution = true;
 
 /* Шаг и счетчик времени */
-double dt = 0.005;
+double dt = 0.01;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 

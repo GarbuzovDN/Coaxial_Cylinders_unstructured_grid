@@ -37,7 +37,7 @@ int main()
             Development();
             Write();                      
 
-        } while (/*_time <= final_time*/E_U > 0.00001);
+        } while (_time <= final_time/*E_U > 0.00001*/);
 
         Stream_Function();
         Write_End();
