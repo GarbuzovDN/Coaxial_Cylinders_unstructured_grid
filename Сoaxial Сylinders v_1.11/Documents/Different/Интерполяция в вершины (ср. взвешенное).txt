@@ -1,0 +1,53 @@
+ /*double r_temp = pow(x_ik * x_ik + y_ik * y_ik, 0.5);
+            double U_an = ((omega_1 * R1 * R1 - omega_0 * R0 * R0) * r_temp + R0 * R0 * R1 * R1 * (omega_0 - omega_1) / r_temp) / (R1 * R1 - R0 * R0);
+
+            U_x = -vectorElement[ii].Coord_center_el.y / r_temp * U_an;
+            U_y = vectorElement[ii].Coord_center_el.x / r_temp * U_an; */
+
+            int num_vert_el = vectorElement[ii].Num_vert[j];
+            double sum_Area = 0.0;
+
+            for (int i_p = 0; i_p <= vectorPoint[num_vert_el].Neighb_el.size() - 1; ++i_p) {
+
+                int num_point_neighb = vectorPoint[num_vert_el].Neighb_el[i_p];
+                
+                double x_ik = vectorPoint[num_vert_el].x; 
+                double y_ik = vectorPoint[num_vert_el].y;
+                U_x += Section_value_MUSCL_Face(x_ik, y_ik, "U_x", num_point_neighb);
+                U_y += Section_value_MUSCL_Face(x_ik, y_ik, "U_y", num_point_neighb);
+                //U_x += vectorElement[num_point_neighb].U_x / vectorElement[num_point_neighb].Area_el;
+                //U_y += vectorElement[num_point_neighb].U_y / vectorElement[num_point_neighb].Area_el;
+
+                //sum_Area += 1 / vectorElement[num_point_neighb].Area_el;
+                i_p = i_p;
+            }
+            
+            double U_x_1 = U_x / vectorPoint[num_vert_el].Neighb_el.size()/* / sum_Area*/;
+            double U_y_1 = U_y / vectorPoint[num_vert_el].Neighb_el.size()/* / sum_Area*/;
+
+            num_vert_el = vectorElement[ii].Num_vert[jj_temp];
+
+            for (int i_p = 0; i_p <= vectorPoint[num_vert_el].Neighb_el.size() - 1; ++i_p) {
+
+                int num_point_neighb = vectorPoint[num_vert_el].Neighb_el[i_p];
+
+                double x_ik = vectorPoint[num_vert_el].x;
+                double y_ik = vectorPoint[num_vert_el].y;
+                U_x += Section_value_MUSCL_Face(x_ik, y_ik, "U_x", num_point_neighb);
+                U_y += Section_value_MUSCL_Face(x_ik, y_ik, "U_y", num_point_neighb);
+
+               /* U_x += vectorElement[num_point_neighb].U_x / vectorElement[num_point_neighb].Area_el;
+                U_y += vectorElement[num_point_neighb].U_y / vectorElement[num_point_neighb].Area_el;
+
+                sum_Area += 1 / vectorElement[num_point_neighb].Area_el;*/
+                i_p = i_p;
+            }
+
+            double U_x_2 = U_x / vectorPoint[num_vert_el].Neighb_el.size()/* / sum_Area*/;
+            double U_y_2 = U_y / vectorPoint[num_vert_el].Neighb_el.size()/* / sum_Area*/;
+
+            double U_x_test = 0.5 * (U_x_1 + U_x_2);
+            double U_y_test = 0.5 * (U_y_1 + U_y_2);
+
+            U_x = U_x_test;
+            U_y = U_y_test;

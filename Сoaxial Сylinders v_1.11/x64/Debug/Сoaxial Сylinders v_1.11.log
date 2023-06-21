@@ -1,0 +1,9 @@
+﻿  Procedures.cpp
+D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1149,46): warning C4101: a: неиспользованная локальная переменная
+D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1149,49): warning C4101: b: неиспользованная локальная переменная
+D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1149,52): warning C4101: c: неиспользованная локальная переменная
+D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1556,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1718,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1719,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(939): warning C4715: Section_value_MUSCL: значение возвращается не при всех путях выполнения
+  Сoaxial Сylinders v_1.11.vcxproj -> D:\Project Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe

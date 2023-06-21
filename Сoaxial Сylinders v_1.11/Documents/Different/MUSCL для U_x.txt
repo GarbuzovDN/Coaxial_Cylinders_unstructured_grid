@@ -1,0 +1,1616 @@
+#include "Variables.h"
+
+void Create_wrDir()
+{
+
+    string _path = "Documents";
+    CreateDirectoryA(_path.c_str(), NULL);
+
+    _path = "Documents/Blank";
+    CreateDirectoryA(_path.c_str(), NULL);
+    _path = "Documents/Figure";
+    CreateDirectoryA(_path.c_str(), NULL);
+    _path = "Documents/Save";
+    CreateDirectoryA(_path.c_str(), NULL);
+
+}
+
+void Find_String(string Str)
+{
+
+    if (!File_Mesh)
+    {
+        cout << "ERROR opening the file MESH: " << File_Mesh_Name << endl << endl << endl;
+
+        exit(1);
+    }
+    else
+    {
+        if (max_str != 0) cout << "File opened SUCCESSFULLY: " << File_Mesh_Name << endl;
+        if (max_str != 0)
+        {
+
+            cout << fixed << setprecision(4) << "Time: " << _time << endl << "Mesh (Number of nodes): " << max_node << endl;
+
+        }
+
+    }
+
+    int num_str;
+
+    string line;
+
+    num_str = 0;
+
+    while (line != Str)
+    {
+
+        getline(File_Mesh, line);
+
+        num_str++;
+
+        int pp = 0;
+
+    }
+
+    File_Mesh >> max_str;
+
+}
+
+void Mesh_Init()
+{
+    
+        vectorPoint.clear();
+        vectorElement.clear();
+    
+        //if (Read_From_Save == false)
+        {
+    
+            Find_String("$Nodes");
+    
+            max_node = max_str;
+    
+            Point node;
+    
+            /* Заполнение структуры точек */
+            for (int i = 1; i <= max_node; i++)
+            {
+    
+                double temp;
+                int temp_int;
+    
+                File_Mesh >> temp_int >> node.x >> node.y >> temp;
+    
+                node.Num_node = temp_int - 1;
+    
+                node.Boundary = false;
+    
+                vectorPoint.push_back(node);
+    
+                i = i;
+    
+            }
+    
+            Find_String("$Elements");
+    
+            max_el = max_str;
+    
+            Element el;
+    
+            /* Заполнение структуры элементов */
+            for (int i = 1; i <= max_el + 1; i++)
+            {
+    
+                double temp;
+                int temp_int;
+    
+                File_Mesh >> temp_int >> el.Geom_el;
+    
+                el.Num_el = temp_int - 1;
+    
+                if (el.Geom_el == 15)
+                {
+                    int temp_int_1;
+    
+                    File_Mesh >> temp >> temp >> temp >> temp_int_1;
+                    el.Num_vert_1 = temp_int_1 - 1;
+                    el.Coord_vert_1 = vectorPoint[el.Num_vert_1];
+                    vectorPoint[el.Num_vert_1].Boundary = true;
+    
+                }
+                if (el.Geom_el == 1)
+                {
+    
+                    int temp_int_1, temp_int_2;
+    
+                    File_Mesh >> temp >> temp >> el.Num_bound >> temp_int_1 >> temp_int_2;
+                    el.Num_vert_1 = temp_int_1 - 1;
+                    el.Num_vert_2 = temp_int_2 - 1;
+    
+                    el.Coord_vert_1 = vectorPoint[el.Num_vert_1];
+                    el.Coord_vert_2 = vectorPoint[el.Num_vert_2];
+                    vectorPoint[el.Num_vert_1].Boundary = true;
+                    vectorPoint[el.Num_vert_2].Boundary = true;
+    
+                    el.Num_bound_vert_1 = el.Num_vert_1;
+                    el.Num_bound_vert_2 = el.Num_vert_2;
+    
+                    i = i;
+    
+                }
+                if (el.Geom_el == 2)
+                {
+    
+                    int temp_int_1, temp_int_2, temp_int_3;
+    
+                    File_Mesh >> temp >> temp >> temp >> temp_int_1 >> temp_int_2 >> temp_int_3;
+                    el.Num_vert_1 = temp_int_1 - 1;
+                    el.Num_vert_2 = temp_int_2 - 1;
+                    el.Num_vert_3 = temp_int_3 - 1;
+    
+                    el.Coord_vert_1 = vectorPoint[el.Num_vert_1];
+                    el.Coord_vert_2 = vectorPoint[el.Num_vert_2];
+                    el.Coord_vert_3 = vectorPoint[el.Num_vert_3];
+    
+                    el.Num_bound = 0;
+    
+                    /* Блок нахождения нормали к граням элемента */
+                    {
+    
+                        /* Номраль к первой грани */
+                        {
+    
+                            double a_1 = (el.Coord_vert_2.y - el.Coord_vert_1.y);
+                            if (a_1 == 0) a_1 = 1e-8;
+                            double a_2 = (el.Coord_vert_2.x - el.Coord_vert_1.x);
+                            if (a_2 == 0) a_2 = 1e-8;
+                            double a = a_1 / a_2;
+                            double ny_p = 1 / pow(a * a + 1, 0.5);
+                            double ny_m = -1 / pow(a * a + 1, 0.5);
+                            double nx_p = -a * ny_p;
+                            double nx_m = -a * ny_m;
+    
+                            double n_check_p = (el.Coord_vert_2.x - el.Coord_vert_1.x) * ny_p - (el.Coord_vert_2.y - el.Coord_vert_1.y) * nx_p;
+                            double n_check_m = (el.Coord_vert_2.x - el.Coord_vert_1.x) * ny_m - (el.Coord_vert_2.y - el.Coord_vert_1.y) * nx_m;
+    
+                            if (n_check_p < 0)
+                            {
+    
+                                el.n1_x = -a * ny_p;
+                                el.n1_y = ny_p;
+    
+                                i = i;
+    
+                            }
+                            else if (n_check_m < 0)
+                            {
+    
+                                el.n1_x = -a * ny_m;
+                                el.n1_y = ny_m;
+    
+                                i = i;
+    
+                            }
+                            else
+                            {
+    
+                                cout << "Normal calculation ERROR (face 1)" << endl;
+                                cout << el.Num_el + 1 << "\t" << el.n1_x << "\t" << el.n1_y << endl;
+                                //system("pause");
+    
+                            }
+    
+                        }
+    
+                        /* Нормаль ко второй грани */
+                        {
+    
+                            double a_1 = (el.Coord_vert_3.y - el.Coord_vert_2.y);
+                            if (a_1 == 0) a_1 = 1e-8;
+                            double a_2 = (el.Coord_vert_3.x - el.Coord_vert_2.x);
+                            if (a_2 == 0) a_2 = 1e-8;
+                            double a = a_1 / a_2;
+                            double ny_p = 1 / pow(a * a + 1, 0.5);
+                            double ny_m = -1 / pow(a * a + 1, 0.5);
+                            double nx_p = -a * ny_p;
+                            double nx_m = -a * ny_m;
+    
+                            double n_check_p = (el.Coord_vert_3.x - el.Coord_vert_2.x) * ny_p - (el.Coord_vert_3.y - el.Coord_vert_2.y) * nx_p;
+                            double n_check_m = (el.Coord_vert_3.x - el.Coord_vert_2.x) * ny_m - (el.Coord_vert_3.y - el.Coord_vert_2.y) * nx_m;
+    
+                            if (n_check_p < 0)
+                            {
+    
+                                el.n2_x = -a * ny_p;
+                                el.n2_y = ny_p;
+    
+                                i = i;
+    
+                            }
+                            else if (n_check_m < 0)
+                            {
+    
+                                el.n2_x = -a * ny_m;
+                                el.n2_y = ny_m;
+    
+                                i = i;
+    
+                            }
+                            else
+                            {
+    
+                                cout << "Normal calculation ERROR (face 2)" << endl;
+                                cout << el.Num_el + 1 << "\t" << el.n2_x << "\t" << el.n2_y << endl;
+                                //system("pause");
+    
+                            }
+    
+                        }
+    
+                        /* Нормаль к третьей грани */
+                        {
+    
+                            double a_1 = (el.Coord_vert_1.y - el.Coord_vert_3.y);
+                            if (a_1 == 0) a_1 = 1e-8;
+                            double a_2 = (el.Coord_vert_1.x - el.Coord_vert_3.x);
+                            if (a_2 == 0) a_2 = 1e-8;
+                            double a = a_1 / a_2;
+                            double ny_p = 1 / pow(a * a + 1, 0.5);
+                            double ny_m = -1 / pow(a * a + 1, 0.5);
+                            double nx_p = -a * ny_p;
+                            double nx_m = -a * ny_m;
+    
+                            double n_check_p = (el.Coord_vert_1.x - el.Coord_vert_3.x) * ny_p - (el.Coord_vert_1.y - el.Coord_vert_3.y) * nx_p;
+                            double n_check_m = (el.Coord_vert_1.x - el.Coord_vert_3.x) * ny_m - (el.Coord_vert_1.y - el.Coord_vert_3.y) * nx_m;
+    
+                            if (n_check_p < 0)
+                            {
+    
+                                el.n3_x = -a * ny_p;
+                                el.n3_y = ny_p;
+    
+                                i = i;
+    
+                            }
+                            else if (n_check_m < 0)
+                            {
+    
+                                el.n3_x = -a * ny_m;
+                                el.n3_y = ny_m;
+    
+                                i = i;
+    
+                            }
+                            else if (a_2 == 0)
+                            {
+    
+                                cout << "Normal calculation ERROR (face 3)" << endl;
+                                cout << el.Num_el + 1 << "\t" << el.n3_x << "\t" << el.n3_y << endl;
+                                //system("pause");
+    
+                            }
+    
+                        }
+    
+                    }
+    
+                }
+    
+                el.Length_face_el_1 = sqrt(pow((el.Coord_vert_2.x - el.Coord_vert_1.x), 2) + pow((el.Coord_vert_2.y - el.Coord_vert_1.y), 2));
+                el.Length_face_el_2 = sqrt(pow((el.Coord_vert_3.x - el.Coord_vert_2.x), 2) + pow((el.Coord_vert_3.y - el.Coord_vert_2.y), 2));
+                el.Length_face_el_3 = sqrt(pow((el.Coord_vert_3.x - el.Coord_vert_1.x), 2) + pow((el.Coord_vert_3.y - el.Coord_vert_1.y), 2));
+    
+                double a = el.Length_face_el_1;
+                double b = el.Length_face_el_2;
+                double c = el.Length_face_el_3;
+                double p = 0.5 * (a + b + c);
+                el.Area_el = sqrt(p * (p - a) * (p - b) * (p - c));
+    
+                /* Блок нахождения центра элемента */
+                {
+    
+                    /* Уравнение серединного перпендикуляра 1 */
+                    double AB = el.Length_face_el_1, BC = el.Length_face_el_2, AC = el.Length_face_el_3;
+                    double x_a = el.Coord_vert_1.x, x_b = el.Coord_vert_2.x, x_c = el.Coord_vert_3.x;
+                    double y_a = el.Coord_vert_1.y, y_b = el.Coord_vert_2.y, y_c = el.Coord_vert_3.y;
+    
+                    el.Coord_center_el.x = (BC * x_a + AC * x_b + AB * x_c) / (AB + BC + AC);
+                    el.Coord_center_el.y = (BC * y_a + AC * y_b + AB * y_c) / (AB + BC + AC);
+    
+                }
+    
+                el.h_1 = el.Area_el / p;
+                el.h_2 = el.Area_el / p;
+                el.h_3 = el.Area_el / p;
+    
+                vectorElement.push_back(el);
+    
+                i = i;
+    
+            }
+    
+            int p1, p2;
+    
+            /* Блок нахождения соседних и граничных элементов */
+            {
+    
+                for (int i = 1; i < vectorElement.size() - 1; i++)
+                {
+    
+                    if (vectorElement[i].Geom_el == 2)
+                    {
+    
+                        /* Cосед между точками 1 и 2 */
+                        p1 = vectorElement[i].Num_vert_1;
+                        p2 = vectorElement[i].Num_vert_2;
+                        if (vectorPoint[p1].Boundary && vectorPoint[p2].Boundary)
+                        {
+    
+                            vectorElement[i].N1_e = -1;
+    
+                            for (int j = 0; j < vectorElement.size(); j++)
+                            {
+    
+                                if ((p1 == vectorElement[j].Num_bound_vert_1 && p2 == vectorElement[j].Num_bound_vert_2) || (p1 == vectorElement[j].Num_bound_vert_2 && p2 == vectorElement[j].Num_bound_vert_1))
+                                {
+    
+                                    vectorElement[i].Num_bound = vectorElement[j].Num_bound;
+    
+                                    break;
+    
+                                }
+    
+                            }
+    
+                        }
+                        else
+                        {
+    
+                            for (int j = 0; j < vectorElement.size(); j++)
+                            {
+                                if ((p1 == vectorElement[j].Num_vert_1 && p2 == vectorElement[j].Num_vert_2 || p1 == vectorElement[j].Num_vert_2 && p2 == vectorElement[j].Num_vert_1) && j != vectorElement[i].Num_el) { vectorElement[i].N1_e = j; break; }
+                                if ((p1 == vectorElement[j].Num_vert_2 && p2 == vectorElement[j].Num_vert_3 || p1 == vectorElement[j].Num_vert_3 && p2 == vectorElement[j].Num_vert_2) && j != vectorElement[i].Num_el) { vectorElement[i].N1_e = j; break; }
+                                if ((p1 == vectorElement[j].Num_vert_1 && p2 == vectorElement[j].Num_vert_3 || p1 == vectorElement[j].Num_vert_3 && p2 == vectorElement[j].Num_vert_1) && j != vectorElement[i].Num_el) { vectorElement[i].N1_e = j; break; }
+                            }
+    
+                        }
+    
+                        /* Cосед между точками 2 и 3 */
+                        p1 = vectorElement[i].Num_vert_2;
+                        p2 = vectorElement[i].Num_vert_3;
+                        if (vectorPoint[p1].Boundary && vectorPoint[p2].Boundary)
+                        {
+    
+                            vectorElement[i].N2_e = -1;
+    
+                            for (int j = 0; j < vectorElement.size(); j++)
+                            {
+    
+                                if ((p1 == vectorElement[j].Num_bound_vert_1 && p2 == vectorElement[j].Num_bound_vert_2) || (p1 == vectorElement[j].Num_bound_vert_2 && p2 == vectorElement[j].Num_bound_vert_1))
+                                {
+    
+                                    vectorElement[i].Num_bound = vectorElement[j].Num_bound;
+    
+                                    break;
+    
+                                }
+    
+                            }
+    
+    
+                        }
+                        else
+                        {
+    
+                            for (int j = 0; j < vectorElement.size(); j++)
+                            {
+                                if ((p1 == vectorElement[j].Num_vert_1 && p2 == vectorElement[j].Num_vert_2 || p1 == vectorElement[j].Num_vert_2 && p2 == vectorElement[j].Num_vert_1) && j != vectorElement[i].Num_el) { vectorElement[i].N2_e = j; break; }
+                                if ((p1 == vectorElement[j].Num_vert_2 && p2 == vectorElement[j].Num_vert_3 || p1 == vectorElement[j].Num_vert_3 && p2 == vectorElement[j].Num_vert_2) && j != vectorElement[i].Num_el) { vectorElement[i].N2_e = j; break; }
+                                if ((p1 == vectorElement[j].Num_vert_1 && p2 == vectorElement[j].Num_vert_3 || p1 == vectorElement[j].Num_vert_3 && p2 == vectorElement[j].Num_vert_1) && j != vectorElement[i].Num_el) { vectorElement[i].N2_e = j; break; }
+                            }
+    
+                        }
+    
+                        /* Cосед между точками 1 и 3 */
+                        p1 = vectorElement[i].Num_vert_1;
+                        p2 = vectorElement[i].Num_vert_3;
+                        if (vectorPoint[p1].Boundary && vectorPoint[p2].Boundary)
+                        {
+    
+                            vectorElement[i].N3_e = -1;
+    
+                            for (int j = 0; j < vectorElement.size(); j++)
+                            {
+    
+                                if ((p1 == vectorElement[j].Num_bound_vert_1 && p2 == vectorElement[j].Num_bound_vert_2) || (p1 == vectorElement[j].Num_bound_vert_2 && p2 == vectorElement[j].Num_bound_vert_1))
+                                {
+    
+                                    vectorElement[i].Num_bound = vectorElement[j].Num_bound;
+    
+                                    break;
+    
+                                }
+    
+                            }
+    
+                        }
+                        else
+                        {
+    
+                            for (int j = 0; j < vectorElement.size(); j++)
+                            {
+                                if ((p1 == vectorElement[j].Num_vert_1 && p2 == vectorElement[j].Num_vert_2 || p1 == vectorElement[j].Num_vert_2 && p2 == vectorElement[j].Num_vert_1) && j != vectorElement[i].Num_el) { vectorElement[i].N3_e = j; break; }
+                                if ((p1 == vectorElement[j].Num_vert_2 && p2 == vectorElement[j].Num_vert_3 || p1 == vectorElement[j].Num_vert_3 && p2 == vectorElement[j].Num_vert_2) && j != vectorElement[i].Num_el) { vectorElement[i].N3_e = j; break; }
+                                if ((p1 == vectorElement[j].Num_vert_1 && p2 == vectorElement[j].Num_vert_3 || p1 == vectorElement[j].Num_vert_3 && p2 == vectorElement[j].Num_vert_1) && j != vectorElement[i].Num_el) { vectorElement[i].N3_e = j; break; }
+    
+                                j = j;
+    
+                            }
+    
+                        }
+    
+                        //cout << vectorElement[i].Num_el << " \t " << vectorElement[i].N1_e << " \t " << vectorElement[i].N2_e << " \t " << vectorElement[i].N3_e << " \t " << vectorElement[i].Num_bound << endl;
+    
+                        i = i;
+    
+                    }
+    
+                }
+    
+            }
+    
+            File_Mesh.close();
+    
+        }
+        //else Read_Save();
+    
+    
+}
+
+void Blank()
+{
+
+    int Local_count = 0;
+    int Local_it = 0;
+
+    ofstream File_Blank("Documents/Blank/Blank_R0.BLN", ios_base::trunc);
+
+    /* Запись заголовка бланкировочного файла */
+    for (int i = 1; i <= max_el; i++)
+    {
+
+        if (vectorElement[i].Geom_el == 1 && vectorElement[i].Num_bound == 2)
+        {
+
+            Local_it++;
+
+            if (Local_it == 1) Local_count = i;
+
+            i = i;
+
+        }
+
+    }
+
+    File_Blank << Local_it + 1 << "\t" << "1" << endl;
+
+    /* Запись коррдинат */
+    for (int i = 0; i <= max_el; i++)
+    {
+
+        if (vectorElement[i].Geom_el == 1 && vectorElement[i].Num_bound == 2)
+        {
+
+            File_Blank << fixed << setprecision(4) << vectorElement[i].Coord_vert_1.x << " \t " << vectorElement[i].Coord_vert_1.y << endl;
+
+
+        }
+
+    }
+
+    File_Blank << fixed << setprecision(4) << vectorElement[Local_count].Coord_vert_1.x << " \t " << vectorElement[Local_count].Coord_vert_1.y;
+
+}
+
+void Redistricting()
+{
+
+    double p = 0.0;
+
+    for (int i = 0; i <= max_el; i++)
+    {
+
+        vectorElement[i].u_x = vectorElement[i].U_x;
+
+        vectorElement[i].u_y = vectorElement[i].U_y;
+
+    }
+
+}
+
+void Initial_Conditions()
+{
+
+    Blank();
+
+    ofstream File_Init("Documents/Figure/Init Cond.DAT", ios_base::trunc);
+    File_Init << "Coord_x" << "\t" << "Coord_y" << "\t" << "Velosity_Ux" << "\t" << "Velocity_Uy" << "\t" << "Num_el" << endl;
+
+    if (Read_From_Save == false)
+    {
+
+        for (int i = 0; i <= max_el; i++)
+        {
+            if (vectorElement[i].Geom_el == 2)
+            {
+                double r_temp = pow(vectorElement[i].Coord_center_el.x * vectorElement[i].Coord_center_el.x + vectorElement[i].Coord_center_el.y * vectorElement[i].Coord_center_el.y, 0.5);
+                double U_an = ((omega_1 * R1 * R1 - omega_0 * R0 * R0) * r_temp + R0 * R0 * R1 * R1 * (omega_0 - omega_1) / r_temp) / (R1 * R1 - R0 * R0);
+
+                //vectorElement[i].u_y = 0.0;
+                //vectorElement[i].U_y = 0.0;
+
+                //vectorElement[i].u_x = 0.0;
+                //vectorElement[i].U_x = 0.0;
+
+
+                vectorElement[i].u_y = vectorElement[i].Coord_center_el.x / r_temp * U_an;
+                vectorElement[i].U_y = vectorElement[i].u_y;
+
+                vectorElement[i].u_x = -vectorElement[i].Coord_center_el.y / r_temp * U_an;
+                vectorElement[i].U_x = vectorElement[i].u_x;
+
+                vectorElement[i].p = Re / pow((R1 * R1 - R0 * R0), 2) * (pow((omega_1 * R1 * R1 - omega_0 * R0 * R0), 2) * (r_temp * r_temp - R0 * R0) * 0.5 + 2 * R0 * R0 * R1 * R1 * (omega_0 - omega_1) * (omega_1 * R1 * R1 - omega_0 * R0 * R0) * log(r_temp / R0) - 0.5 * (omega_0 - omega_1) * (omega_0 - omega_1) * pow(R0 * R1, 4) * (1.0 / (r_temp * r_temp) - 1.0 / (R0 * R0)));
+                vectorElement[i].P = vectorElement[i].p;
+            }
+        }
+
+        for (int i = 0; i <= max_el; i++)
+        {
+            if (vectorElement[i].Geom_el == 2)
+            {
+
+                File_Init << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+                    << vectorElement[i].U_x << " \t " << vectorElement[i].U_y << " \t " << vectorElement[i].Num_el << endl;
+
+            }
+        }
+
+    }
+    //else Read_Save();
+
+}
+
+double Gradient_1(int ii, string param)
+{
+
+    double x_ik = vectorElement[ii].Coord_vert_1.x + 0.5 * (vectorElement[ii].Coord_vert_2.x - vectorElement[ii].Coord_vert_1.x);
+    double y_ik = vectorElement[ii].Coord_vert_1.y + 0.5 * (vectorElement[ii].Coord_vert_2.y - vectorElement[ii].Coord_vert_1.y);
+    double x_x_ik = vectorElement[ii].Coord_center_el.x - x_ik;
+    double y_y_ik = vectorElement[ii].Coord_center_el.y - y_ik;
+    double x1_x_ik = vectorElement[vectorElement[ii].N1_e].Coord_center_el.x - x_ik;
+    double y1_y_ik = vectorElement[vectorElement[ii].N1_e].Coord_center_el.y - y_ik;
+    double scal_x1_x_ik_n = abs(x1_x_ik * vectorElement[ii].n1_x + y1_y_ik * vectorElement[ii].n1_y);
+    double scal_x_x_ik_n = abs(x_x_ik * vectorElement[ii].n1_x + y_y_ik * vectorElement[ii].n1_y);
+    double beta = scal_x1_x_ik_n / (scal_x1_x_ik_n + scal_x_x_ik_n);
+
+    if (param == "P")
+    {
+
+        return vectorElement[ii].Length_face_el_1 * (beta * vectorElement[ii].P + (1 - beta) * vectorElement[vectorElement[ii].N1_e].P);
+
+    }
+    else if (param == "U_x")
+    {
+
+        return vectorElement[ii].Length_face_el_1 * (beta * vectorElement[ii].U_x + (1 - beta) * vectorElement[vectorElement[ii].N1_e].U_x);
+
+    }
+    else if (param == "U_y")
+    {
+
+        return vectorElement[ii].Length_face_el_1 * (beta * vectorElement[ii].U_y + (1 - beta) * vectorElement[vectorElement[ii].N1_e].U_y);
+
+    }
+}
+
+double Gradient_2(int ii, string param)
+{
+
+    double x_ik = vectorElement[ii].Coord_vert_2.x + 0.5 * (vectorElement[ii].Coord_vert_3.x - vectorElement[ii].Coord_vert_2.x);
+    double y_ik = vectorElement[ii].Coord_vert_2.y + 0.5 * (vectorElement[ii].Coord_vert_3.y - vectorElement[ii].Coord_vert_2.y);
+    double x_x_ik = vectorElement[ii].Coord_center_el.x - x_ik;
+    double y_y_ik = vectorElement[ii].Coord_center_el.y - y_ik;
+    double x2_x_ik = vectorElement[vectorElement[ii].N2_e].Coord_center_el.x - x_ik;
+    double y2_y_ik = vectorElement[vectorElement[ii].N2_e].Coord_center_el.y - y_ik;
+    double scal_x2_x_ik_n = abs(x2_x_ik * vectorElement[ii].n2_x + y2_y_ik * vectorElement[ii].n2_y);
+    double scal_x_x_ik_n = abs(x_x_ik * vectorElement[ii].n2_x + y_y_ik * vectorElement[ii].n2_y);
+    double beta = scal_x2_x_ik_n / (scal_x2_x_ik_n + scal_x_x_ik_n);
+
+    if (param == "P")
+    {
+
+        return vectorElement[ii].Length_face_el_2 * (beta * vectorElement[ii].P + (1 - beta) * vectorElement[vectorElement[ii].N2_e].P);
+
+    }
+    else if (param == "U_x")
+    {
+
+        return vectorElement[ii].Length_face_el_2 * (beta * vectorElement[ii].U_x + (1 - beta) * vectorElement[vectorElement[ii].N2_e].U_x);
+
+    }
+    else if (param == "U_y")
+    {
+
+        return vectorElement[ii].Length_face_el_2 * (beta * vectorElement[ii].U_y + (1 - beta) * vectorElement[vectorElement[ii].N2_e].U_y);
+
+    }
+}
+
+double Gradient_3(int ii, string param)
+{
+
+    double x_ik = vectorElement[ii].Coord_vert_3.x + 0.5 * (vectorElement[ii].Coord_vert_1.x - vectorElement[ii].Coord_vert_3.x);
+    double y_ik = vectorElement[ii].Coord_vert_3.y + 0.5 * (vectorElement[ii].Coord_vert_1.y - vectorElement[ii].Coord_vert_3.y);
+    double x_x_ik = vectorElement[ii].Coord_center_el.x - x_ik;
+    double y_y_ik = vectorElement[ii].Coord_center_el.y - y_ik;
+    double x3_x_ik = vectorElement[vectorElement[ii].N3_e].Coord_center_el.x - x_ik;
+    double y3_y_ik = vectorElement[vectorElement[ii].N3_e].Coord_center_el.y - y_ik;
+    double scal_x3_x_ik_n = abs(x3_x_ik * vectorElement[ii].n3_x + y3_y_ik * vectorElement[ii].n3_y);
+    double scal_x_x_ik_n = abs(x_x_ik * vectorElement[ii].n3_x + y_y_ik * vectorElement[ii].n3_y);
+    double beta = scal_x3_x_ik_n / (scal_x3_x_ik_n + scal_x_x_ik_n);
+
+    if (param == "P")
+    {
+
+        return vectorElement[ii].Length_face_el_3 * (beta * vectorElement[ii].P + (1 - beta) * vectorElement[vectorElement[ii].N3_e].P);
+
+    }
+    else if (param == "U_x")
+    {
+
+        return vectorElement[ii].Length_face_el_3 * (beta * vectorElement[ii].U_x + (1 - beta) * vectorElement[vectorElement[ii].N3_e].U_x);
+
+    }
+    else if (param == "U_y")
+    {
+
+        return vectorElement[ii].Length_face_el_3 * (beta * vectorElement[ii].U_y + (1 - beta) * vectorElement[vectorElement[ii].N3_e].U_y);
+
+    }
+
+}
+
+void Calculation_Velocity_Ux()
+{
+
+    /* Расчет скорости Ux */
+    {
+        /* Слагаемые конвекции, диффузии и градиента */
+        double conv_U_1 = 0, conv_U_2 = 0, conv_U_3 = 0;
+        double diff_U_1 = 0, diff_U_2 = 0, diff_U_3 = 0;
+        double grad_P_1 = 0, grad_P_2 = 0, grad_P_3 = 0;
+
+        for (int i = 1; i < max_el; i++)
+        {
+            if (vectorElement[i].Geom_el == 2)
+            {
+                if (/*Iter_Glob == 56 &&*/ i == 69)
+                {
+
+                    i = i;
+
+                }
+
+                /* Вычисление потоков */
+                {
+                    if (vectorElement[i].N1_e == -1 || vectorElement[i].N2_e == -1 || vectorElement[i].N3_e == -1)
+                    {
+
+                        if (vectorElement[i].Num_el == 68)
+                        {
+                            i = i;
+                        }
+
+                        if (vectorElement[i].N1_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+
+                                conv_U_1 = 0.0;
+                                diff_U_1 = (-omega_1 * R1 * vectorElement[i].n1_y - vectorElement[i].u_x) * vectorElement[i].Length_face_el_1 / vectorElement[i].h_1;
+                                grad_P_1 = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_x * vectorElement[i].p;
+
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+
+                                conv_U_1 = 0.0;
+                                diff_U_1 = (-omega_0 * R0 * vectorElement[i].n1_y - vectorElement[i].u_x) * vectorElement[i].Length_face_el_1 / vectorElement[i].h_1;
+                                grad_P_1 = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_x * vectorElement[i].p;
+
+                            }
+
+                            double U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N2_e].u_x);
+                            double U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N2_e].u_y);
+                            double sc_n_U_ik = vectorElement[i].n2_x * U_ik_x + vectorElement[i].n2_y * U_ik_y;
+                            conv_U_2 = vectorElement[i].Length_face_el_2 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N2_e].u_x);
+
+                            U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N3_e].u_x);
+                            U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N3_e].u_y);
+                            sc_n_U_ik = vectorElement[i].n3_x * U_ik_x + vectorElement[i].n3_y * U_ik_y;
+                            conv_U_3 = vectorElement[i].Length_face_el_3 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N3_e].u_x);
+
+                            diff_U_2 = (vectorElement[vectorElement[i].N2_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                            diff_U_3 = (vectorElement[vectorElement[i].N3_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                            grad_P_2 = Gradient_2(i, "P") * vectorElement[i].n2_x;
+                            grad_P_3 = Gradient_3(i, "P") * vectorElement[i].n3_x;
+
+                        }
+
+                        if (vectorElement[i].N2_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+
+                                conv_U_2 = 0.0;
+                                diff_U_2 = (-omega_1 * R1 * vectorElement[i].n2_y - vectorElement[i].u_x) * vectorElement[i].Length_face_el_2 / vectorElement[i].h_2;
+                                grad_P_2 = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_x * vectorElement[i].p;
+
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+
+                                conv_U_2 = 0.0;
+                                diff_U_2 = (-omega_0 * R0 * vectorElement[i].n2_y - vectorElement[i].u_x) * vectorElement[i].Length_face_el_2 / vectorElement[i].h_2;
+                                grad_P_2 = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_x * vectorElement[i].p;
+
+                            }
+
+                            double U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N1_e].u_x);
+                            double U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N1_e].u_y);
+                            double sc_n_U_ik = vectorElement[i].n1_x * U_ik_x + vectorElement[i].n1_y * U_ik_y;
+                            conv_U_1 = vectorElement[i].Length_face_el_1 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N1_e].u_x);
+
+                            U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N3_e].u_x);
+                            U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N3_e].u_y);
+                            sc_n_U_ik = vectorElement[i].n3_x * U_ik_x + vectorElement[i].n3_y * U_ik_y;
+                            conv_U_3 = vectorElement[i].Length_face_el_3 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N3_e].u_x);
+
+                            diff_U_1 = (vectorElement[vectorElement[i].N1_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                            diff_U_3 = (vectorElement[vectorElement[i].N3_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                            grad_P_1 = Gradient_1(i, "P") * vectorElement[i].n1_x;
+                            grad_P_3 = Gradient_3(i, "P") * vectorElement[i].n3_x;
+                        }
+
+                        if (vectorElement[i].N3_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+
+                                conv_U_3 = 0.0;
+                                diff_U_3 = (-omega_1 * R1 * vectorElement[i].n3_y - vectorElement[i].u_x) * vectorElement[i].Length_face_el_3 / vectorElement[i].h_3;
+                                grad_P_3 = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_x * vectorElement[i].p;
+
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+
+                                conv_U_3 = 0.0;
+                                diff_U_3 = (-omega_0 * R0 * vectorElement[i].n3_y - vectorElement[i].u_x) * vectorElement[i].Length_face_el_3 / vectorElement[i].h_3;
+                                grad_P_3 = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_x * vectorElement[i].p;
+
+                            }
+
+                            double U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N1_e].u_x);
+                            double U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N1_e].u_y);
+                            double sc_n_U_ik = vectorElement[i].n1_x * U_ik_x + vectorElement[i].n1_y * U_ik_y;
+                            conv_U_1 = vectorElement[i].Length_face_el_1 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N1_e].u_x);
+
+                            U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N2_e].u_x);
+                            U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N2_e].u_y);
+                            sc_n_U_ik = vectorElement[i].n2_x * U_ik_x + vectorElement[i].n2_y * U_ik_y;
+                            conv_U_2 = vectorElement[i].Length_face_el_2 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N2_e].u_x);
+
+                            diff_U_1 = (vectorElement[vectorElement[i].N1_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                            diff_U_2 = (vectorElement[vectorElement[i].N2_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+
+                            grad_P_1 = Gradient_1(i, "P") * vectorElement[i].n1_x;
+                            grad_P_2 = Gradient_2(i, "P") * vectorElement[i].n2_x;
+
+                        }
+                    }
+                    else
+                    {
+
+                        double U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N1_e].u_x);
+                        double U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N1_e].u_y);
+                        double sc_n_U_ik = vectorElement[i].n1_x * U_ik_x + vectorElement[i].n1_y * U_ik_y;
+                        conv_U_1 = vectorElement[i].Length_face_el_1 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N1_e].u_x);
+
+                        U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N2_e].u_x);
+                        U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N2_e].u_y);
+                        sc_n_U_ik = vectorElement[i].n2_x * U_ik_x + vectorElement[i].n2_y * U_ik_y;
+                        conv_U_2 = vectorElement[i].Length_face_el_2 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N2_e].u_x);
+
+                        U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N3_e].u_x);
+                        U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N3_e].u_y);
+                        sc_n_U_ik = vectorElement[i].n3_x * U_ik_x + vectorElement[i].n3_y * U_ik_y;
+                        conv_U_3 = vectorElement[i].Length_face_el_3 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_x - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N3_e].u_x);
+
+                        diff_U_1 = (vectorElement[vectorElement[i].N1_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                        diff_U_2 = (vectorElement[vectorElement[i].N2_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                        diff_U_3 = (vectorElement[vectorElement[i].N3_e].u_x - vectorElement[i].u_x) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                        grad_P_1 = Gradient_1(i, "P") * vectorElement[i].n1_x;
+                        grad_P_2 = Gradient_2(i, "P") * vectorElement[i].n2_x;
+                        grad_P_3 = Gradient_3(i, "P") * vectorElement[i].n3_x;
+
+                        i = i;
+                    }
+                }
+
+                vectorElement[i].U_x = dt * (-1.0 / vectorElement[i].Area_el * (conv_U_1 + conv_U_2 + conv_U_3) +
+                    1.0 / (vectorElement[i].Area_el * Re) * (diff_U_1 + diff_U_2 + diff_U_3) -
+                    1.0 / vectorElement[i].Area_el * (grad_P_1 + grad_P_2 + grad_P_3)) + vectorElement[i].u_x;
+
+            }
+        }
+
+    }
+
+}
+
+void Calculation_Velocity_Uy()
+{
+
+    /* Расчет скорости Ux */
+    {
+        /* Слагаемые конвекции, диффузии и градиента */
+        double conv_U_1 = 0, conv_U_2 = 0, conv_U_3 = 0;
+        double diff_U_1 = 0, diff_U_2 = 0, diff_U_3 = 0;
+        double grad_P_1 = 0, grad_P_2 = 0, grad_P_3 = 0;
+
+        for (int i = 1; i < max_el; i++)
+        {
+            if (vectorElement[i].Geom_el == 2)
+            {
+                if (/*Iter_Glob == 56 &&*/ i == 69)
+                {
+
+                    i = i;
+
+                }
+                /* Вычисление потоков */
+                {
+                    if (vectorElement[i].N1_e == -1 || vectorElement[i].N2_e == -1 || vectorElement[i].N3_e == -1)
+                    {
+
+                        if (vectorElement[i].Num_el == 68)
+                        {
+                            i = i;
+                        }
+
+                        if (vectorElement[i].N1_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+
+                                conv_U_1 = 0.0;
+                                diff_U_1 = (omega_1 * R1 * vectorElement[i].n1_x - vectorElement[i].u_y) * vectorElement[i].Length_face_el_1 / vectorElement[i].h_1;
+                                grad_P_1 = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_y * vectorElement[i].p;
+
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+
+                                conv_U_1 = 0.0;
+                                diff_U_1 = (omega_0 * R0 * vectorElement[i].n1_x - vectorElement[i].u_y) * vectorElement[i].Length_face_el_1 / vectorElement[i].h_1;
+                                grad_P_1 = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_y * vectorElement[i].p;
+
+                            }
+
+                            double U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N2_e].u_x);
+                            double U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N2_e].u_y);
+                            double sc_n_U_ik = vectorElement[i].n2_x * U_ik_x + vectorElement[i].n2_y * U_ik_y;
+                            conv_U_2 = vectorElement[i].Length_face_el_2 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N2_e].u_y);
+
+                            U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N3_e].u_x);
+                            U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N3_e].u_y);
+                            sc_n_U_ik = vectorElement[i].n3_x * U_ik_x + vectorElement[i].n3_y * U_ik_y;
+                            conv_U_3 = vectorElement[i].Length_face_el_3 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N3_e].u_y);
+
+                            diff_U_2 = (vectorElement[vectorElement[i].N2_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                            diff_U_3 = (vectorElement[vectorElement[i].N3_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                            grad_P_2 = Gradient_2(i, "P") * vectorElement[i].n2_y;
+                            grad_P_3 = Gradient_3(i, "P") * vectorElement[i].n3_y;
+
+                        }
+
+                        if (vectorElement[i].N2_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+
+                                conv_U_2 = 0.0;
+                                diff_U_2 = (omega_1 * R1 * vectorElement[i].n2_x - vectorElement[i].u_y) * vectorElement[i].Length_face_el_2 / vectorElement[i].h_2;
+                                grad_P_2 = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_y * vectorElement[i].p;
+
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+
+                                conv_U_2 = 0.0;
+                                diff_U_2 = (omega_0 * R0 * vectorElement[i].n2_x - vectorElement[i].u_y) * vectorElement[i].Length_face_el_2 / vectorElement[i].h_2;
+                                grad_P_2 = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_y * vectorElement[i].p;
+
+                            }
+
+                            double U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N1_e].u_x);
+                            double U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N1_e].u_y);
+                            double sc_n_U_ik = vectorElement[i].n1_x * U_ik_x + vectorElement[i].n1_y * U_ik_y;
+                            conv_U_1 = vectorElement[i].Length_face_el_1 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N1_e].u_y);
+
+                            U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N3_e].u_x);
+                            U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N3_e].u_y);
+                            sc_n_U_ik = vectorElement[i].n3_x * U_ik_x + vectorElement[i].n3_y * U_ik_y;
+                            conv_U_3 = vectorElement[i].Length_face_el_3 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N3_e].u_y);
+
+                            diff_U_1 = (vectorElement[vectorElement[i].N1_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                            diff_U_3 = (vectorElement[vectorElement[i].N3_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                            grad_P_1 = Gradient_1(i, "P") * vectorElement[i].n1_y;
+                            grad_P_3 = Gradient_3(i, "P") * vectorElement[i].n3_y;
+
+                        }
+
+                        if (vectorElement[i].N3_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+
+                                conv_U_3 = 0.0;
+                                diff_U_3 = (omega_1 * R1 * vectorElement[i].n3_x - vectorElement[i].u_y) * vectorElement[i].Length_face_el_3 / vectorElement[i].h_3;
+                                grad_P_3 = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_y * vectorElement[i].p;
+
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+
+                                conv_U_3 = 0.0;
+                                diff_U_3 = (omega_0 * R0 * vectorElement[i].n3_x - vectorElement[i].u_y) * vectorElement[i].Length_face_el_3 / vectorElement[i].h_3;
+                                grad_P_3 = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_y * vectorElement[i].p;
+
+                            }
+
+                            double U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N1_e].u_x);
+                            double U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N1_e].u_y);
+                            double sc_n_U_ik = vectorElement[i].n1_x * U_ik_x + vectorElement[i].n1_y * U_ik_y;
+                            conv_U_1 = vectorElement[i].Length_face_el_1 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N1_e].u_y);
+
+                            U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N2_e].u_x);
+                            U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N2_e].u_y);
+                            sc_n_U_ik = vectorElement[i].n2_x * U_ik_x + vectorElement[i].n2_y * U_ik_y;
+                            conv_U_2 = vectorElement[i].Length_face_el_2 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N2_e].u_y);
+
+                            diff_U_1 = (vectorElement[vectorElement[i].N1_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                            diff_U_2 = (vectorElement[vectorElement[i].N2_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+
+                            grad_P_1 = Gradient_1(i, "P") * vectorElement[i].n1_y;
+                            grad_P_2 = Gradient_2(i, "P") * vectorElement[i].n2_y;
+
+                        }
+                    }
+                    else
+                    {
+
+                        double U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N1_e].u_x);
+                        double U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N1_e].u_y);
+                        double sc_n_U_ik = vectorElement[i].n1_x * U_ik_x + vectorElement[i].n1_y * U_ik_y;
+                        conv_U_1 = vectorElement[i].Length_face_el_1 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N1_e].u_y);
+
+                        U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N2_e].u_x);
+                        U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N2_e].u_y);
+                        sc_n_U_ik = vectorElement[i].n2_x * U_ik_x + vectorElement[i].n2_y * U_ik_y;
+                        conv_U_2 = vectorElement[i].Length_face_el_2 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N2_e].u_y);
+
+                        U_ik_x = 0.5 * (vectorElement[i].u_x + vectorElement[vectorElement[i].N3_e].u_x);
+                        U_ik_y = 0.5 * (vectorElement[i].u_y + vectorElement[vectorElement[i].N3_e].u_y);
+                        sc_n_U_ik = vectorElement[i].n3_x * U_ik_x + vectorElement[i].n3_y * U_ik_y;
+                        conv_U_3 = vectorElement[i].Length_face_el_3 * (fmax(sc_n_U_ik, 0) * vectorElement[i].u_y - fmax(-sc_n_U_ik, 0) * vectorElement[vectorElement[i].N3_e].u_y);
+
+                        diff_U_1 = (vectorElement[vectorElement[i].N1_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                        diff_U_2 = (vectorElement[vectorElement[i].N2_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                        diff_U_3 = (vectorElement[vectorElement[i].N3_e].u_y - vectorElement[i].u_y) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+                                               
+                        grad_P_1 = Gradient_1(i, "P") * vectorElement[i].n1_y;
+                        grad_P_2 = Gradient_2(i, "P") * vectorElement[i].n2_y;
+                        grad_P_3 = Gradient_3(i, "P") * vectorElement[i].n3_y;
+
+                        i = i;
+                    }
+                }
+
+                vectorElement[i].U_y = dt * (-1.0 / vectorElement[i].Area_el * (conv_U_1 + conv_U_2 + conv_U_3) +
+                    1.0 / (vectorElement[i].Area_el * Re) * (diff_U_1 + diff_U_2 + diff_U_3) -
+                    1.0 / vectorElement[i].Area_el * (grad_P_1 + grad_P_2 + grad_P_3)) + vectorElement[i].u_y;
+
+                double temp_1 = dt * (-1.0 / vectorElement[i].Area_el * (conv_U_1 + conv_U_2 + conv_U_3) +
+                    1.0 / (vectorElement[i].Area_el * Re) * (diff_U_1 + diff_U_2 + diff_U_3) -
+                    1.0 / vectorElement[i].Area_el * (grad_P_1 + grad_P_2 + grad_P_3));
+
+                //if (vectorElement[i].N1_e == -1 || vectorElement[i].N2_e == -1 || vectorElement[i].N3_e == -1)
+                {
+
+                    i = i;
+                }
+
+            }
+        }
+
+    }
+
+}
+
+void Development()
+{
+
+    E_U_x = 0.0, E_U_x_abs = 0.0;
+    E_U_y = 0.0, E_U_y_abs = 0.0;
+
+    for (int i = 0; i < vectorElement.size(); i++)
+    {
+
+        if (vectorElement[i].Geom_el == 2 && E_U_x < fabs(vectorElement[i].U_x - vectorElement[i].u_x) / vectorElement[i].U_x)
+        {
+
+            E_U_x = fabs(vectorElement[i].U_x - vectorElement[i].u_x) / vectorElement[i].U_x;
+            E_U_x_abs = fabs(vectorElement[i].U_x - vectorElement[i].u_x);
+            E_U_x_Num_el = vectorElement[i].Num_el;
+
+            i = i;
+
+        }
+
+        if (vectorElement[i].Geom_el == 2 && E_U_y < fabs(vectorElement[i].U_y - vectorElement[i].u_y) / vectorElement[i].U_y)
+        {
+
+            E_U_y = fabs(vectorElement[i].U_y - vectorElement[i].u_y) / vectorElement[i].U_y;
+            E_U_y_abs = fabs(vectorElement[i].U_y - vectorElement[i].u_y);
+            E_U_y_Num_el = vectorElement[i].Num_el;
+
+        }
+
+    }
+
+    if (E_U_y_Num_el <= E_U_x_Num_el)
+    {
+
+        E_U_y_Num_el = E_U_x_Num_el;
+        E_U_y_Num_el = E_U_x_Num_el;
+
+    }
+}
+
+double Section_value(double xx, double yy, string param)
+{
+
+    double dl;
+    double temp_1 = 99, temp_2 = 100, temp_3 = 101;
+
+    if (param == "NULL")
+    {
+
+        for (int i = 0; i < vectorElement.size(); i++)
+        {
+            if (vectorElement[i].Geom_el == 2)
+            {
+
+                dl = sqrt(pow((vectorElement[i].Coord_center_el.x - xx), 2) + pow((vectorElement[i].Coord_center_el.y - yy), 2));
+
+                if (dl < temp_1)
+                {
+
+                    temp_1 = dl;
+                    num_el_1 = vectorElement[i].Num_el;
+
+                    i = i;
+
+                }
+            }
+
+        }
+
+    }
+    else
+    {
+
+        for (int i = 0; i < vectorElement.size(); i++)
+        {
+            if (vectorElement[i].Geom_el == 2)
+            {
+
+                dl = sqrt(pow((vectorElement[i].Coord_center_el.x - xx), 2) + pow((vectorElement[i].Coord_center_el.y - yy), 2));
+
+                if (dl < temp_1)
+                {
+
+                    temp_1 = dl;
+                    num_el_1 = vectorElement[i].Num_el;
+
+                    i = i;
+
+                }
+            }
+
+        }
+
+        for (int i = 0; i < vectorElement.size(); i++)
+        {
+
+            if (vectorElement[i].Geom_el == 2)
+            {
+
+                dl = sqrt(pow((vectorElement[i].Coord_center_el.x - xx), 2) + pow((vectorElement[i].Coord_center_el.y - yy), 2));
+
+                if (dl < temp_2 && vectorElement[i].Num_el != num_el_1)
+                {
+
+                    temp_2 = dl;
+
+                    num_el_2 = vectorElement[i].Num_el;
+
+                    i = i;
+
+                }
+
+            }
+
+        }
+
+        for (int i = 0; i < vectorElement.size(); i++)
+        {
+
+            if (vectorElement[i].Geom_el == 2)
+            {
+
+                dl = sqrt(pow((vectorElement[i].Coord_center_el.x - xx), 2) + pow((vectorElement[i].Coord_center_el.y - yy), 2));
+
+                if (dl < temp_3 && vectorElement[i].Num_el != num_el_1 && vectorElement[i].Num_el != num_el_2)
+                {
+
+                    temp_3 = dl;
+                    num_el_3 = vectorElement[i].Num_el;
+
+                    i = i;
+
+                }
+
+            }
+
+        }
+
+        double a1, a2, b1, b2, c1, c2;
+        double Ax = vectorElement[num_el_1].Coord_center_el.x;
+        double Ay = vectorElement[num_el_1].Coord_center_el.y;
+        double Ex = xx;
+        double Ey = yy;
+        double Bx = vectorElement[num_el_2].Coord_center_el.x;
+        double By = vectorElement[num_el_2].Coord_center_el.y;
+        double Cx = vectorElement[num_el_3].Coord_center_el.x;
+        double Cy = vectorElement[num_el_3].Coord_center_el.y;
+
+        a1 = Ay - Ey;
+        b1 = Ex - Ax;
+        c1 = Ax * Ey - Ex * Ay;
+        a2 = By - Cy;
+        b2 = Cx - Bx;
+        c2 = Bx * Cy - Cx * By;
+
+        double det = a1 * b2 - a2 * b1;
+        double Dx = (b1 * c2 - b2 * c1) / det;
+        double Dy = (a2 * c1 - a1 * c2) / det;
+
+        double BD = sqrt(pow((Bx - Dx), 2) + pow((By - Dy), 2));
+        double BC = sqrt(pow((Bx - Cx), 2) + pow((By - Cy), 2));
+        double T_D = 0.0;
+
+        if (param == "U_x") T_D = vectorElement[num_el_2].U_x + BD / BC * (vectorElement[num_el_3].U_x - vectorElement[num_el_2].U_x);
+        if (param == "U_y") T_D = vectorElement[num_el_2].U_y + BD / BC * (vectorElement[num_el_3].U_y - vectorElement[num_el_2].U_y);
+        if (param == "P") T_D = vectorElement[num_el_2].P + BD / BC * (vectorElement[num_el_3].P - vectorElement[num_el_2].P);
+
+        double AE = sqrt(pow((Ax - xx), 2) + pow((Ay - yy), 2));
+        double AD = sqrt(pow((Ax - Dx), 2) + pow((Ay - Dy), 2));
+
+        if (param == "U_x") return vectorElement[num_el_1].U_x + AE / AD * (T_D - vectorElement[num_el_1].U_x);
+        if (param == "U_y") return vectorElement[num_el_1].U_y + AE / AD * (T_D - vectorElement[num_el_1].U_y);
+        if (param == "P") return vectorElement[num_el_1].P + AE / AD * (T_D - vectorElement[num_el_1].P);
+
+        double pp = 0;
+
+    }
+
+}
+
+double Section_value_MUSCL(double xx, double yy, string param)
+{
+
+    double dl;
+    double temp_1 = 100;
+
+    /* Поиск элемента */
+    for (int i = 0; i < vectorElement.size(); i++)
+    {
+        if (vectorElement[i].Geom_el == 2)
+        {
+
+            dl = sqrt(pow((vectorElement[i].Coord_center_el.x - xx), 2) + pow((vectorElement[i].Coord_center_el.y - yy), 2));
+
+            if (dl < temp_1)
+            {
+
+                temp_1 = dl;
+                num_el_1_MUSCL = vectorElement[i].Num_el;
+
+                i = i;
+
+            }
+        }
+    }
+
+    double test = 0.0;
+
+    /* Интерполяция внутри элемента давления P */
+    //if (param == "P")
+    {
+
+        /* Слагаемые градиента */
+        double grad_x = 0.0, grad_1_x = 0.0, grad_2_x = 0.0, grad_3_x = 0.0;
+        double grad_y = 0.0, grad_1_y = 0.0, grad_2_y = 0.0, grad_3_y = 0.0;
+
+
+        for (int i = 0; i < vectorElement.size(); i++)
+        {
+            if (vectorElement[i].Geom_el == 2 && vectorElement[i].Num_el == num_el_1_MUSCL)
+            {
+
+                /* Вычисление потоков */
+                {
+                    if (vectorElement[i].N1_e == -1 || vectorElement[i].N2_e == -1 || vectorElement[i].N3_e == -1)
+                    {
+
+                        if (vectorElement[i].N1_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+                                if (param == "P")
+                                {
+                                    grad_1_x = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_x * vectorElement[i].P;
+                                    grad_1_y = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_y * vectorElement[i].P;
+                                }
+                                if (param == "U_x")
+                                {
+                                    grad_1_x = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_x * vectorElement[i].U_x;
+                                    grad_1_y = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_y * vectorElement[i].U_x;
+                                }
+                                
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+                                if (param == "P")
+                                {
+                                    grad_1_x = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_x * vectorElement[i].P;
+                                    grad_1_y = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_y * vectorElement[i].P;
+                                }
+                                if (param == "U_x")
+                                {
+                                    grad_1_x = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_x * vectorElement[i].U_x;
+                                    grad_1_y = vectorElement[i].Length_face_el_1 * vectorElement[i].n1_y * vectorElement[i].U_x;
+                                }
+                            }
+                            if (param == "P")
+                            {
+                                grad_2_x = Gradient_2(i, "P") * vectorElement[i].n2_x;
+                                grad_2_y = Gradient_2(i, "P") * vectorElement[i].n2_y;
+
+                                grad_3_x = Gradient_3(i, "P") * vectorElement[i].n3_x;
+                                grad_3_y = Gradient_3(i, "P") * vectorElement[i].n3_y;
+                            }
+                            if (param == "U_x")
+                            {
+                                grad_2_x = Gradient_2(i, "U_x");
+                                grad_2_y = Gradient_2(i, "U_x");
+
+                                grad_3_x = Gradient_3(i, "U_x");
+                                grad_3_y = Gradient_3(i, "U_x");
+                            }
+                        }
+
+                        if (vectorElement[i].N2_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+                                if (param == "P")
+                                {
+                                    grad_2_x = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_x * vectorElement[i].P;
+                                    grad_2_y = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_y * vectorElement[i].P;
+                                }
+                                if (param == "U_x")
+                                {
+                                    grad_2_x = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_x * vectorElement[i].U_x;
+                                    grad_2_y = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_y * vectorElement[i].U_x;
+                                }
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+                                if (param == "P")
+                                {
+                                    grad_2_x = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_x * vectorElement[i].P;
+                                    grad_2_y = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_y * vectorElement[i].P;
+                                }
+                                if (param == "U_x")
+                                {
+                                    grad_2_x = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_x * vectorElement[i].U_x;
+                                    grad_2_y = vectorElement[i].Length_face_el_2 * vectorElement[i].n2_y * vectorElement[i].U_x;
+                                }
+                            }
+                            if (param == "P")
+                            {
+                                grad_1_x = Gradient_1(i, "P") * vectorElement[i].n1_x;
+                                grad_1_y = Gradient_1(i, "P") * vectorElement[i].n1_y;
+
+                                grad_3_x = Gradient_3(i, "P") * vectorElement[i].n3_x;
+                                grad_3_y = Gradient_3(i, "P") * vectorElement[i].n3_y;
+                            }
+                            if (param == "U_x")
+                            {
+                                grad_1_x = Gradient_1(i, "U_x");
+                                grad_1_y = Gradient_1(i, "U_x");
+
+                                grad_3_x = Gradient_3(i, "U_x");
+                                grad_3_y = Gradient_3(i, "U_x");
+                            }
+                        }
+
+                        if (vectorElement[i].N3_e == -1)
+                        {
+                            if (vectorElement[i].Num_bound == 1)
+                            {
+                                if (param == "P")
+                                {
+                                    grad_3_x = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_x * vectorElement[i].P;
+                                    grad_3_y = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_y * vectorElement[i].P;
+                                }
+                                if (param == "U_x")
+                                {
+                                    grad_3_x = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_x * vectorElement[i].U_x;
+                                    grad_3_y = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_y * vectorElement[i].U_x;
+                                }
+                            }
+
+                            else if (vectorElement[i].Num_bound == 2)
+                            {
+                                if (param == "P")
+                                {
+                                    grad_3_x = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_x * vectorElement[i].P;
+                                    grad_3_y = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_y * vectorElement[i].P;
+                                }
+                                if (param == "U_x")
+                                {
+                                    grad_3_x = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_x * vectorElement[i].U_x;
+                                    grad_3_y = vectorElement[i].Length_face_el_3 * vectorElement[i].n3_y * vectorElement[i].U_x;
+                                }
+                            }
+                            if (param == "P")
+                            {
+                                grad_1_x = Gradient_1(i, "P") * vectorElement[i].n1_x;
+                                grad_1_y = Gradient_1(i, "P") * vectorElement[i].n1_y;
+
+                                grad_2_x = Gradient_2(i, "P") * vectorElement[i].n2_x;
+                                grad_2_y = Gradient_2(i, "P") * vectorElement[i].n2_y;
+                            }
+                            if (param == "U_x")
+                            {
+                                grad_1_x = Gradient_1(i, "U_x");
+                                grad_1_y = Gradient_1(i, "U_x");
+
+                                grad_2_x = Gradient_2(i, "U_x");
+                                grad_2_y = Gradient_2(i, "U_x");
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if (param == "P")
+                        {
+                            grad_1_x = Gradient_1(i, "P") * vectorElement[i].n1_x;
+                            grad_1_y = Gradient_1(i, "P") * vectorElement[i].n1_y;
+
+                            grad_2_x = Gradient_2(i, "P") * vectorElement[i].n2_x;
+                            grad_2_y = Gradient_2(i, "P") * vectorElement[i].n2_y;
+
+                            grad_3_x = Gradient_3(i, "P") * vectorElement[i].n3_x;
+                            grad_3_y = Gradient_3(i, "P") * vectorElement[i].n3_y;
+                        }
+                        if (param == "U_x")
+                        {
+                            grad_1_x = Gradient_1(i, "U_x");
+                            grad_1_y = Gradient_1(i, "U_x");
+
+                            grad_2_x = Gradient_2(i, "U_x");
+                            grad_2_y = Gradient_2(i, "U_x");
+
+                            grad_3_x = Gradient_3(i, "U_x");
+                            grad_3_y = Gradient_3(i, "U_x");
+                        }
+
+                        i = i;
+                    }
+                }
+
+            }
+        }
+
+        grad_x = 1.0 / vectorElement[num_el_1_MUSCL].Area_el * (grad_1_x + grad_2_x + grad_3_x);
+        grad_y = 1.0 / vectorElement[num_el_1_MUSCL].Area_el * (grad_1_y + grad_2_y + grad_3_y);
+        double x_x_i = xx - vectorElement[num_el_1_MUSCL].Coord_center_el.x;
+        double y_y_i = yy - vectorElement[num_el_1_MUSCL].Coord_center_el.y;
+
+        double P_MUSCL = vectorElement[num_el_1_MUSCL].P + (x_x_i * grad_x + y_y_i * grad_y);
+
+        return P_MUSCL;
+
+    }   
+
+}
+
+void Write()
+{
+
+    if (Iter_Glob == 1)
+    {
+
+        cout << fixed << setprecision(5) << "Mesh (Number of elements): " << max_el << endl;
+        cout << "The control element: El.num = " << num_el_1 + 1 << endl;
+        cout << "==============================================================================" << endl;
+        cout << " \t" << " \t" << "If everything is correct, then press ENTER" << endl;
+        cout << "==============================================================================" << endl;
+        cin.get();
+
+    }
+
+    /*if (Iter_Glob == 1 || (Iter_Glob % 100) == 0)*/
+    {
+
+        cout << fixed << setprecision(4) << "Time: " << _time << "\t" << setprecision(10)
+            << "El=" << num_el_1 + 1 << ":(U_x = " << vectorElement[num_el_1].U_x << "; U_y = " << vectorElement[num_el_1].U_y
+            << ") " << "\t" << "Max.Residual = " << E_U_y << " (El=" << E_U_y_Num_el << ")" << endl;
+
+    }
+
+}
+
+void Write_End()
+{
+
+    string _path = "Documents/Figure/El = " + to_string(max_el);
+    CreateDirectoryA(_path.c_str(), NULL);
+
+    ofstream Field_U_x(_path + "/1. Field_U_x_(El = " + to_string(max_el) + ").DAT");
+    ofstream Field_U_y(_path + "/1. Field_U_y_(El = " + to_string(max_el) + ").DAT");
+    ofstream Field_P(_path + "/1. Field_P_(El = " + to_string(max_el) + ").DAT");
+    ofstream Profile_U_x(_path + "/2. Profile_U_x_(El = " + to_string(max_el) + ").DAT");
+    ofstream Profile_U_y(_path + "/2. Profile_U_y_(El = " + to_string(max_el) + ").DAT");
+    ofstream Profile_P(_path + "/2. Profile_P_(El = " + to_string(max_el) + ").DAT");
+    ofstream Profile_P_MUSCL(_path + "/2. Profile_P_MUSCL_(El = " + to_string(max_el) + ").DAT");
+    ofstream Profile_U_x_MUSCL(_path + "/2. Profile_U_x_MUSCL_(El = " + to_string(max_el) + ").DAT");
+
+    Field_U_x << fixed << setprecision(4) << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+    Field_U_y << fixed << setprecision(4) << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+    Field_P << fixed << setprecision(4) << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+
+
+    /* Запись распределния поля T и Alfa */
+    for (int i = 0; i < max_el; i++)
+    {
+
+        if (vectorElement[i].Geom_el == 2)
+        {
+
+            Field_U_x << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+                << vectorElement[i].U_x << " \t " << vectorElement[i].u_x << " \t " << vectorElement[i].Num_el << endl;
+            Field_U_y << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+                << vectorElement[i].U_y << " \t " << vectorElement[i].u_y << " \t " << vectorElement[i].Num_el << endl;
+            Field_P << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+                << vectorElement[i].P << " \t " << vectorElement[i].p << " \t " << vectorElement[i].Num_el << endl;
+
+        }
+
+    }
+
+    /* Запись значения T и Alfa в сечении */
+    int ii = 0;
+    double h = 0.1;
+    do
+    {
+
+        double angle = -Pi / 2.0;
+
+        double x = (0.2 + ii * h) * cos(angle);
+        double y = (0.2 + ii * h) * sin(angle);
+
+        if (ii == 0)
+        {
+
+            Profile_U_x << fixed << setprecision(9) << 0.2 + ii * h << "\t" << omega_0 << endl;
+            Profile_U_y << fixed << setprecision(9) << 0.2 + ii * h << "\t" << omega_0 << endl;
+
+        }
+        else
+        {
+
+            Profile_U_x << fixed << setprecision(9) << 0.2 + ii * h << "\t" << Section_value(x, y, "U_x") << endl;
+            Profile_U_y << fixed << setprecision(9) << 0.2 + ii * h << "\t" << Section_value(x, y, "U_y") << endl;
+            Profile_P << fixed << setprecision(9) << 0.2 + ii * h << "\t" << Section_value(x, y, "P") << endl;
+
+        }
+
+        ii++;
+
+    } while ((0.2 + ii * h) <= 1.0);
+
+    ii = 0;
+
+    h = 0.01;
+    do
+    {
+
+        double angle = -Pi / 2.0;
+
+        double x = (0.2 + ii * h) * cos(angle);
+        double y = (0.2 + ii * h) * sin(angle);
+
+        Profile_P_MUSCL << fixed << setprecision(9) << 0.2 + ii * h << "\t" << Section_value_MUSCL(x, y, "P") << endl;
+        Profile_U_x_MUSCL << fixed << setprecision(9) << 0.2 + ii * h << "\t" << Section_value_MUSCL(x, y, "U_x") << endl;
+
+        ii++;
+
+    } while ((0.2 + ii * h) <= 1.0);
+
+    Section_value(xx_1, yy_1, "NULL");
+
+    cout << "===========================================================================" << endl;
+
+    cout << fixed << setprecision(4) << "Time: " << _time << setprecision(10)
+        << "\tEl=" << num_el_1 + 1 << ":(U_x = " << vectorElement[num_el_1].U_x << "; U_y = " << vectorElement[num_el_1].U_y
+        << ") " << "\t" << "Max.Residual = " << E_U_y << " (El=" << E_U_y_Num_el << ")" << endl;
+
+    if (Read_From_Save == false) cout << "The calculation is OVER: " << endl << File_Mesh_Name << endl;
+    if (Read_From_Save == true) cout << "The calculation is OVER: " << endl << File_Save_Name << endl;
+
+    cout << "===========================================================================" << endl;
+
+    Field_U_x.close();
+    Field_U_y.close();
+    Profile_U_x.close();
+    Profile_U_y.close();
+
+}
+
+void Time()
+{
+
+    _time += dt;
+
+}

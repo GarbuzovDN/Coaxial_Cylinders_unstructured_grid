@@ -1,0 +1,38 @@
+double divU(int ii)
+{
+
+    double x_ik, y_ik, U_x, U_y;
+
+    x_ik = vectorElement[ii].Coord_vert_1.x + 0.5 * (vectorElement[ii].Coord_vert_2.x - vectorElement[ii].Coord_vert_1.x);
+    y_ik = vectorElement[ii].Coord_vert_1.y + 0.5 * (vectorElement[ii].Coord_vert_2.y - vectorElement[ii].Coord_vert_1.y);
+    U_x = Section_value_MUSCL(x_ik, y_ik, "U_x");
+    U_y = Section_value_MUSCL(x_ik, y_ik, "U_y");
+    double test_1 = Section_value(x_ik, y_ik, "U_x");
+    double test_2 = Section_value(x_ik, y_ik, "U_y");
+    double test_11 = (vectorElement[ii].n1_x * test_1 + vectorElement[ii].n1_y * test_2) * vectorElement[ii].Length_face_el_1;
+    double temp_11 = (vectorElement[ii].n1_x * U_x + vectorElement[ii].n1_y * U_y) * vectorElement[ii].Length_face_el_1;
+    
+    x_ik = vectorElement[ii].Coord_vert_2.x + 0.5 * (vectorElement[ii].Coord_vert_3.x - vectorElement[ii].Coord_vert_2.x);
+    y_ik = vectorElement[ii].Coord_vert_2.y + 0.5 * (vectorElement[ii].Coord_vert_3.y - vectorElement[ii].Coord_vert_2.y);
+    U_x = Section_value_MUSCL(x_ik, y_ik, "U_x");
+    U_y = Section_value_MUSCL(x_ik, y_ik, "U_y");
+    test_1 = Section_value(x_ik, y_ik, "U_x");
+    test_2 = Section_value(x_ik, y_ik, "U_y");
+    double test_22 = (vectorElement[ii].n2_x * test_1 + vectorElement[ii].n2_y * test_2) * vectorElement[ii].Length_face_el_2;
+    double temp_22 = (vectorElement[ii].n2_x * U_x + vectorElement[ii].n2_y * U_y) * vectorElement[ii].Length_face_el_2;
+    
+    x_ik = vectorElement[ii].Coord_vert_3.x + 0.5 * (vectorElement[ii].Coord_vert_1.x - vectorElement[ii].Coord_vert_3.x);
+    y_ik = vectorElement[ii].Coord_vert_3.y + 0.5 * (vectorElement[ii].Coord_vert_1.y - vectorElement[ii].Coord_vert_3.y);
+    U_x = Section_value_MUSCL(x_ik, y_ik, "U_x");
+    U_y = Section_value_MUSCL(x_ik, y_ik, "U_y");
+    test_1 = Section_value(x_ik, y_ik, "U_x");
+    test_2 = Section_value(x_ik, y_ik, "U_y");
+    double test_33 = (vectorElement[ii].n3_x * test_1 + vectorElement[ii].n3_y * test_2) * vectorElement[ii].Length_face_el_3;
+    double temp_33 = (vectorElement[ii].n3_x * U_x + vectorElement[ii].n3_y * U_y) * vectorElement[ii].Length_face_el_3;
+    
+    double test_44 = test_11 + test_22 + test_33;
+    double temp_44 = temp_11 + temp_22 + temp_33;
+
+    return temp_44;
+
+}

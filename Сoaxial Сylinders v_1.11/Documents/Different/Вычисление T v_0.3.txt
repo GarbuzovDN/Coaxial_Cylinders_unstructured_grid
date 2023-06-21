@@ -1,0 +1,157 @@
+if (Constant_Heat_Capacity == false)
+    {
+
+        /* Параметры */
+        double n = 1;
+        double R = 8.314;
+        double A_1 = 6.86 * 10e+06;
+        double A_2 = 5.06 * 10e+06;
+        double E_1 = 9.29 * 10e+04;
+        double E_2 = 8.52 * 10e+04;
+
+        double a_1 = C(T1) * rho * L * A_1 / lambda;
+        double a_2 = C(T1) * rho * L * A_2 / lambda;
+        double E_1_1 = R * T1 / E_1;
+        double E_1_2 = R * (T1 - T0) / E_1;
+        double E_2_1 = R * T1 / E_2;
+        double E_2_2 = R * (T1 - T0) / E_2;
+        double C_scale = C(T1);
+
+        for (int i = 1; i < max_str; i++)
+        {
+
+            /* Первое граничное условие */
+            if (vectorElement[i].Num_bound == 1 && vectorElement[i].Geom_el == 2)
+            {
+
+                if (vectorElement[i].N1_e == -1)
+                {
+
+                    double dT1 = (T1 - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / vectorElement[i].h_1;
+                    double dT2 = (vectorElement[vectorElement[i].N2_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                    double dT3 = (vectorElement[vectorElement[i].N3_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                    double CC = C(T0 + (T1 - T0) * vectorElement[i].t) / C(T1);
+
+                    vectorElement[i].T = dt / (CC * vectorElement[i].Area_el) * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                    i = i;
+
+                }
+
+                if (vectorElement[i].N2_e == -1)
+                {
+
+                    double dT1 = (vectorElement[vectorElement[i].N1_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                    double dT2 = (T1 - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / vectorElement[i].h_2;
+                    double dT3 = (vectorElement[vectorElement[i].N3_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                    double CC = C(T0 + (T1 - T0) * vectorElement[i].t) / C(T1);
+
+                    vectorElement[i].T = dt / (CC * vectorElement[i].Area_el) * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                    i = i;
+
+                }
+
+                if (vectorElement[i].N3_e == -1)
+                {
+
+                    double dT1 = (vectorElement[vectorElement[i].N1_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                    double dT2 = (vectorElement[vectorElement[i].N2_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                    double dT3 = (T1 - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / vectorElement[i].h_3;
+
+                    double CC = C(T0 + (T1 - T0) * vectorElement[i].t) / C(T1);
+
+                    vectorElement[i].T = dt / (CC * vectorElement[i].Area_el) * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                    if (vectorElement[i].T < 0)
+                    {
+                        i = i;
+                    }
+
+                }
+
+            }
+
+            /* Второе граничное условие */
+            if (vectorElement[i].Num_bound == 2 && vectorElement[i].Geom_el == 2)
+            {
+
+                if (vectorElement[i].N1_e == -1)
+                {
+
+                    double dT1 = (T0 - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / vectorElement[i].h_1;
+                    double dT2 = (vectorElement[vectorElement[i].N2_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                    double dT3 = (vectorElement[vectorElement[i].N3_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                    double CC = C(T0 + (T1 - T0) * vectorElement[i].t) / C(T1);
+
+                    vectorElement[i].T = dt / (CC * vectorElement[i].Area_el) * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                    i = i;
+
+                }
+
+                if (vectorElement[i].N2_e == -1)
+                {
+
+                    double dT1 = (vectorElement[vectorElement[i].N1_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                    double dT2 = (T0 - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / vectorElement[i].h_2;
+                    double dT3 = (vectorElement[vectorElement[i].N3_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                    double CC = C(T0 + (T1 - T0) * vectorElement[i].t) / C(T1);
+
+                    vectorElement[i].T = dt / (CC * vectorElement[i].Area_el) * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                    i = i;
+
+                }
+
+                if (vectorElement[i].N3_e == -1)
+                {
+
+                    double dT1 = (vectorElement[vectorElement[i].N1_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                    double dT2 = (vectorElement[vectorElement[i].N2_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                    double dT3 = (T0 - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / vectorElement[i].h_3;
+
+                    double CC = C(T0 + (T1 - T0) * vectorElement[i].t) / C(T1);
+
+                    vectorElement[i].T = dt / (CC * vectorElement[i].Area_el) * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                    if (vectorElement[i].T < 0)
+                    {
+                        i = i;
+                    }
+
+                }
+
+            }
+
+            /* Вычисление температуры */
+            if (vectorElement[i].N1_e != -1 && vectorElement[i].N2_e != -1 && vectorElement[i].N3_e != -1 && vectorElement[i].Geom_el == 2)
+            {
+
+                double dT1 = (vectorElement[vectorElement[i].N1_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[vectorElement[i].N1_e].h_1);
+                double dT2 = (vectorElement[vectorElement[i].N2_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[vectorElement[i].N2_e].h_2);
+                double dT3 = (vectorElement[vectorElement[i].N3_e].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[vectorElement[i].N3_e].h_3);
+
+                double CC = C(T0 + (T1 - T0) * vectorElement[i].t) / C_scale;
+
+                vectorElement[i].T = dt / (CC * vectorElement[i].Area_el) * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                double dalfa = pow((1 - vectorElement[i].alfa), n) * (a_1 * exp(-1.0 / (E_1_1 + E_1_2 * vectorElement[i].T)) + a_2 * vectorElement[i].alfa * exp(-1.0 / (E_2_1 + E_2_2 * vectorElement[i].T)));
+                vectorElement[i].Alfa = vectorElement[i].alfa + dt * dalfa;
+
+                if (dem_time > 300)
+                {
+                    i = i;
+                }
+
+            }
+
+        }
+
+        double q = 0.0;
+
+    }

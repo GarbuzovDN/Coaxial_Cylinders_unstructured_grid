@@ -1,0 +1,89 @@
+		/* Первое граничное условие */
+        if (vectorElement[i].Num_bound == 1)
+        {
+
+            if (vectorElement[i].N1_e == -1)
+            {
+
+                double dT1 = (T1 - vectorElement[i].t) / vectorElement[i].h_1;
+                double dT2 = (vectorElement[(vectorElement[i].N2_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[(vectorElement[i].N2_e) - 1].h_2);
+                double dT3 = (vectorElement[(vectorElement[i].N3_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[(vectorElement[i].N3_e) - 1].h_3);
+
+                vectorElement[i].T = dt / vectorElement[i].Area_el * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                i = i;
+
+            }
+
+            if (vectorElement[i].N2_e == -1)
+            {
+
+                double dT1 = (vectorElement[(vectorElement[i].N1_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[(vectorElement[i].N1_e) - 1].h_1);
+                double dT2 = (T1 - vectorElement[i].t) / vectorElement[i].h_2;
+                double dT3 = (vectorElement[(vectorElement[i].N3_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[(vectorElement[i].N3_e) - 1].h_3);
+
+                vectorElement[i].T = dt / vectorElement[i].Area_el * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                i = i;
+
+            }
+
+            if (vectorElement[i].N3_e == -1)
+            {
+
+                double dT1 = (vectorElement[(vectorElement[i].N1_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[(vectorElement[i].N1_e) - 1].h_1);
+                double dT2 = (vectorElement[(vectorElement[i].N2_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[(vectorElement[i].N2_e) - 1].h_2);
+                double dT3 = (T1 - vectorElement[i].t) / vectorElement[i].h_3;
+
+                vectorElement[i].T = dt / vectorElement[i].Area_el * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                i = i;
+
+            }
+
+        }
+
+        /* Второе граничное условие */
+        if (vectorElement[i].Num_bound == 2)
+        {
+
+            if (vectorElement[i].N1_e == -1)
+            {
+
+                double dT1 = (T0 - vectorElement[i].t) / vectorElement[i].h_1;
+                double dT2 = (vectorElement[(vectorElement[i].N2_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[(vectorElement[i].N2_e) - 1].h_2);
+                double dT3 = (vectorElement[(vectorElement[i].N3_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[(vectorElement[i].N3_e) - 1].h_3);
+
+                vectorElement[i].T = dt / vectorElement[i].Area_el * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                i = i;
+
+            }
+
+            if (vectorElement[i].N2_e == -1)
+            {
+
+                double dT1 = (vectorElement[(vectorElement[i].N1_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[(vectorElement[i].N1_e) - 1].h_1);
+                double dT2 = (T0 - vectorElement[i].t) / vectorElement[i].h_2;
+                double dT3 = (vectorElement[(vectorElement[i].N3_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_3 / (vectorElement[i].h_3 + vectorElement[(vectorElement[i].N3_e) - 1].h_3);
+
+                vectorElement[i].T = dt / vectorElement[i].Area_el * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                i = i;
+
+            }
+
+            if (vectorElement[i].N3_e == -1)
+            {
+
+                double dT1 = (vectorElement[(vectorElement[i].N1_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_1 / (vectorElement[i].h_1 + vectorElement[(vectorElement[i].N1_e) - 1].h_1);
+                double dT2 = (vectorElement[(vectorElement[i].N2_e) - 1].t - vectorElement[i].t) * vectorElement[i].Length_face_el_2 / (vectorElement[i].h_2 + vectorElement[(vectorElement[i].N2_e) - 1].h_2);
+                double dT3 = (T0 - vectorElement[i].t) / vectorElement[i].h_3;
+
+                vectorElement[i].T = dt / vectorElement[i].Area_el * (dT1 + dT2 + dT3) + vectorElement[i].t;
+
+                i = i;
+
+            }
+
+        }

@@ -1,0 +1,19 @@
+double pp = 0.0;
+                double coord_2_1_x = el.Coord_vert_1.x + (0.5 * (el.Coord_vert_2.x - el.Coord_vert_1.x));
+                double coord_2_1_y = el.Coord_vert_1.y + (0.5 * (el.Coord_vert_2.y - el.Coord_vert_1.y));
+                double coord_3_2_x = el.Coord_vert_2.x + (0.5 * (el.Coord_vert_3.x - el.Coord_vert_2.x));
+                double coord_3_2_y = el.Coord_vert_2.y + (0.5 * (el.Coord_vert_3.y - el.Coord_vert_2.y));
+                double coord_1_3_x = el.Coord_vert_3.x + (0.5 * (el.Coord_vert_1.x - el.Coord_vert_3.x));
+                double coord_1_3_y = el.Coord_vert_3.y + (0.5 * (el.Coord_vert_1.y - el.Coord_vert_3.y));
+                double mod_n1 = pow(el.n1_x * el.n1_x + el.n1_y * el.n1_y, 0.5);
+                double mod_n2 = pow(el.n2_x * el.n2_x + el.n2_y * el.n2_y, 0.5);
+                double mod_n3 = pow(el.n3_x * el.n3_x + el.n3_y * el.n3_y, 0.5);
+
+                Test_n << fixed << setprecision(5) << el.Num_el + 1
+                    << "\t" << el.Coord_vert_1.x << "\t" << el.Coord_vert_1.y << "\t" << el.Coord_vert_2.x << "\t" << el.Coord_vert_2.y << endl
+                    << "\t" << el.Coord_vert_2.x << "\t" << el.Coord_vert_2.y << "\t" << el.Coord_vert_3.x << "\t" << el.Coord_vert_3.y << endl
+                    << "\t" << el.Coord_vert_3.x << "\t" << el.Coord_vert_3.y << "\t" << el.Coord_vert_1.x << "\t" << el.Coord_vert_1.y << endl << endl;
+                Test_n << fixed << setprecision(5)
+                    << "\t" << coord_2_1_x << "\t" << coord_2_1_y << "\t" << coord_2_1_x + el.n1_x << "\t" << coord_2_1_y + el.n1_y << "\t\t" << mod_n1 << endl
+                    << "\t" << coord_3_2_x << "\t" << coord_3_2_y << "\t" << coord_3_2_x + el.n2_x << "\t" << coord_3_2_y + el.n2_y << "\t\t" << mod_n2 << endl
+                    << "\t" << coord_1_3_x << "\t" << coord_1_3_y << "\t" << coord_1_3_x + el.n3_x << "\t" << coord_1_3_y + el.n3_y << "\t\t" << mod_n3 << endl << endl;
