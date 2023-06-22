@@ -46,7 +46,8 @@ int main()
     if (Start_Flow_Evolution == true)
     {
 
-        //Redistricting1();
+        Redistricting1();
+
         do
         {
             Iter_Glob++;

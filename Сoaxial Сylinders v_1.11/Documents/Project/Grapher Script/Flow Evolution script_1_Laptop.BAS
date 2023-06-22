@@ -24,11 +24,11 @@ Set Plot = GrapherApp.Documents.Add(grfPlotDoc)
 Set Docs = GrapherApp.Documents
 
 'Create a new graph with a single line plot
-Set Graph = Plot.Shapes.AddLinePlotGraph("D:\Project Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_0.5\Ñoaxial Ñylinders v_0.5\Documents\BLN\BLN_R1.bln")
+Set Graph = Plot.Shapes.AddLinePlotGraph("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_0.5\Ñoaxial Ñylinders v_0.5\Documents\BLN\BLN_R1.bln")
 'Set Graph = Plot.Shapes.AddLinePlotGraph("D:\Project Visual Studio\Ñoaxial Ñylinders v_0.5\Ñoaxial Ñylinders v_0.5\Documents\BLN\BLN_field_R1.bln")
 
 'Open the worksheet
-Set Wks = Docs.Open("D:\Project Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\El = 1991\Flow Evolution"+Str(i)+".DAT")
+Set Wks = Docs.Open("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=90.000000\El = 1991\Flow Evolution\Fixed Profile\Flow Evolution"+Str(i)+".DAT")
 
 'Read the contents of a cell for text
 Text1 = Wks.Cells("A1")
@@ -58,7 +58,7 @@ R1.line.foreColor  = grfColorBlack
 R1.line.width = 0.03
 
 'Add a second line plot to graph and name it "LinePlot2"
-Set Obst = Plot.Shapes.AddLinePlotGraph("D:\Project Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Blank\Blank_R0.BLN")
+Set Obst = Plot.Shapes.AddLinePlotGraph("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Blank\Blank_R0.BLN")
 
 'Adjust properties of the X axis
 Set XAxis1 = Obst.Axes.Item(1)
@@ -87,11 +87,11 @@ Obst_1.Fill.ForeOpacity = 100
 'Obst.Rotation = - i * (k * 0.0499)
 
 Dim st1 As String
-Set Evo = Graph.AddLinePlot("D:\Project Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\El = 1991\Flow Evolution"+Str(i)+".DAT")
+Set Evo = Graph.AddLinePlot("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=90.000000\El = 1991\Flow Evolution\Fixed Profile\Flow Evolution"+Str(i)+".DAT")
 Evo.line.foreColor  = grfColorBlue
 Evo.line.width = 0.03
 
-Plot.Export("D:\Project Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\El = 1991\Flow Evolution\GIF\"+Str(i)+".jpg")
+Plot.Export("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=90.000000\El = 1991\Flow Evolution\GIF\"+Str(i)+".jpg")
 
 	i = i + 5
 	k = k + 1
