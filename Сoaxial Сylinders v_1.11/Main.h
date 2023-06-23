@@ -19,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 90.0;
+double Re = 10.0;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -171,7 +171,7 @@ bool Read_From_Save = false;
 string File_Save_Name =
 "Documents/Save/Re=90.000000/El = 5013/Save_(El=5013)_Steady.DAT";
 
-bool Start_Flow_Evolution = true;
+bool Start_Flow_Evolution = false;
 
 /* Шаг и счетчик времени */
 double dt = 0.001;

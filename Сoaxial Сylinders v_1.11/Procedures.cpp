@@ -1926,7 +1926,7 @@ void Write()
     {
 
         cout << fixed << setprecision(5) << "Mesh (Number of elements): " << max_el << endl;
-        cout << "The control element: El.num = " << num_el_1 + 1 << endl;
+        cout << "The control element: El.num = " << num_el_1 + 1 << ";  " << "Re = " << Re << endl;
         cout << "==============================================================================" << endl;
         cout << " \t" << " \t" << "If everything is correct, then press ENTER" << endl;
         cout << "==============================================================================" << endl;
@@ -1987,8 +1987,8 @@ void Write_End()
         << "\tEl=" << num_el_1 + 1 << ":(U_x = " << vectorElement[num_el_1].U_x << "; U_y = " << vectorElement[num_el_1].U_y
         << "; P = " << setprecision(6) << vectorElement[num_el_1].P << ")" << "   " << "Max.Res. = " << E_U << " (El=" << E_U_Num_el << ")" << endl;
 
-    if (Read_From_Save == false) cout << "The calculation is OVER: " << endl << File_Mesh_Name << endl;
-    if (Read_From_Save == true) cout << "The calculation is OVER: " << endl << File_Save_Name << endl;
+    if (Read_From_Save == false) cout << "Re = " << Re << ";\tThe calculation is OVER: " << endl << File_Mesh_Name << endl;
+    if (Read_From_Save == true) cout << "Re = " << Re << ";\tThe calculation is OVER: " << endl << File_Save_Name << endl;
 
     cout << "===========================================================================" << endl;
 
