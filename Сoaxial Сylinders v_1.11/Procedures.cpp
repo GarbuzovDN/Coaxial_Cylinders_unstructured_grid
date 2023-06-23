@@ -1565,7 +1565,7 @@ void Flow_Evolution(string param) {
             {
 
                 double r = R0 + ii * h;
-                double angle = 45 * Pi / 180;
+                double angle = 0 * Pi / 180;
 
                 x_m.push_back(r * cos(angle));
                 y_m.push_back(r * sin(angle));
@@ -1850,59 +1850,8 @@ void Save_Write()
 
 }
 
-void Write()
+void Write_Figure()
 {
-
-    if (Iter_Glob == 1)
-    {
-
-        cout << fixed << setprecision(5) << "Mesh (Number of elements): " << max_el << endl;
-        cout << "The control element: El.num = " << num_el_1 + 1 << endl;
-        cout << "==============================================================================" << endl;
-        cout << " \t" << " \t" << "If everything is correct, then press ENTER" << endl;
-        cout << "==============================================================================" << endl;
-        cin.get();
-
-    }
-
-    cout << fixed << setprecision(4) << "Time: " << _time << "\t" << setprecision(10)
-        << "El=" << num_el_1 + 1 << ":(U_x = " << vectorElement[num_el_1].U_x << "; U_y = " << vectorElement[num_el_1].U_y
-        << "; P = " << setprecision(6) << vectorElement[num_el_1].P << ")" << "   " << "Max.Res. = " << E_U << " (El=" << E_U_Num_el << ")" << endl;
-
-    if (Iter_Glob == 1 || (Iter_Glob % 500) == 0)
-    {
-        Save_Write();
-    }
-
-    string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
-    ofstream development(_path + "/2. development_(El = " + to_string(max_el) + ").DAT", ios_base::app);
-
-    development << _time << "\t" << setprecision(10) << vectorElement[num_el_1].U_x << "\t" << vectorElement[num_el_1].U_y
-        << "\t" << vectorElement[num_el_1].P << "\t" << E_U << endl;
-
-    //string _path = "Documents/Figure/El = " + to_string(max_el);
-    //ofstream Profile_P_MUSCL(_path + "/2. Profile_P_MUSCL_(El = " + to_string(max_el) + ").DAT");
-    //ofstream Profile_U_x_MUSCL(_path + "/2. Profile_U_x_MUSCL_(El = " + to_string(max_el) + ").DAT");
-    //ofstream Profile_U_y_MUSCL(_path + "/2. Profile_U_y_MUSCL_(El = " + to_string(max_el) + ").DAT");
-    // Запись значения T и Alfa в сечении
-    //int ii = 0;
-    //double h = 0.1;
-    //do
-    //{
-    //    double x = 0.5;
-    //    double y = ii * h;
-    //    double test = Section_value_MUSCL(x, y, "P");
-    //    Profile_P_MUSCL << fixed << setprecision(9) << ii * h << "\t" << Section_value_MUSCL(x, y, "P") << endl;
-    //    Profile_U_x_MUSCL << fixed << setprecision(9) << ii * h << "\t" << Section_value_MUSCL(x, y, "U_x") << endl;
-    //    Profile_U_y_MUSCL << fixed << setprecision(9) << ii * h << "\t" << Section_value_MUSCL(x, y, "U_y") << endl;
-    //    ii++;
-    //} while ((ii * h) <= 1.0);
-
-}
-
-void Write_End()
-{
-
     string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
 
     ofstream Field_U_x(_path + "/1. Field_U_x_(El = " + to_string(max_el) + ").DAT");
@@ -1948,7 +1897,7 @@ void Write_End()
     do
     {
 
-        double angle = 0*Pi / 4.0;
+        double angle = 45 * Pi / 4.0;
         double test_1 = cos(angle);
         double test_2 = sin(angle);
 
@@ -1963,6 +1912,73 @@ void Write_End()
 
     } while ((0.2 + ii * h) <= 1.0);
 
+    Field_U_x.close();
+    Field_U_y.close();
+    Profile_U_x_MUSCL.close();
+    Profile_U_y_MUSCL.close();
+    Profile_P_MUSCL.close();
+}
+
+void Write()
+{
+
+    if (Iter_Glob == 1)
+    {
+
+        cout << fixed << setprecision(5) << "Mesh (Number of elements): " << max_el << endl;
+        cout << "The control element: El.num = " << num_el_1 + 1 << endl;
+        cout << "==============================================================================" << endl;
+        cout << " \t" << " \t" << "If everything is correct, then press ENTER" << endl;
+        cout << "==============================================================================" << endl;
+        cin.get();
+
+    }
+
+    cout << fixed << setprecision(4) << "Time: " << _time << "\t" << setprecision(10)
+        << "El=" << num_el_1 + 1 << ":(U_x = " << vectorElement[num_el_1].U_x << "; U_y = " << vectorElement[num_el_1].U_y
+        << "; P = " << setprecision(6) << vectorElement[num_el_1].P << ")" << "   " << "Max.Res. = " << E_U << " (El=" << E_U_Num_el << ")" << endl;
+
+    if (Iter_Glob == 1 || (Iter_Glob % 500) == 0)
+    {
+        Save_Write();
+    }
+
+    if (Iter_Glob == 1 || (Iter_Glob % 1000) == 0)
+    {
+        Write_Figure();
+    }
+
+    string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
+    ofstream development(_path + "/2. development_(El = " + to_string(max_el) + ").DAT", ios_base::app);
+
+    development << _time << "\t" << setprecision(10) << vectorElement[num_el_1].U_x << "\t" << vectorElement[num_el_1].U_y
+        << "\t" << vectorElement[num_el_1].P << "\t" << E_U << endl;
+
+    //string _path = "Documents/Figure/El = " + to_string(max_el);
+    //ofstream Profile_P_MUSCL(_path + "/2. Profile_P_MUSCL_(El = " + to_string(max_el) + ").DAT");
+    //ofstream Profile_U_x_MUSCL(_path + "/2. Profile_U_x_MUSCL_(El = " + to_string(max_el) + ").DAT");
+    //ofstream Profile_U_y_MUSCL(_path + "/2. Profile_U_y_MUSCL_(El = " + to_string(max_el) + ").DAT");
+    // Запись значения T и Alfa в сечении
+    //int ii = 0;
+    //double h = 0.1;
+    //do
+    //{
+    //    double x = 0.5;
+    //    double y = ii * h;
+    //    double test = Section_value_MUSCL(x, y, "P");
+    //    Profile_P_MUSCL << fixed << setprecision(9) << ii * h << "\t" << Section_value_MUSCL(x, y, "P") << endl;
+    //    Profile_U_x_MUSCL << fixed << setprecision(9) << ii * h << "\t" << Section_value_MUSCL(x, y, "U_x") << endl;
+    //    Profile_U_y_MUSCL << fixed << setprecision(9) << ii * h << "\t" << Section_value_MUSCL(x, y, "U_y") << endl;
+    //    ii++;
+    //} while ((ii * h) <= 1.0);
+
+}
+
+void Write_End()
+{
+
+    Write_Figure();
+
     Section_value_MUSCL(xx_1, yy_1, "NULL");
 
     cout << "===========================================================================" << endl;
@@ -1976,28 +1992,7 @@ void Write_End()
 
     cout << "===========================================================================" << endl;
 
-    ofstream test_1(_path + "/1. divU_(El = " + to_string(max_el) + ").DAT", ios_base::trunc);
-
-    /* Обнуление поправки давления */
-    for (int i = 1; i < max_el; i++)
-    {
-        if (vectorElement[i].Geom_el == 2)
-        {
-
-            double divU_temp = divU(i);
-            test_1 << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << "\t" << vectorElement[i].Coord_center_el.y << "\t" << divU_temp << "\t" << vectorElement[i].Num_el + 1 << endl;
-
-        }
-    }
-
     Save_Write();
-
-    Field_U_x.close();
-    Field_U_y.close();
-    Profile_U_x_MUSCL.close();
-    Profile_U_y_MUSCL.close();
-    Profile_P_MUSCL.close();
-    test_1.close();
 
 }
 

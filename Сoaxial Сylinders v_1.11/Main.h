@@ -160,21 +160,21 @@ int count_angle = 0;
 vector<double> x_m, y_m;
 vector<vector<double>>x_ang;
 vector<vector<double>>y_ang;
-double dt_m = 0.01;
+double dt_m = 0.001;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=1891).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=90.000000/El = 1891/Save_(El=1891)_Steady.DAT";
+"Documents/Save/Re=90.000000/El = 5013/Save_(El=5013)_Steady.DAT";
 
 bool Start_Flow_Evolution = true;
 
 /* Шаг и счетчик времени */
-double dt = 0.01;
+double dt = 0.001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
