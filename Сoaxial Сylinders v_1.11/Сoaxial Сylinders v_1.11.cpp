@@ -39,7 +39,7 @@ int main()
 
             if (_time > 25.0) break;
 
-        } while (/*_time <= final_time*/E_U > 0.0001);
+        } while (/*_time <= final_time*/E_U > 0.00001);
 
         Stream_Function();
         Write_End();
