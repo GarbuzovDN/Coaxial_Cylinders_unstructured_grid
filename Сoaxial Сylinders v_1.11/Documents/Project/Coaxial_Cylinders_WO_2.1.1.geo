@@ -114,3 +114,15 @@ Transfinite Curve {3, 7} = 8 Using Progression 1;
 Transfinite Curve {4, 2, 6, 8} = 25 Using Progression 1;
 //+
 Transfinite Curve {5, 1} = 25 Using Progression 1;
+//+
+Transfinite Curve {9, 10} = 50 Using Progression 1;
+//+
+Transfinite Curve {9, 10} = 40 Using Progression 1;
+//+
+Transfinite Curve {4, 2, 6, 8} = 15 Using Progression 1;
+//+
+Transfinite Curve {5, 1} = 15 Using Progression 1;
+//+
+Transfinite Curve {3, 7} = 6 Using Progression 1;
+//+
+Transfinite Curve {3, 7} = 4 Using Progression 1;

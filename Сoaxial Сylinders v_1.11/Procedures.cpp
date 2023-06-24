@@ -1535,7 +1535,7 @@ void Stream_Function()
                     E_Stream = abs(vectorElement[i].Psi - Psi_temp);
                 }
 
-                vectorElement[i].Psi = 0.2 * vectorElement[i].Psi + 0.8 * Psi_temp;
+                vectorElement[i].Psi = /*0.2 * vectorElement[i].Psi + 0.8 * */Psi_temp;
 
             }
         } 
