@@ -130,7 +130,7 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 67, out_2
+    out_1 = 6, out_2
 };
 
 /* Вектор точек и вектор элементов */
@@ -164,7 +164,7 @@ double dt_m = 0.001;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=691).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_1(El=437).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 bool Read_From_Save = false;
@@ -178,4 +178,4 @@ double dt = 0.001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
-double final_time = 500;
+double final_time = 7.8;

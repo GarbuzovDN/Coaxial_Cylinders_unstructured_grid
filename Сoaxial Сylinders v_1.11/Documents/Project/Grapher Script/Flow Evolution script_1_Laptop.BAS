@@ -15,7 +15,7 @@ i = 0
 Dim k As Integer
 k = 0
 
-While i <= 1140
+While i <= 780
 
 'Create a new plot document named "Plot"
 Set Plot = GrapherApp.Documents.Add(grfPlotDoc)
@@ -28,7 +28,7 @@ Set Graph = Plot.Shapes.AddLinePlotGraph("C:\Program Visual Studio\Coaxial Ñylin
 'Set Graph = Plot.Shapes.AddLinePlotGraph("D:\Project Visual Studio\Ñoaxial Ñylinders v_0.5\Ñoaxial Ñylinders v_0.5\Documents\BLN\BLN_field_R1.bln")
 
 'Open the worksheet
-Set Wks = Docs.Open("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=90.000000\El = 1891\Flow Evolution\Fixed Profile\Flow Evolution"+Str(i)+".DAT")
+Set Wks = Docs.Open("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 5013\Flow Evolution\Fixed Profile\Flow Evolution"+Str(i)+".DAT")
 
 'Read the contents of a cell for text
 Text1 = Wks.Cells("A1")
@@ -87,11 +87,11 @@ Obst_1.Fill.ForeOpacity = 100
 'Obst.Rotation = - i * (k * 0.0499)
 
 Dim st1 As String
-Set Evo = Graph.AddLinePlot("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=90.000000\El = 1891\Flow Evolution\Fixed Profile\Flow Evolution"+Str(i)+".DAT")
+Set Evo = Graph.AddLinePlot("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 5013\Flow Evolution\Fixed Profile\Flow Evolution"+Str(i)+".DAT")
 Evo.line.foreColor  = grfColorBlue
 Evo.line.width = 0.03
 
-Plot.Export("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=90.000000\El = 1891\Flow Evolution\Fixed Profile\GIF\"+Str(i)+".jpg")
+Plot.Export("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 5013\Flow Evolution\Fixed Profile\GIF\"+Str(i)+".jpg")
 
 	i = i + 5
 	k = k + 1
