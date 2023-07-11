@@ -1565,7 +1565,7 @@ void Flow_Evolution(string param) {
             {
 
                 double r = R0 + ii * h;
-                double angle = 0 * Pi / 180;
+                double angle = 45 * Pi / 180;
 
                 x_m.push_back(r * cos(angle));
                 y_m.push_back(r * sin(angle));
