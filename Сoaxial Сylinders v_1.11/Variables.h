@@ -169,7 +169,11 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 6, out_2
+    out_1 = 17, out_2
+
+    /* Conf_1: out_1 = 6 */
+    /* Conf_2: out_1 = 9 */
+    /* Conf_2: out_1 = 17 */
 };
 
 extern vector<Point> vectorPoint;
