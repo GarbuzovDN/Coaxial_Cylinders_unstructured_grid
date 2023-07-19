@@ -1931,7 +1931,6 @@ void Write_Figure()
 
 void Write()
 {
-
     if (Iter_Glob == 1)
     {
 
@@ -1947,15 +1946,12 @@ void Write()
     cout << fixed << setprecision(4) << "Time: " << _time << "\t" << setprecision(10)
         << "El=" << num_el_1 + 1 << ":(U_x = " << vectorElement[num_el_1].U_x << "; U_y = " << vectorElement[num_el_1].U_y
         << "; P = " << setprecision(6) << vectorElement[num_el_1].P << ")" << "   " << "Max.Res. = " << E_U << " (El=" << E_U_Num_el << ")" << endl;
-
+        
     if (Iter_Glob == 1 || (Iter_Glob % 500) == 0)
     {
-        Save_Write();
-    }
-
-    if (Iter_Glob == 1 || (Iter_Glob % 1000) == 0)
-    {
         Write_Figure();
+        Stream_Function();
+        Save_Write();
     }
 
     string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
@@ -1988,6 +1984,7 @@ void Write_End()
 {
 
     Write_Figure();
+    Stream_Function();
 
     Section_value_MUSCL(xx_1, yy_1, "NULL");
 

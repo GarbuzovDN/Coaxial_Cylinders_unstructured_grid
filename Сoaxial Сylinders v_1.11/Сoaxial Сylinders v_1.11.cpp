@@ -37,11 +37,10 @@ int main()
             Development();
             Write();        
 
-            if (_time > 9.0) break;
+            if (_time > 10.0) break;
 
-        } while (/*_time <= final_time*/E_U > 0.00001);
-
-        Stream_Function();
+        } while (_time <= final_time/*E_U > 0.00001*/);
+                
         Write_End();
     }
 
@@ -60,5 +59,5 @@ int main()
         } while (_time_Flow_Evolution <= final_time);
     }
 
-    system("pause");
+    //system("pause");
 }
