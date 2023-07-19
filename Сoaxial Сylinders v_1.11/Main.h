@@ -19,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 0.1;
+double Re = 1;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -130,7 +130,7 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 17, out_2
+    out_1 = 6, out_2
 
     /* Conf_1: out_1 = 6 */
     /* Conf_2: out_1 = 9 */
@@ -168,18 +168,18 @@ double dt_m = 0.001;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_3.1_(El=6943).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_(El=3753).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=90.000000/El = 6943/Save_(El=6943)_Steady.DAT";
+"Documents/Save/Re=1.000000/El = 5089/Save_(El=5089)_Steady.DAT";
 
-bool Start_Flow_Evolution = true;
+bool Start_Flow_Evolution = false;
 
 /* Шаг и счетчик времени */
 double dt = 0.001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
-double final_time = 13.0;
+double final_time = 7.8;

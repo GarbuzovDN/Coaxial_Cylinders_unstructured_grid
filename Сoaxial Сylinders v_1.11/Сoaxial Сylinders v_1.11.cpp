@@ -59,4 +59,6 @@ int main()
 
         } while (_time_Flow_Evolution <= final_time);
     }
+
+    system("pause");
 }

@@ -1535,7 +1535,7 @@ void Stream_Function()
                     E_Stream = abs(vectorElement[i].Psi - Psi_temp);
                 }
 
-                vectorElement[i].Psi = /*0.2 * vectorElement[i].Psi + 0.8 * */Psi_temp;
+                vectorElement[i].Psi = 0.2 * vectorElement[i].Psi + 0.8 * Psi_temp;
 
             }
         } 
@@ -1856,6 +1856,7 @@ void Write_Figure()
 
     ofstream Field_U_x(_path + "/1. Field_U_x_(El = " + to_string(max_el) + ").DAT");
     ofstream Field_U_y(_path + "/1. Field_U_y_(El = " + to_string(max_el) + ").DAT");
+    ofstream Field_U_eps(_path + "/1. Field_U_eps_(El = " + to_string(max_el) + ").DAT");
     ofstream Field_P(_path + "/1. Field_P_(El = " + to_string(max_el) + ").DAT");
     ofstream Field_Psi(_path + "/1. Field_Psi_(El = " + to_string(max_el) + ").DAT");
     ofstream Profile_P_MUSCL(_path + "/2. Profile_P_MUSCL_(El = " + to_string(max_el) + ").DAT");
@@ -1866,6 +1867,8 @@ void Write_Figure()
         << "vectorElement[i].U_x" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_U_y << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
         << "vectorElement[i].U_y" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+    Field_U_eps << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
+        << "vectorElement[i].U_eps" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_P << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
         << "vectorElement[i].P" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_Psi << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
@@ -1874,6 +1877,7 @@ void Write_Figure()
     /* Запись распределния полей */
     for (int i = 0; i < max_el; i++)
     {
+        double r_temp, U_eps;
 
         if (vectorElement[i].Geom_el == 2)
         {
@@ -1886,7 +1890,13 @@ void Write_Figure()
                 << vectorElement[i].P << " \t " << vectorElement[i].Num_el << endl;
             Field_Psi << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
                 << vectorElement[i].Psi << " \t " << vectorElement[i].Num_el << endl;
+            
+            /* Запись угловой скорости в цилиндрической СК */
+            r_temp = pow(vectorElement[i].Coord_center_el.x * vectorElement[i].Coord_center_el.x + vectorElement[i].Coord_center_el.y * vectorElement[i].Coord_center_el.y, 0.5);
+            U_eps = vectorElement[i].U_y * r_temp / vectorElement[i].Coord_center_el.x;
 
+            Field_U_eps << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+                << U_eps << " \t " << r_temp << " \t " << vectorElement[i].Num_el << endl;
         }
 
     }
