@@ -1907,7 +1907,7 @@ void Write_Figure()
     do
     {
 
-        double angle = 45 * Pi / 4.0;
+        double angle = 270 * Pi / 180.0;
         double test_1 = cos(angle);
         double test_2 = sin(angle);
 
