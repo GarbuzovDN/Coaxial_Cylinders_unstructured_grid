@@ -19,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 1;
+double Re = 1.0;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -126,15 +126,16 @@ enum Calculation_Area {
     calc
 };
 enum Inner_Wall {
-    in_1 = 2, in_2, in_3, in_4,
+    in_1 = 1, in_2, in_3, in_4,
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 1, out_2 = 10
+    out_1 = 9, out_2
 
     /* Conf_1: out_1 = 6 */
     /* Conf_2: out_1 = 9 */
-    /* Conf_2: out_1 = 17 */
+    /* Conf_3: out_1 = 17 */
+    /* Conf_4: out_1 = 11 */
 };
 
 /* Вектор точек и вектор элементов */
@@ -168,18 +169,18 @@ double dt_m = 0.001;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_(El=1252).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2_(El=259).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
-bool Read_From_Save = false;
+bool Read_From_Save = true;
 string File_Save_Name =
-"Documents/Save/Re=1.000000/El = 2474/Save_(El=2474)_Steady.DAT";
+"Documents/Save/Re=1.000000/El = 259/Save_(El=259)_Steady.DAT";
 
 bool Start_Flow_Evolution = false;
 
 /* Шаг и счетчик времени */
-double dt = 0.001;
+double dt = 0.01;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
-double final_time = 0.0;
+double final_time = 0.3;

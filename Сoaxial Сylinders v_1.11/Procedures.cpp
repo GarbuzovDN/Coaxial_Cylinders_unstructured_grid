@@ -131,6 +131,7 @@ void Save_Read()
 
         File_Read_Save >> File_Mesh_Name;
 
+        vectorElement.pop_back();
         cout << "File opened SUCCESSFULLY: " << File_Save_Name << endl;
         cout << fixed << setprecision(4) << "Time: " << _time << endl << "Mesh (Number of nodes): " << max_el << endl;
 
@@ -595,7 +596,7 @@ void Initial_Conditions()
         _time_Flow_Evolution = 0.0;
 
     }
-    else Save_Read();
+    //else Save_Read();
 
 }
 
@@ -1458,6 +1459,8 @@ void Development()
 
     }
 
+    double debug = 0.0;
+
     //if (E_U_y_Num_el <= E_U_x_Num_el)
     //{
     //    E_U_y_Num_el = E_U_x_Num_el;
@@ -1797,16 +1800,16 @@ void Save_Write()
     CreateDirectoryA(_path.c_str(), NULL);
 
     ofstream File_Save(_path + "/Save_(El=" + to_string(max_el) + ").DAT", ios_base::trunc);
-    File_Save << fixed << setprecision(15) << _time << "\t" << max_el << "\t" << max_node << "\t" << max_str << endl;
-    File_Save << fixed << setprecision(15) << Re << "\t" << num_el_1 << "\t" << num_el_2 << "\t" << num_el_3 << endl;
-    File_Save << fixed << setprecision(15) << num_el_1_MUSCL << "\t" << xx_1 << "\t" << yy_1 << "\t" << E_U << "\t" << E_U_Num_el << endl;
-    File_Save << fixed << setprecision(15) << maxP_Corr << "\t" << maxP_Cor_num_el << "\t" << maxdivU << "\t" << maxdivU_num_el << "\t" << dt << endl;
+    File_Save << fixed << setprecision(25) << _time << "\t" << max_el << "\t" << max_node << "\t" << max_str << endl;
+    File_Save << fixed << setprecision(25) << Re << "\t" << num_el_1 << "\t" << num_el_2 << "\t" << num_el_3 << endl;
+    File_Save << fixed << setprecision(25) << num_el_1_MUSCL << "\t" << xx_1 << "\t" << yy_1 << "\t" << E_U << "\t" << E_U_Num_el << endl;
+    File_Save << fixed << setprecision(25) << maxP_Corr << "\t" << maxP_Cor_num_el << "\t" << maxdivU << "\t" << maxdivU_num_el << "\t" << dt << endl;
 
     /* Запись структуры точек */
     for (int i = 0; i < max_node; i++)
     {
 
-        File_Save << fixed << setprecision(15) << vectorPoint[i].Num_node << "\t" << vectorPoint[i].Boundary << "\t" << vectorPoint[i].x << "\t" << vectorPoint[i].y << endl;
+        File_Save << fixed << setprecision(25) << vectorPoint[i].Num_node << "\t" << vectorPoint[i].Boundary << "\t" << vectorPoint[i].x << "\t" << vectorPoint[i].y << endl;
 
     }
 
@@ -1815,30 +1818,30 @@ void Save_Write()
     {
         if (vectorElement[i].Geom_el == 15)
         {
-            File_Save << fixed << setprecision(15) << vectorElement[i].Num_el << "\t" << vectorElement[i].Geom_el << "\t" << vectorElement[i].Num_bound << "\t" << vectorElement[i].Num_vert[0] << "\t" << vectorElement[i].Num_vert[1] << "\t" << vectorElement[i].Num_vert[2] << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].U_x << "\t" << vectorElement[i].U_y << "\t" << vectorElement[i].P << "\t" << vectorElement[i].u_x << "\t" << vectorElement[i].u_y << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].Coord_vert[0].x << "\t" << vectorElement[i].Coord_vert[0].y << "\t" << vectorElement[i].Coord_vert[1].x << "\t" << vectorElement[i].Coord_vert[1].y << "\t" << vectorElement[i].Coord_vert[2].x << "\t" << vectorElement[i].Coord_vert[2].y << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Num_el << "\t" << vectorElement[i].Geom_el << "\t" << vectorElement[i].Num_bound << "\t" << vectorElement[i].Num_vert[0] << "\t" << vectorElement[i].Num_vert[1] << "\t" << vectorElement[i].Num_vert[2] << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].U_x << "\t" << vectorElement[i].U_y << "\t" << vectorElement[i].P << "\t" << vectorElement[i].u_x << "\t" << vectorElement[i].u_y << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Coord_vert[0].x << "\t" << vectorElement[i].Coord_vert[0].y << "\t" << vectorElement[i].Coord_vert[1].x << "\t" << vectorElement[i].Coord_vert[1].y << "\t" << vectorElement[i].Coord_vert[2].x << "\t" << vectorElement[i].Coord_vert[2].y << endl;
         }
 
         if (vectorElement[i].Geom_el == 1)
         {
-            File_Save << fixed << setprecision(15) << vectorElement[i].Num_el << "\t" << vectorElement[i].Geom_el << "\t" << vectorElement[i].Num_bound << "\t" << vectorElement[i].Num_vert[0] << "\t" << vectorElement[i].Num_vert[1] << "\t" << vectorElement[i].Num_vert[2] << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].U_x << "\t" << vectorElement[i].U_y << "\t" << vectorElement[i].P << "\t" << vectorElement[i].u_x << "\t" << vectorElement[i].u_y << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].Coord_vert[0].x << "\t" << vectorElement[i].Coord_vert[0].y << "\t" << vectorElement[i].Coord_vert[1].x << "\t" << vectorElement[i].Coord_vert[1].y << "\t" << vectorElement[i].Coord_vert[2].x << "\t" << vectorElement[i].Coord_vert[2].y << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Num_el << "\t" << vectorElement[i].Geom_el << "\t" << vectorElement[i].Num_bound << "\t" << vectorElement[i].Num_vert[0] << "\t" << vectorElement[i].Num_vert[1] << "\t" << vectorElement[i].Num_vert[2] << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].U_x << "\t" << vectorElement[i].U_y << "\t" << vectorElement[i].P << "\t" << vectorElement[i].u_x << "\t" << vectorElement[i].u_y << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Coord_vert[0].x << "\t" << vectorElement[i].Coord_vert[0].y << "\t" << vectorElement[i].Coord_vert[1].x << "\t" << vectorElement[i].Coord_vert[1].y << "\t" << vectorElement[i].Coord_vert[2].x << "\t" << vectorElement[i].Coord_vert[2].y << endl;
         }
 
         if (vectorElement[i].Geom_el == 2)
         {
-            File_Save << fixed << setprecision(15) << vectorElement[i].Num_el << "\t" << vectorElement[i].Geom_el << "\t" << vectorElement[i].Num_bound << "\t" << vectorElement[i].Num_vert[0] << "\t" << vectorElement[i].Num_vert[1] << "\t" << vectorElement[i].Num_vert[2] << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].U_x << "\t" << vectorElement[i].U_y << "\t" << vectorElement[i].P << "\t" << vectorElement[i].u_x << "\t" << vectorElement[i].u_y << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].Coord_vert[0].x << "\t" << vectorElement[i].Coord_vert[0].y << "\t" << vectorElement[i].Coord_vert[1].x << "\t" << vectorElement[i].Coord_vert[1].y << "\t" << vectorElement[i].Coord_vert[2].x << "\t" << vectorElement[i].Coord_vert[2].y << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].Length_face_el[0] << "\t" << vectorElement[i].Length_face_el[1] << "\t" << vectorElement[i].Length_face_el[2] << "\t" << vectorElement[i].Area_el << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].Coord_center_el.x << "\t" << vectorElement[i].Coord_center_el.y << "\t" << vectorElement[i].h[0] << "\t" << vectorElement[i].h[1] << "\t" << vectorElement[i].h[2] << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].Neighb_el[0] << "\t" << vectorElement[i].Neighb_el[1] << "\t" << vectorElement[i].Neighb_el[2] << "\t" << vectorElement[i].Normal[0][0] << "\t" << vectorElement[i].Normal[1][0] << "\t" << vectorElement[i].Normal[2][0] << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].Normal[0][1] << "\t" << vectorElement[i].Normal[1][1] << "\t" << vectorElement[i].Normal[2][1] << "\t" << vectorElement[i].gradU_x[0] << "\t" << vectorElement[i].gradU_x[1] << "\t" << vectorElement[i].gradU_y[0] << "\t" << vectorElement[i].gradU_y[1] << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].gradP[0] << "\t" << vectorElement[i].gradP[1] << "\t" << vectorElement[i].gradP_Corr[0] << "\t" << vectorElement[i].gradP_Corr[1] << "\t" << vectorElement[i].t << "\t" << vectorElement[i].T << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].alfa << "\t" << vectorElement[i].Alfa << "\t" << vectorElement[i].dalfa << "\t" << vectorElement[i].u_x << "\t" << vectorElement[i].u_y << "\t" << vectorElement[i].U_x << "\t" << vectorElement[i].U_y << endl;
-            File_Save << fixed << setprecision(15) << vectorElement[i].P_Correction << "\t" << vectorElement[i].A_0 << "\t" << vectorElement[i].U_x_Correction << "\t" << vectorElement[i].U_y_Correction << "\t" << vectorElement[i].Psi << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Num_el << "\t" << vectorElement[i].Geom_el << "\t" << vectorElement[i].Num_bound << "\t" << vectorElement[i].Num_vert[0] << "\t" << vectorElement[i].Num_vert[1] << "\t" << vectorElement[i].Num_vert[2] << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].U_x << "\t" << vectorElement[i].U_y << "\t" << vectorElement[i].P << "\t" << vectorElement[i].u_x << "\t" << vectorElement[i].u_y << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Coord_vert[0].x << "\t" << vectorElement[i].Coord_vert[0].y << "\t" << vectorElement[i].Coord_vert[1].x << "\t" << vectorElement[i].Coord_vert[1].y << "\t" << vectorElement[i].Coord_vert[2].x << "\t" << vectorElement[i].Coord_vert[2].y << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Length_face_el[0] << "\t" << vectorElement[i].Length_face_el[1] << "\t" << vectorElement[i].Length_face_el[2] << "\t" << vectorElement[i].Area_el << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Coord_center_el.x << "\t" << vectorElement[i].Coord_center_el.y << "\t" << vectorElement[i].h[0] << "\t" << vectorElement[i].h[1] << "\t" << vectorElement[i].h[2] << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Neighb_el[0] << "\t" << vectorElement[i].Neighb_el[1] << "\t" << vectorElement[i].Neighb_el[2] << "\t" << vectorElement[i].Normal[0][0] << "\t" << vectorElement[i].Normal[1][0] << "\t" << vectorElement[i].Normal[2][0] << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].Normal[0][1] << "\t" << vectorElement[i].Normal[1][1] << "\t" << vectorElement[i].Normal[2][1] << "\t" << vectorElement[i].gradU_x[0] << "\t" << vectorElement[i].gradU_x[1] << "\t" << vectorElement[i].gradU_y[0] << "\t" << vectorElement[i].gradU_y[1] << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].gradP[0] << "\t" << vectorElement[i].gradP[1] << "\t" << vectorElement[i].gradP_Corr[0] << "\t" << vectorElement[i].gradP_Corr[1] << "\t" << vectorElement[i].t << "\t" << vectorElement[i].T << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].alfa << "\t" << vectorElement[i].Alfa << "\t" << vectorElement[i].dalfa << "\t" << vectorElement[i].u_x << "\t" << vectorElement[i].u_y << "\t" << vectorElement[i].U_x << "\t" << vectorElement[i].U_y << endl;
+            File_Save << fixed << setprecision(25) << vectorElement[i].P_Correction << "\t" << vectorElement[i].A_0 << "\t" << vectorElement[i].U_x_Correction << "\t" << vectorElement[i].U_y_Correction << "\t" << vectorElement[i].Psi << endl;
 
         }
         
