@@ -169,12 +169,12 @@ double dt_m = 0.001;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2_(El=259).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2_(El=1991).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
-bool Read_From_Save = true;
+bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=1.000000/El = 259/Save_(El=259)_Steady.DAT";
+"Documents/Save/Re=1.000000/El = 1991/Save_(El=1991)_Steady.DAT";
 
 bool Start_Flow_Evolution = false;
 
@@ -183,4 +183,4 @@ double dt = 0.01;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
-double final_time = 0.3;
+double final_time = 0.5;

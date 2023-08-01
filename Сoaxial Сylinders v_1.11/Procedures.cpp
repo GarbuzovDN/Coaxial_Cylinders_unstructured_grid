@@ -824,12 +824,7 @@ void Redistricting1()
             vectorElement[i].gradU_x[0] = Firsov_M(i, "U_x/dx");
             vectorElement[i].gradU_x[1] = Firsov_M(i, "U_x/dy");
             vectorElement[i].gradU_y[0] = Firsov_M(i, "U_y/dx");
-            vectorElement[i].gradU_y[1] = Firsov_M(i, "U_y/dy");
-
-            /*double x = vectorElement[i].Coord_center_el.x;
-            double y = vectorElement[i].Coord_center_el.y;
-            double P_dx = 1.0 / 0.96 / 0.96 * (x - 0.08 * x / (x * x + y * y) - 0.5 * 0.04 * 0.04 * 2 * x / pow(x * x + y * y, 2));
-            double P_dy = 1.0 / 0.96 / 0.96 * (y - 0.08 * y / (x * x + y * y) - 0.5 * 0.04 * 0.04 * 2 * y / pow(x * x + y * y, 2));*/
+            vectorElement[i].gradU_y[1] = Firsov_M(i, "U_y/dy");                        
             vectorElement[i].gradP[0] = Firsov_M(i, "P/dx");
             vectorElement[i].gradP[1] = Firsov_M(i, "P/dy");
         }
