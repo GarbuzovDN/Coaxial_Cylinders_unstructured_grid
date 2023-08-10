@@ -1266,7 +1266,7 @@ void Calculation_Pressure_P()
     /* Расчет поправки давления */
     while (E_Press > 0.001)
     {
-        Redistricting_gradP_Corr();
+        //Redistricting_gradP_Corr();
 
         E_Press = 0.0;
         Iter_P++;
@@ -1286,13 +1286,13 @@ void Calculation_Pressure_P()
                     {
                         int i_nb = vectorElement[i].Neighb_el[j];
                         double AA = beta(i, j) * vectorElement[i].Area_el / vectorElement[i].A_0 + (1 - beta(i, j)) * vectorElement[i_nb].Area_el / vectorElement[i_nb].A_0;
-                        int jj_temp = j + 1;
+                        /*int jj_temp = j + 1;
                         if (j + 1 == 3) jj_temp = 0;
                         double x_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].x + vectorElement[i].Coord_vert[j].x);
                         double y_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].y + vectorElement[i].Coord_vert[j].y);
                         double Px, Py, Nx, Ny, xc, yc, nx, ny, xm, ym;
 
-                        /* Блок нахождения точек N и P */
+                        //Блок нахождения точек N и P
                         {
                             xm = x_ik, ym = y_ik;
                             xc = vectorElement[i_nb].Coord_center_el.x, yc = vectorElement[i_nb].Coord_center_el.y;
@@ -1312,10 +1312,12 @@ void Calculation_Pressure_P()
                         double t_0_x = Nx - vectorElement[i].Coord_center_el.x, t_0_y = Ny - vectorElement[i].Coord_center_el.y;
                         double scal_0_P_Corr = vectorElement[i].gradP_Corr[0] * t_0_x + vectorElement[i].gradP_Corr[1] * t_0_y;
                         double P_Corr_result = P_Corr_pi - scal_0_P_Corr;
-                        tmp_cp_1 = -vectorElement[i].Length_face_el[j] * AA /** P_Corr_result*/ / (vectorElement[i].h[j] + vectorElement[i_nb].h[j]);
+                        tmp_cp_1 = -vectorElement[i].Length_face_el[j] * AA * P_Corr_result / (vectorElement[i].h[j] + vectorElement[i_nb].h[j]);
+                        */
+                        tmp_cp_1 = -vectorElement[i].Length_face_el[j] * AA / (vectorElement[i].h[j] + vectorElement[i_nb].h[j]);
                         tmp_cp_2 = -vectorElement[i].Length_face_el[j] * AA / (vectorElement[i].h[j] + vectorElement[i_nb].h[j]);
                         cp += tmp_cp_2;
-                        sum += tmp_cp_1 /** vectorElement[i_nb].P_Correction*/;
+                        sum += tmp_cp_1 * vectorElement[i_nb].P_Correction;
                     }
                 }
 
@@ -1905,7 +1907,7 @@ void Write_Figure()
     do
     {
 
-        double angle = 270 * Pi / 180.0;
+        double angle = 315 * Pi / 180.0;
         double test_1 = cos(angle);
         double test_2 = sin(angle);
 
