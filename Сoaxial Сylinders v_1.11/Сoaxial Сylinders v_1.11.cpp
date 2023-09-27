@@ -37,7 +37,7 @@ int main()
             Development();
             Write();        
 
-            if (_time > 10.0) break;
+            if (_time > 25.0) break;
 
         } while (/*_time <= final_time*/E_U > 0.00001);
                 

@@ -1027,8 +1027,14 @@ void Calculation_Velocity_U()
             {
                 double temp_sum_ux = 0.0, temp_sum_uy = 0.0;
                 vectorElement[i].A_0 = vectorElement[i].Area_el / dt;
+                // Источник давления
                 double Sp_x = 0.0, Sp_y = 0.0;
-                double Sd_x = 0.0, Sd_y = 0.0, Sc_x = 0.0, Sc_y = 0.0;
+                // Источник дифузии
+                double Sd_x = 0.0, Sd_y = 0.0;
+                // Источник конвекции
+                double Sc_x = 0.0, Sc_y = 0.0;
+                // Источник силы Кориолиса
+                double Sk_x = 0.0, Sk_y = 0.0, alfa_k = 1.0;
                 double debug_x = 0.0, debug_y = 0;
 
                 if (i == 1418)
@@ -1070,12 +1076,12 @@ void Calculation_Velocity_U()
                             nx = vectorElement[i].Normal[j][0], ny = vectorElement[i].Normal[j][1];
 
                             Py = ym * nx * nx + ny * (xc * nx + yc * ny - xm * nx);
-                            Px = (Py - ym) * nx / ny + xm;
+                            Px = (yc - Py) * ny / nx + xc;//(Py - ym) * nx / ny + xm;
 
                             xc = vectorElement[i].Coord_center_el.x, yc = vectorElement[i].Coord_center_el.y;
 
                             Ny = ym * nx * nx + ny * (xc * nx + yc * ny - xm * nx);
-                            Nx = (Ny - ym) * nx / ny + xm;
+                            Nx = (yc - Ny) * ny / nx + xc;//(Ny - ym) * nx / ny + xm;
 
                         }
 
@@ -1091,6 +1097,7 @@ void Calculation_Velocity_U()
                         double h_c0_ci = sqrt((Nx - Px) * (Nx - Px) + (Ny - Py) * (Ny - Py));
                         Sd_x += vectorElement[i].Length_face_el[j] * (scal_i_Ux - scal_0_Ux) / h_c0_ci;
                         Sd_y += vectorElement[i].Length_face_el[j] * (scal_i_Uy - scal_0_Uy) / h_c0_ci;
+
 
                         /*double r_0_x = x_ik - vectorElement[i].Coord_center_el.x;
                         double r_0_y = y_ik - vectorElement[i].Coord_center_el.y;
@@ -1152,8 +1159,11 @@ void Calculation_Velocity_U()
                     Sp_y += 0.5 * (Section_value_MUSCL_Face(x_ik, y_ik, "P", i) + grad_neidghb) * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
                 }
 
-                vectorElement[i].U_x = (temp_sum_ux - Sp_x + vectorElement[i].Area_el / dt * vectorElement[i].u_x + Sd_x / Re - Sc_x) / vectorElement[i].A_0;
-                vectorElement[i].U_y = (temp_sum_uy - Sp_y + vectorElement[i].Area_el / dt * vectorElement[i].u_y + Sd_y / Re - Sc_y) / vectorElement[i].A_0;
+                Sk_x = alfa_k * (2 * vectorElement[i].U_y + vectorElement[i].Coord_center_el.x) * vectorElement[i].Area_el;
+                Sk_y = alfa_k * (-2 * vectorElement[i].U_x + vectorElement[i].Coord_center_el.y) * vectorElement[i].Area_el;
+
+                vectorElement[i].U_x = (temp_sum_ux - Sp_x + vectorElement[i].Area_el / dt * vectorElement[i].u_x + Sd_x / Re - Sc_x + Sk_x) / vectorElement[i].A_0;
+                vectorElement[i].U_y = (temp_sum_uy - Sp_y + vectorElement[i].Area_el / dt * vectorElement[i].u_y + Sd_y / Re - Sc_y + Sk_y) / vectorElement[i].A_0;
             }
         }
     }
@@ -1264,7 +1274,7 @@ void Calculation_Pressure_P()
         << "vectorElement[i].U_y" << " \t " << "vectorElement[i].U_y_Correction" << " \t " << endl;*/
 
     /* Расчет поправки давления */
-    while (E_Press > 0.001)
+    while (E_Press > 0.0001)
     {
         //Redistricting_gradP_Corr();
 
@@ -1694,12 +1704,17 @@ void Flow_Evolution(string param) {
         string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Marker Array";
         CreateDirectoryA(_path.c_str(), NULL);
 
+        ofstream Integral_Char;
+        double integral_char_N1 = 0.0;
+        double integral_char_N2 = 0.0;
+
         /* Начально условие */
         if (Iter_Glob == 1)
         {
+            ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::trunc);
+            Integral_Char << "time\t" << "gamma\t" << "N1\t" << "N2\t" << "\t\t" << "Re = " << Re << endl;
 
             int eps = 0;
-
             do
             {
                 int ii = 0;
@@ -1722,7 +1737,8 @@ void Flow_Evolution(string param) {
                     if (vectorElement[num_el_1].Num_bound == calc)
                     {
                         x_m.push_back(check_x);
-                        y_m.push_back(check_y);                                                       
+                        y_m.push_back(check_y);
+
                     }
                      
                     ii++;
@@ -1741,7 +1757,7 @@ void Flow_Evolution(string param) {
         }
 
         /* Запись в файл */
-        if (Iter_Glob % 50 == 0 || Iter_Glob == 1)
+        /*if (Iter_Glob % 50 == 0 || Iter_Glob == 1)
         {
             int temp_time = Iter_Glob;
             ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
@@ -1763,10 +1779,10 @@ void Flow_Evolution(string param) {
                 }
 
                 j = j;
-            }          
+            }   
 
             double debug = 0.0;
-        }
+        }*/
 
         /* Основной цикл */
         for (int j = 0; j < x_ang.size(); j++)
@@ -1779,6 +1795,21 @@ void Flow_Evolution(string param) {
                 double x_tmp_n = x_ang[j][i] + Section_value_MUSCL(x_ang[j][i] + 0.5 * debug_1 * dt_m, y_ang[j][i] + 0.5 * debug_2 * dt_m, "U_x") * dt_m;
                 double y_tmp_n = y_ang[j][i] + Section_value_MUSCL(x_ang[j][i] + 0.5 * debug_1 * dt_m, y_ang[j][i] + 0.5 * debug_2 * dt_m, "U_y") * dt_m;
 
+                /* Расчет интегральной характеристики */
+                {
+                    if ((x_ang[j][i] > 0 && y_ang[j][i] > 0))
+                    {
+                        integral_char_N1++;
+                        i = i;
+                    }
+
+                    if ((x_ang[j][i] < 0 && y_ang[j][i] < 0))
+                    {
+                        integral_char_N2++;
+                        i = i;
+                    }
+                }               
+
                 x_ang[j][i] = x_tmp_n;
                 y_ang[j][i] = y_tmp_n;
 
@@ -1786,6 +1817,16 @@ void Flow_Evolution(string param) {
             }
 
             j = j;
+        }
+
+
+        if (Iter_Glob % 200 == 0 || Iter_Glob == 1) 
+        {
+            ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::app);
+            double integral_char = abs(integral_char_N1 - integral_char_N2) / (integral_char_N1 + integral_char_N2);
+            Integral_Char << _time_Flow_Evolution << "\t" << integral_char << "\t" << integral_char_N1 << "\t" << integral_char_N2 << endl;
+
+            double debug = 0.0;
         }
     }
 }
@@ -1864,15 +1905,20 @@ void Write_Figure()
     ofstream Profile_U_y_MUSCL(_path + "/2. Profile_U_y_MUSCL_(El = " + to_string(max_el) + ").DAT");
 
     Field_U_x << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "vectorElement[i].U_x" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+        << "U_x_wall" << "\t" << "U_x_obst" << "\t"
+        << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_U_y << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "vectorElement[i].U_y" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+        << "U_y_wall" << "\t" << "U_y_obst" << "\t"
+        << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_U_eps << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "vectorElement[i].U_eps" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+        << "U_eps_wall" << "\t" << "U_eps_obst" << "\t"
+        << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_P << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "vectorElement[i].P" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+        << "P" << "\t" 
+        << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_Psi << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "vectorElement[i].Psi" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+        << "Psi_wall" << "\t" << "Psi_obst" << "\t"
+        << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
 
     /* Запись распределния полей */
     for (int i = 0; i < max_el; i++)
@@ -1883,9 +1929,9 @@ void Write_Figure()
         {
 
             Field_U_x << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
-                << vectorElement[i].U_x << " \t " << vectorElement[i].u_x << " \t " << vectorElement[i].Num_el << endl;
+                << vectorElement[i].U_x << " \t " << vectorElement[i].U_x + omega_1 * vectorElement[i].Coord_center_el.y << " \t " << vectorElement[i].Num_el << endl;
             Field_U_y << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
-                << vectorElement[i].U_y << " \t " << vectorElement[i].u_y << " \t " << vectorElement[i].Num_el << endl;
+                << vectorElement[i].U_y << " \t " << vectorElement[i].U_y - omega_1 * vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Num_el << endl;
             Field_P << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
                 << vectorElement[i].P << " \t " << vectorElement[i].Num_el << endl;
             Field_Psi << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
@@ -1893,7 +1939,7 @@ void Write_Figure()
             
             /* Запись угловой скорости в цилиндрической СК */
             r_temp = pow(vectorElement[i].Coord_center_el.x * vectorElement[i].Coord_center_el.x + vectorElement[i].Coord_center_el.y * vectorElement[i].Coord_center_el.y, 0.5);
-            U_eps = vectorElement[i].U_y * r_temp / vectorElement[i].Coord_center_el.x;
+            U_eps = vectorElement[i].U_x * r_temp / vectorElement[i].Coord_center_el.y + vectorElement[i].U_y * r_temp / vectorElement[i].Coord_center_el.x;
 
             Field_U_eps << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
                 << U_eps << " \t " << r_temp << " \t " << vectorElement[i].Num_el << endl;
@@ -1903,7 +1949,7 @@ void Write_Figure()
 
     /* Запись контрольных параметров в сечении */
     int ii = 0;
-    double h = 0.05;
+    double h = 0.01;
     do
     {
 
@@ -1947,7 +1993,7 @@ void Write()
         << "El=" << num_el_1 + 1 << ":(U_x = " << vectorElement[num_el_1].U_x << "; U_y = " << vectorElement[num_el_1].U_y
         << "; P = " << setprecision(6) << vectorElement[num_el_1].P << ")" << "   " << "Max.Res. = " << E_U << " (El=" << E_U_Num_el << ")" << endl;
         
-    if (Iter_Glob == 1 || (Iter_Glob % 500) == 0)
+    if (Iter_Glob == 1 || (Iter_Glob % 100) == 0)
     {
         Write_Figure();
         Stream_Function();

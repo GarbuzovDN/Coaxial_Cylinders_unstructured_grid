@@ -1,1 +1,10 @@
-﻿  Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe
+﻿  Procedures.cpp
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1176,46): warning C4101: a: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1176,49): warning C4101: b: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1176,52): warning C4101: c: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1587,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1755,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1756,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+  Сoaxial Сylinders v_1.11.cpp
+  Создание кода...
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp : fatal  error C1090: Произошел сбой при вызове API PDB, код ошибки "3": C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\x64\Debug\vc143.pdb
