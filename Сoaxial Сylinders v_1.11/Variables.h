@@ -37,6 +37,7 @@ extern double xx_1, yy_1;
 /* Параметр установления */
 extern double E_U;
 extern int E_U_Num_el;
+extern double alfa_k;
 
 /* Максимальная поправка давления */
 extern double maxP_Corr;

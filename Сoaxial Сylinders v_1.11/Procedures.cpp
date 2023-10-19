@@ -557,12 +557,12 @@ void Initial_Conditions()
 
                 double r_temp = pow(vectorElement[i].Coord_center_el.x * vectorElement[i].Coord_center_el.x + vectorElement[i].Coord_center_el.y * vectorElement[i].Coord_center_el.y, 0.5);
                 double U_an = ((omega_1 * R1 * R1 - omega_0 * R0 * R0) * r_temp + R0 * R0 * R1 * R1 * (omega_0 - omega_1) / r_temp) / (R1 * R1 - R0 * R0);
+                              
+                vectorElement[i].u_y = 0.0 + alfa_k * omega_1 * vectorElement[i].Coord_center_el.x;
+                vectorElement[i].U_y = vectorElement[i].u_y;
 
-                vectorElement[i].u_y = 0.0;
-                vectorElement[i].U_y = 0.0;
-
-                vectorElement[i].u_x = 0.0;
-                vectorElement[i].U_x = 0.0;
+                vectorElement[i].u_x = 0.0 - alfa_k * omega_1 * vectorElement[i].Coord_center_el.y;
+                vectorElement[i].U_x = vectorElement[i].u_x;
 
                 vectorElement[i].P = 0.0;
 
@@ -1034,7 +1034,7 @@ void Calculation_Velocity_U()
                 // Источник конвекции
                 double Sc_x = 0.0, Sc_y = 0.0;
                 // Источник силы Кориолиса
-                double Sk_x = 0.0, Sk_y = 0.0, alfa_k = 1.0;
+                double Sk_x = 0.0, Sk_y = 0.0;
                 double debug_x = 0.0, debug_y = 0;
 
                 if (i == 1418)
@@ -1510,30 +1510,29 @@ void Stream_Function()
                     double x_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].x + vectorElement[i].Coord_vert[j].x);
                     double y_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].y + vectorElement[i].Coord_vert[j].y);
 
+                    double Ux_wall = Section_value_MUSCL_Face(x_ik, y_ik, "U_x", i) + alfa_k * omega_1 * vectorElement[i].Coord_center_el.y;
+                    double Uy_wall = Section_value_MUSCL_Face(x_ik, y_ik, "U_y", i) - alfa_k * omega_1 * vectorElement[i].Coord_center_el.x;
+                    S_Ux += Ux_wall * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+                    S_Uy += Uy_wall * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+
                     if (vectorElement[i].Neighb_el[j] != -1)
                     {
                         int i_nb = vectorElement[i].Neighb_el[j];
                         double HH = vectorElement[i].h[j] + vectorElement[i_nb].h[j];
-
                         S_Psi += vectorElement[i_nb].Psi * vectorElement[i].Length_face_el[j] / HH;
-                        S_Ux += Section_value_MUSCL_Face(x_ik, y_ik, "U_x", i) * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
-                        S_Uy += Section_value_MUSCL_Face(x_ik, y_ik, "U_y", i) * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
                         S_dS += vectorElement[i].Length_face_el[j] / HH;
                     }
+                    else
+                    {
+                        double HH = 2.0 * vectorElement[i].h[j];                        
+                        double nx = vectorElement[i].Normal[j][0];
+                        double ny = vectorElement[i].Normal[j][1];
+                        double x = vectorElement[i].Coord_center_el.x;
+                        double y = vectorElement[i].Coord_center_el.y;
 
-                    else if (vectorElement[i].Num_bound == out_1 || vectorElement[i].Num_bound == out_2)
-                    {
-                        double HH = 2.0 * vectorElement[i].h[j];
                         S_dS += vectorElement[i].Length_face_el[j] / HH;
-                        S_Ux += -vectorElement[i].Normal[j][1] * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
-                        S_Uy += vectorElement[i].Normal[j][0] * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
-                        S_Psi += (vectorElement[i].Psi + HH) * vectorElement[i].Length_face_el[j] / HH;
-                    }
-                    else if (vectorElement[i].Num_bound != 0)
-                    {
-                        double HH = 2.0 * vectorElement[i].h[j];
-                        S_dS += vectorElement[i].Length_face_el[j] / HH;
-                        S_Psi += (-vectorElement[i].Psi) * vectorElement[i].Length_face_el[j] / HH;
+                        S_Psi += (-Ux_wall * ny + Uy_wall * nx + alfa_k * (omega_1 * y * ny  - omega_1 * x * nx)) 
+                            * vectorElement[i].Length_face_el[j] / HH;
                     }
 
                 }
@@ -1993,7 +1992,7 @@ void Write()
         << "El=" << num_el_1 + 1 << ":(U_x = " << vectorElement[num_el_1].U_x << "; U_y = " << vectorElement[num_el_1].U_y
         << "; P = " << setprecision(6) << vectorElement[num_el_1].P << ")" << "   " << "Max.Res. = " << E_U << " (El=" << E_U_Num_el << ")" << endl;
         
-    if (Iter_Glob == 1 || (Iter_Glob % 100) == 0)
+    if (Iter_Glob == 1 || (Iter_Glob % 500) == 0)
     {
         Write_Figure();
         Stream_Function();

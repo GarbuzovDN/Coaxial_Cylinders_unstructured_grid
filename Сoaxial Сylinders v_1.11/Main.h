@@ -153,6 +153,7 @@ double xx_1 = 0.6, yy_1 = 0.6;
 /* Параметр установления */
 double E_U;
 int E_U_Num_el;
+double alfa_k = 1.0;
 
 /* Максимальная поправка давления */
 double maxP_Corr = 0.0;
@@ -170,7 +171,7 @@ double dt_m = 0.001;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_1_(El=5089).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_1_(El=437).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 bool Read_From_Save = false;

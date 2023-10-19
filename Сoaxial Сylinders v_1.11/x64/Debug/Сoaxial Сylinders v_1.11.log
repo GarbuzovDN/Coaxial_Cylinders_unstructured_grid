@@ -2,9 +2,8 @@
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1176,46): warning C4101: a: неиспользованная локальная переменная
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1176,49): warning C4101: b: неиспользованная локальная переменная
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1176,52): warning C4101: c: неиспользованная локальная переменная
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1587,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1755,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1756,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-  Сoaxial Сylinders v_1.11.cpp
-  Создание кода...
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp : fatal  error C1090: Произошел сбой при вызове API PDB, код ошибки "3": C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\x64\Debug\vc143.pdb
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1586,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1754,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1755,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(956): warning C4715: Section_value_MUSCL: значение возвращается не при всех путях выполнения
+  Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe
