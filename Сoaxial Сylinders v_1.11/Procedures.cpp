@@ -1488,11 +1488,18 @@ void Stream_Function()
         }
     }
 
+    string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
+    ofstream development_psi(_path + "/2. development_psi(El = " + to_string(max_el) + ").DAT", ios_base::trunc);
+    ofstream development_psi1(_path + "/2. development_psi(El = " + to_string(max_el) + ").DAT", ios_base::app);
+
+    int Iter_Psi = 0, Num_E_Stream = 0.0;
+
     double E_Stream = 0.0;
 
     /* Нахождение функции тока */
     do 
     {
+
         E_Stream = 0.0;
         for (int i = 1; i < max_el; i++)
         {
@@ -1530,25 +1537,41 @@ void Stream_Function()
                         double x = vectorElement[i].Coord_center_el.x;
                         double y = vectorElement[i].Coord_center_el.y;
 
-                        S_dS += vectorElement[i].Length_face_el[j] / HH;
-                        S_Psi += (-Ux_wall * ny + Uy_wall * nx + alfa_k * (omega_1 * y * ny  - omega_1 * x * nx)) 
-                            * vectorElement[i].Length_face_el[j] / HH;
+                        //S_dS += vectorElement[i].Length_face_el[j] / HH;
+                        S_Psi -= (-Ux_wall * ny + Uy_wall * nx - alfa_k * (omega_1 * y * ny  - omega_1 * x * nx)) 
+                            * vectorElement[i].Length_face_el[j];
+
+                        if ((vectorElement[i].Num_bound != 6 && vectorElement[i].Num_bound != 7) && ( - Ux_wall * ny + Uy_wall * nx) >= 0.02)
+                        {
+                            double debug = 0.0;
+                        }
                     }
 
                 }
 
-                double Psi_temp = (S_Psi + S_Ux - S_Uy) / S_dS;
+                double Psi_temp = (S_Psi - S_Ux + S_Uy) / S_dS;
 
                if (E_Stream < abs(vectorElement[i].Psi - Psi_temp))
                 {
                     E_Stream = abs(vectorElement[i].Psi - Psi_temp);
+                    Num_E_Stream = vectorElement[i].Num_el;
                 }
 
                 vectorElement[i].Psi = 0.2 * vectorElement[i].Psi + 0.8 * Psi_temp;
 
             }
         } 
-    } while (E_Stream >= 0.00000001);
+
+        Iter_Psi++;
+
+        if (Iter_Psi == 1 || (Iter_Psi % 500) == 0)
+        {
+            development_psi1 << Iter_Psi << "\t" << setprecision(10) << E_Stream << "\t" << Num_E_Stream << endl;
+        }
+
+    } while (E_Stream >= 0.0000001);
+
+    cout << "Iter_Psi = " << Iter_Psi << endl;
 
 }
 
@@ -1994,8 +2017,8 @@ void Write()
         
     if (Iter_Glob == 1 || (Iter_Glob % 500) == 0)
     {
+        //Stream_Function();
         Write_Figure();
-        Stream_Function();
         Save_Write();
     }
 
@@ -2028,8 +2051,8 @@ void Write()
 void Write_End()
 {
 
-    Write_Figure();
     Stream_Function();
+    Write_Figure();
 
     Section_value_MUSCL(xx_1, yy_1, "NULL");
 
