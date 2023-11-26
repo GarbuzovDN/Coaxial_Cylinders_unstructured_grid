@@ -160,17 +160,20 @@ struct Element
     /* Функция тока */
     double Psi;
 
+    /* Диссипативная функция */
+    double Q;
+
 };
 
 enum Calculation_Area {
     calc
 };
 enum Inner_Wall {
-    in_1 = 1, in_2, in_3, in_4,
-    in_5, in_6, in_7, in_8
+    in_1 = 2/*, in_2, in_3, in_4,
+    in_5, in_6, in_7, in_8*/
 };
 enum Outer_Wall {
-    out_1 = 6, out_2
+    out_1 = 1, out_2
 
     /* Conf_0: out_1 = 3 */
     /* Conf_1: out_1 = 6 */

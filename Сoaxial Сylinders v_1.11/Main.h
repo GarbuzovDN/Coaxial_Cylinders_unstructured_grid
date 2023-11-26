@@ -19,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 0.1;
+double Re = 1.0;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -120,17 +120,20 @@ struct Element
     /* Функция тока */
     double Psi;
 
+    /* Диссипативная функция */
+    double Q;
+
 };
 
 enum Calculation_Area {
     calc
 };
 enum Inner_Wall {
-    in_1 = 1, in_2, in_3, in_4,
-    in_5, in_6, in_7, in_8
+    in_1 = 2/*, in_2, in_3, in_4,
+    in_5, in_6, in_7, in_8*/
 };
 enum Outer_Wall {
-    out_1 = 6, out_2
+    out_1 = 1, out_2
 
     /* Conf_0: out_1 = 3 */
     /* Conf_1: out_1 = 6 */
@@ -148,14 +151,14 @@ int num_el_1, num_el_2, num_el_3;
 int num_el_1_MUSCL;
 
 /* Координаты контрольного элемента */
-double xx_1 = 0.6, yy_1 = 0.6;
+double xx_1 = 0.0, yy_1 = 0.25;
 
 /* Параметр установления */
 double E_U;
 int E_U_Num_el;
 
 /* Коэффициент учета силы Кориолиса */
-int alfa_k = 1;
+int alfa_k = 0;
 
 /* Максимальная поправка давления */
 double maxP_Corr = 0.0;
@@ -173,17 +176,18 @@ double dt_m = 0.001;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_1_(El=5089).msh";
+//"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_(El=6922).msh";
+"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_(El=27514).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
-bool Read_From_Save = false;
+bool Read_From_Save = true;
 string File_Save_Name =
-"Documents/Save/Re=0.100000/El = 5089/Save_(El=5089)_Steady.DAT";
+"Documents/Save/Re=1.000000/El = 27514/Save_(El=27514).DAT";
 
 bool Start_Flow_Evolution = false;
 
 /* Шаг и счетчик времени */
-double dt = 0.01;
+double dt = 0.001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 

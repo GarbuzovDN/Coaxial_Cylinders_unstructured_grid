@@ -20,6 +20,10 @@ void Development();
 
 void Stream_Function();
 
+void Dissipative_Function();
+
+void Approximation_Accuracy();
+
 void Redistricting1();
 
 double beta(int ii, int jj);

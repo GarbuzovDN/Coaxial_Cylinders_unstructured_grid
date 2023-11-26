@@ -1098,7 +1098,6 @@ void Calculation_Velocity_U()
                         Sd_x += vectorElement[i].Length_face_el[j] * (scal_i_Ux - scal_0_Ux) / h_c0_ci;
                         Sd_y += vectorElement[i].Length_face_el[j] * (scal_i_Uy - scal_0_Uy) / h_c0_ci;
 
-
                         /*double r_0_x = x_ik - vectorElement[i].Coord_center_el.x;
                         double r_0_y = y_ik - vectorElement[i].Coord_center_el.y;
                         double r_i_x = 0.5 * (vectorElement[ii].Coord_vert[jj_temp].x + vectorElement[ii].Coord_vert[j].x) - vectorElement[ii].Coord_center_el.x;
@@ -1488,24 +1487,17 @@ void Stream_Function()
         }
     }
 
-    string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
-    ofstream development_psi(_path + "/2. development_psi(El = " + to_string(max_el) + ").DAT", ios_base::trunc);
-    ofstream development_psi1(_path + "/2. development_psi(El = " + to_string(max_el) + ").DAT", ios_base::app);
-
-    int Iter_Psi = 0, Num_E_Stream = 0.0;
-
     double E_Stream = 0.0;
 
     /* Нахождение функции тока */
-    do 
+    do
     {
-
         E_Stream = 0.0;
         for (int i = 1; i < max_el; i++)
         {
             if (vectorElement[i].Geom_el == 2)
             {
-                
+
                 double S_Psi = 0.0, S_Ux = 0.0, S_Uy = 0.0, S_dS = 0.0;
 
                 for (int j = 0; j < 3; j++)
@@ -1517,62 +1509,202 @@ void Stream_Function()
                     double x_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].x + vectorElement[i].Coord_vert[j].x);
                     double y_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].y + vectorElement[i].Coord_vert[j].y);
 
-                    double Ux_wall = Section_value_MUSCL_Face(x_ik, y_ik, "U_x", i) + alfa_k * omega_1 * vectorElement[i].Coord_center_el.y;
-                    double Uy_wall = Section_value_MUSCL_Face(x_ik, y_ik, "U_y", i) - alfa_k * omega_1 * vectorElement[i].Coord_center_el.x;
-                    S_Ux += Ux_wall * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
-                    S_Uy += Uy_wall * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
-
                     if (vectorElement[i].Neighb_el[j] != -1)
                     {
                         int i_nb = vectorElement[i].Neighb_el[j];
                         double HH = vectorElement[i].h[j] + vectorElement[i_nb].h[j];
+
                         S_Psi += vectorElement[i_nb].Psi * vectorElement[i].Length_face_el[j] / HH;
+                        S_Ux += Section_value_MUSCL_Face(x_ik, y_ik, "U_x", i) * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+                        S_Uy += Section_value_MUSCL_Face(x_ik, y_ik, "U_y", i) * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
                         S_dS += vectorElement[i].Length_face_el[j] / HH;
                     }
-                    else
+
+                    else if (vectorElement[i].Num_bound == out_1 || vectorElement[i].Num_bound == out_2)
                     {
-                        double HH = 2.0 * vectorElement[i].h[j];                        
-                        double nx = vectorElement[i].Normal[j][0];
-                        double ny = vectorElement[i].Normal[j][1];
-                        double x = vectorElement[i].Coord_center_el.x;
-                        double y = vectorElement[i].Coord_center_el.y;
-
-                        //S_dS += vectorElement[i].Length_face_el[j] / HH;
-                        S_Psi -= (-Ux_wall * ny + Uy_wall * nx - alfa_k * (omega_1 * y * ny  - omega_1 * x * nx)) 
-                            * vectorElement[i].Length_face_el[j];
-
-                        if ((vectorElement[i].Num_bound != 6 && vectorElement[i].Num_bound != 7) && ( - Ux_wall * ny + Uy_wall * nx) >= 0.02)
-                        {
-                            double debug = 0.0;
-                        }
+                        double HH = 2.0 * vectorElement[i].h[j];
+                        S_dS += vectorElement[i].Length_face_el[j] / HH;
+                        S_Ux += -vectorElement[i].Normal[j][1] * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+                        S_Uy += vectorElement[i].Normal[j][0] * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+                        S_Psi += (vectorElement[i].Psi + HH) * vectorElement[i].Length_face_el[j] / HH;
+                    }
+                    else if (vectorElement[i].Num_bound != 0)
+                    {
+                        double HH = 2.0 * vectorElement[i].h[j];
+                        S_dS += vectorElement[i].Length_face_el[j] / HH;
+                        S_Psi += (-vectorElement[i].Psi) * vectorElement[i].Length_face_el[j] / HH;
                     }
 
                 }
 
-                double Psi_temp = (S_Psi - S_Ux + S_Uy) / S_dS;
+                double Psi_temp = (S_Psi + S_Ux - S_Uy) / S_dS;
 
-               if (E_Stream < abs(vectorElement[i].Psi - Psi_temp))
+                if (E_Stream < abs(vectorElement[i].Psi - Psi_temp))
                 {
                     E_Stream = abs(vectorElement[i].Psi - Psi_temp);
-                    Num_E_Stream = vectorElement[i].Num_el;
                 }
 
                 vectorElement[i].Psi = 0.2 * vectorElement[i].Psi + 0.8 * Psi_temp;
 
             }
-        } 
+        }
+    } while (E_Stream >= 1e-8); // 1e-8
 
-        Iter_Psi++;
+}
 
-        if (Iter_Psi == 1 || (Iter_Psi % 500) == 0)
+void Dissipative_Function()
+{
+
+    string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
+    ofstream Field_Q(_path + "/1. Field_Q_(El = " + to_string(max_el) + ").DAT");
+
+    Field_Q << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
+        << "Q" << "\t" << "Q_analytic " << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+
+    /* Нахождение функции диссипиации Q */
+    for (int i = 1; i < max_el; i++)
+    {
+        if (vectorElement[i].Geom_el == 2)
         {
-            development_psi1 << Iter_Psi << "\t" << setprecision(10) << E_Stream << "\t" << Num_E_Stream << endl;
+
+            double U_ik_x = 0.0, U_ik_y = 0.0;
+            double U_ik_x_nx = 0.0, U_ik_y_ny = 0.0;
+            double U_ik_x_ny = 0.0, U_ik_y_nx = 0.0;
+
+            for (int j = 0; j < 3; j++)
+            {
+
+                int jj_temp = j + 1;
+                if (j + 1 == 3) jj_temp = 0;
+
+                double x_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].x + vectorElement[i].Coord_vert[j].x);
+                double y_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].y + vectorElement[i].Coord_vert[j].y);
+
+                if (vectorElement[i].Neighb_el[j] != -1)
+                {
+                    U_ik_x = Section_value_MUSCL_Face(x_ik, y_ik, "U_x", i);
+                    U_ik_y = Section_value_MUSCL_Face(x_ik, y_ik, "U_y", i);
+
+                    U_ik_x_nx += U_ik_x * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+                    U_ik_y_ny += U_ik_y * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+
+                    U_ik_x_ny += U_ik_x * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+                    U_ik_y_nx += U_ik_y * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+                }
+                else
+                {
+                    U_ik_x = Value_bound(x_ik, y_ik, i, j, "U_x");
+                    U_ik_y = Value_bound(x_ik, y_ik, i, j, "U_y");
+
+                    U_ik_x_nx += U_ik_x * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+                    U_ik_y_ny += U_ik_y * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+
+                    U_ik_x_ny += U_ik_x * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+                    U_ik_y_nx += U_ik_y * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+                }
+                
+
+            }
+
+            vectorElement[i].Q = 2 * (U_ik_x_nx * U_ik_x_nx + U_ik_y_ny * U_ik_y_ny) + pow(U_ik_x_ny + U_ik_y_nx, 2);
+
+            double r = sqrt(pow(vectorElement[i].Coord_center_el.x, 2) + pow(vectorElement[i].Coord_center_el.y, 2));
+            //double Q_analytic = pow((r / 0.96 * (1 + 0.04 / r / r)), 2);
+            double Q_analytic = 4 * pow(1.0 / 12.0 * 1 / r / r, 2);
+
+            Field_Q << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+                << vectorElement[i].Q / vectorElement[i].Area_el / vectorElement[i].Area_el << " \t "<< Q_analytic << " \t " << vectorElement[i].Num_el << endl;
+        }
+    }
+
+    Field_Q.close();
+}
+
+void Approximation_Accuracy(bool activate)
+{
+    if (activate == true)
+    {
+
+        double R = 0.0;     // Сумма радиусов вписанных окружностей
+        double l = 0.0;     // Сумма длин граней КО
+        double S = 0.0;     // Сумма площадей КО
+        int n1 = 0.0;       // Количество граней КО
+        int n2 = 0.0;       // Количество КО
+
+        double max_R = 0.0;
+        double max_l = 0.0;
+        double max_S = 0.0;
+
+        int test1 = 0;
+        int test2 = 0;
+
+        double Q_Int = 0.0; // Сумма диссипативной функции
+
+        for (int i = 1; i < max_el; i++)
+        {
+            if (vectorElement[i].Geom_el == 2)
+            {
+                ++n2;
+                R += vectorElement[i].h[0];
+                if (max_R < vectorElement[i].h[0])
+                {
+                    max_R = vectorElement[i].h[0];
+                }
+
+                S += vectorElement[i].Area_el;
+                if (max_S < vectorElement[i].Area_el)
+                {
+                    max_S = vectorElement[i].Area_el;
+                }
+
+                for (int j = 0; j < 3; j++)
+                {
+                    int jj_temp = j + 1;
+                    if (j + 1 == 3) jj_temp = 0;
+                    
+                    if (vectorElement[i].Neighb_el[j] != -1)
+                    {
+                        ++n1;
+                        ++test1;
+                        l += vectorElement[i].Length_face_el[j];
+                    }
+                    else
+                    {
+                        ++test2;
+                        n1 += 2;
+                        l += 2 * vectorElement[i].Length_face_el[j];
+                    }
+
+                    if (max_l < vectorElement[i].Length_face_el[j])
+                    {
+                        max_l = vectorElement[i].Length_face_el[j];
+                    }
+                }
+
+                Q_Int += vectorElement[i].Q / vectorElement[i].Area_el /*/ vectorElement[i].Area_el*/;
+
+            }
         }
 
-    } while (E_Stream >= 0.0000001);
+        double h1 = 0.5 * l / n1;
+        double h2 = 2.0 * R / n2;
+        double h3 = sqrt(S / n2);
 
-    cout << "Iter_Psi = " << Iter_Psi << endl;
+        string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
+        ofstream Field_Approx(_path + "/3. Table_Approx_(El = " + to_string(max_el) + ").DAT");
 
+        Field_Approx << fixed << setprecision(4) << "N (Mesh)" << " \t " << "h1 (face)" << " \t " << "h2 (radius)" << " \t " 
+            << "h3 (area)" << " \t " << "Max (h1)" << " \t " << "Max (h2)" << "\t" << "Max (h3)" << "\t" << "Ux" 
+            << "\t" << "Ф" << "\t" << "Ф_an" << "\t" << "Ф_Integral" << "\t" << "Ф_Integral_an" << "\t\t\t" << "Time: " << _time << "\t" << "x: " << xx_1 << "\t" << "y: " << yy_1 << endl;
+        
+        double r = sqrt(vectorElement[num_el_1].Coord_center_el.x * vectorElement[num_el_1].Coord_center_el.x + vectorElement[num_el_1].Coord_center_el.y * vectorElement[num_el_1].Coord_center_el.y);
+        double Q_analytic = 4 * pow(1.0 / 12.0 * 1 / r / r, 2);
+
+        Field_Approx << fixed << setprecision(10) << max_el << " \t " << h1 << " \t " << h2 << " \t " << h3 << " \t "
+            << max_l << " \t " << 2 * max_R << " \t " << max_S << " \t " << Section_value_MUSCL(xx_1, yy_1, "U_x") << " \t " 
+            << vectorElement[num_el_1].Q / vectorElement[num_el_1].Area_el / vectorElement[num_el_1].Area_el << "\t" 
+            << Q_analytic << "\t" << Q_Int << "\t" << endl;
+    }
 }
 
 void Flow_Evolution(string param) {
@@ -1939,8 +2071,7 @@ void Write_Figure()
         << "P" << "\t" 
         << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_Psi << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "Psi_wall" << "\t" << "Psi_obst" << "\t"
-        << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+        << "Psi" << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
 
     /* Запись распределния полей */
     for (int i = 0; i < max_el; i++)
@@ -2051,7 +2182,9 @@ void Write()
 void Write_End()
 {
 
+    Dissipative_Function();
     Stream_Function();
+    Approximation_Accuracy(true);
     Write_Figure();
 
     Section_value_MUSCL(xx_1, yy_1, "NULL");
