@@ -129,11 +129,11 @@ enum Calculation_Area {
     calc
 };
 enum Inner_Wall {
-    in_1 = 2/*, in_2, in_3, in_4,
-    in_5, in_6, in_7, in_8*/
+    in_1 = 1, in_2, in_3, in_4,
+    in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 1, out_2
+    out_1 = 9, out_2
 
     /* Conf_0: out_1 = 3 */
     /* Conf_1: out_1 = 6 */
@@ -177,14 +177,14 @@ double dt_m = 0.001;
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
 //"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_(El=6922).msh";
-"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_(El=27514).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
-bool Read_From_Save = true;
+bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=1.000000/El = 27514/Save_(El=27514).DAT";
+"Documents/Save/Re=1.000000/El = 5013/Save_(El=5013).DAT";
 
-bool Start_Flow_Evolution = false;
+bool Start_Flow_Evolution = true;
 
 /* Шаг и счетчик времени */
 double dt = 0.001;

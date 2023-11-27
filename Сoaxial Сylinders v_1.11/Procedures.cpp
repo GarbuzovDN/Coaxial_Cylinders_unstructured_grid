@@ -1548,7 +1548,7 @@ void Stream_Function()
 
             }
         }
-    } while (E_Stream >= 1e-8); // 1e-8
+    } while (E_Stream >= 1e-4); // 1e-8
 
 }
 
@@ -1869,22 +1869,28 @@ void Flow_Evolution(string param) {
             Integral_Char << "time\t" << "gamma\t" << "N1\t" << "N2\t" << "\t\t" << "Re = " << Re << endl;
 
             int eps = 0;
+            double h = 0.025;
+            double angle = -1.0;
+            double r = 0.0;
+
             do
             {
-                int ii = 0;
-                double h = 0.05;
-
                 x_m.clear();
                 y_m.clear();
+
+                int ii = 0;
 
                 do
                 {
 
-                    double r = R0 + ii * h;
+                    /*double r = R0 + ii * h;
                     double angle = ((270 + eps) * Pi / 180);
 
                     double check_x = r * cos(angle);
-                    double check_y = r * sin(angle);
+                    double check_y = r * sin(angle);*/
+                                        
+                    double check_x = r;
+                    double check_y = angle;
 
                     Section_value_MUSCL(check_x, check_y, "NULL");
 
@@ -1894,24 +1900,26 @@ void Flow_Evolution(string param) {
                         y_m.push_back(check_y);
 
                     }
-                     
-                    ii++;
 
-                } while ((0.2 + ii * h) < 1.0);
+                    ii++;
+                    r = ii * h;
+
+                } while (ii * h < 1.0);
 
                 x_ang.push_back(x_m);
                 y_ang.push_back(y_m);
 
-                eps += 10;
+                eps++;
+                angle = -1.0 + eps * h;
 
-            } while (eps <= 180);
+            } while (angle < 1.0);
                        
             count_angle = x_ang.size();
             count_marker = x_m.size();
         }
 
         /* Запись в файл */
-        /*if (Iter_Glob % 50 == 0 || Iter_Glob == 1)
+        if (Iter_Glob % 50 == 0 || Iter_Glob == 1)
         {
             int temp_time = Iter_Glob;
             ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
@@ -1936,7 +1944,7 @@ void Flow_Evolution(string param) {
             }   
 
             double debug = 0.0;
-        }*/
+        }
 
         /* Основной цикл */
         for (int j = 0; j < x_ang.size(); j++)

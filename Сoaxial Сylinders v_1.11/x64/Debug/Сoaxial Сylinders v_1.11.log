@@ -5,9 +5,7 @@ C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial 
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1631,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1632,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1741,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1909,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1910,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-  Сoaxial Сylinders v_1.11.cpp
-  Создание кода...
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1917,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1918,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(956): warning C4715: Section_value_MUSCL: значение возвращается не при всех путях выполнения
   Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe

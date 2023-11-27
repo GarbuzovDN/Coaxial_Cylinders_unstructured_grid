@@ -1,10 +1,7 @@
-﻿  Procedures.cpp
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1175,46): warning C4101: a: неиспользованная локальная переменная
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1175,49): warning C4101: b: неиспользованная локальная переменная
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1175,52): warning C4101: c: неиспользованная локальная переменная
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1631,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1632,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1741,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1902,31): error C2065: check_x: необъявленный идентификатор
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1909,39): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1910,38): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+﻿  Сoaxial Сylinders v_1.11.cpp
+  Создание кода
+  1 of 593 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    4 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Release\Сoaxial Сylinders v_1.11.exe
