@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <windows.h>
+#include <map>
 
 using namespace std;
 
@@ -52,6 +53,7 @@ extern vector<double> x_m, y_m;
 extern vector<vector<double>>x_ang;
 extern vector<vector<double>>y_ang;
 extern double dt_m;
+extern map<int, int> num_el_for_marker;
 
 /* Директория файла с сеткой и Save */
 extern string File_Mesh_Name;
@@ -173,7 +175,7 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 9, out_2
+    out_1 = 6, out_2
 
     /* Conf_0: out_1 = 3 */
     /* Conf_1: out_1 = 6 */

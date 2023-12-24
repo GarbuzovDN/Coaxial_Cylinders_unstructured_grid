@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <windows.h>
+#include <map>
 
 using namespace std;
 
@@ -133,7 +134,7 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 9, out_2
+    out_1 = 6, out_2
 
     /* Conf_0: out_1 = 3 */
     /* Conf_1: out_1 = 6 */
@@ -173,16 +174,17 @@ vector<double> x_m, y_m;
 vector<vector<double>>x_ang;
 vector<vector<double>>y_ang;
 double dt_m = 0.001;
+map<int, int> num_el_for_marker;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
 //"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_(El=6922).msh";
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_1_(El=5089).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=1.000000/El = 5013/Save_(El=5013).DAT";
+"Documents/Save/Re=1.000000/El = 5089/Save_(El=5089)1.DAT";
 
 bool Start_Flow_Evolution = true;
 
