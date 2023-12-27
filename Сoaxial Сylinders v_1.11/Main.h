@@ -134,13 +134,14 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 6, out_2
+    out_1 = 18, out_2
 
     /* Conf_0: out_1 = 3 */
     /* Conf_1: out_1 = 6 */
     /* Conf_2: out_1 = 9 */
     /* Conf_3: out_1 = 17 */
-    /* Conf_4: out_1 = 11 */
+    /* Conf_4: out_1 = 10 */
+    /* Conf_5: out_1 = 18 */
 };
 
 /* Вектор точек и вектор элементов */
@@ -179,12 +180,12 @@ map<int, int> num_el_for_marker;
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
 //"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_(El=6922).msh";
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_1_(El=5089).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_5_(El=5742).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=1.000000/El = 5089/Save_(El=5089)1.DAT";
+"Documents/Save/Re=1.000000/El = 5742/Save_(El=5742)1.DAT";
 
 bool Start_Flow_Evolution = true;
 
