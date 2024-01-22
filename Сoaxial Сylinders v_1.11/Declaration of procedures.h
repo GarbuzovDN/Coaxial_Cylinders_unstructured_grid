@@ -6,7 +6,7 @@ void Find_String(string Str);
 
 void Mesh_Init();
 
-void Blank();
+void Blank(double t);
 
 void Redistricting();
 
@@ -22,7 +22,7 @@ void Stream_Function();
 
 void Dissipative_Function();
 
-void Approximation_Accuracy();
+void Approximation_Accuracy(bool activate);
 
 void Redistricting1();
 

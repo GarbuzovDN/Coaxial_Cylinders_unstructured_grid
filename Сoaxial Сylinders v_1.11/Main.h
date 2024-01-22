@@ -20,7 +20,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 1.0;
+double Re = 10.0;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -134,9 +134,12 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 1, out_2 = 8
+    out_1 = 9, out_2
 
-    /* Conf_0: out_1 = 3 */
+    /* Conf_0: out_1 = 1
+       Conf_0: out_2 = 2 
+       Conf_0:  in_1 = 2 */
+
     /* Conf_1: out_1 = 6 */
     /* Conf_2: out_1 = 9 */
     /* Conf_3: out_1 = 17 */
@@ -160,7 +163,7 @@ double E_U;
 int E_U_Num_el;
 
 /* Коэффициент учета силы Кориолиса */
-int alfa_k = 0;
+int alfa_k = 1.0;
 
 /* Максимальная поправка давления */
 double maxP_Corr = 0.0;
@@ -192,13 +195,13 @@ vector<Marker> vectorMarker;
 
 /* Директория файла с сеткой и Save */
 string File_Mesh_Name =
-//"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_(El=6922).msh";
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_(El=5104).msh";
+//"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
-bool Read_From_Save = true;
+bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=1.000000/El = 5104/Save_(El=5104)1.DAT";
+"Documents/Save/Re=90.000000/El = 5013/Save_(El=5013)_Steady.DAT";
 
 bool Start_Flow_Evolution = false;
 

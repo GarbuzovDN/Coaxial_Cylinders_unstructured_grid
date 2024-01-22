@@ -146,3 +146,7 @@ Curve Loop(5) = {16, 17, 14, 15};
 Curve Loop(6) = {18};
 //+
 Plane Surface(1) = {1, 2, 3, 4, 5, 6};
+//+
+Transfinite Curve {3, 5, 7, 9, 13, 11, 17, 15} = 4 Using Progression 1;
+//+
+Transfinite Curve {4, 2, 16, 14, 12, 10, 8, 6} = 8 Using Progression 1;

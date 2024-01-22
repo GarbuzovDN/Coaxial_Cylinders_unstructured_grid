@@ -123,3 +123,7 @@ Plane Surface(1) = {1, 2, 3, 4};
 Transfinite Curve {3, 5, 9, 7} = 1 Using Progression 1;
 //+
 Transfinite Curve {4, 2, 6, 8} = 3 Using Progression 1;
+//+
+Transfinite Curve {4, 2, 6, 8} = 8 Using Progression 1;
+//+
+Transfinite Curve {3, 5, 9, 7} = 4 Using Progression 1;

@@ -503,13 +503,13 @@ void Mesh_Init()
 
 }
 
-void Blank()
+void Blank(double t = 0.0)
 {
 
     int Local_count = 0;
     int Local_it = 0;
 
-    ofstream File_Blank("Documents/Blank/Blank_R0.BLN", ios_base::trunc);
+    ofstream File_Blank("Documents/Blank/Blank_R0_10.BLN", ios_base::trunc);
 
     /* Запись заголовка бланкировочного файла */
     for (int i = 1; i < max_el; i++)
@@ -524,6 +524,7 @@ void Blank()
     }
 
     File_Blank << Local_it + 1 << "\t" << "1" << endl;
+    double teta_0 = 0.0; //(30 * Pi / 180);
 
     /* Запись коррдинат */
     for (int i = 0; i < max_el; i++)
@@ -531,11 +532,19 @@ void Blank()
         if (vectorElement[i].Geom_el == 1 && (vectorElement[i].Num_bound != out_1 && vectorElement[i].Num_bound != out_2
             && vectorElement[i].Num_bound != calc))
         {
-            File_Blank << fixed << setprecision(4) << vectorElement[i].Coord_vert[0].x << " \t " << vectorElement[i].Coord_vert[0].y << endl;
+            double debug_x = vectorElement[i].Coord_vert[0].x * cos(teta_0 + omega_1 * t) + vectorElement[i].Coord_vert[0].y * sin(teta_0 + omega_1 * t);
+            double debug_y = -vectorElement[i].Coord_vert[0].x * sin(teta_0 + omega_1 * t) + vectorElement[i].Coord_vert[0].y * cos(teta_0 + omega_1 * t);
+
+            //File_Blank << fixed << setprecision(4) << vectorElement[i].Coord_vert[0].x << " \t " << vectorElement[i].Coord_vert[0].y << endl;
+            File_Blank << fixed << setprecision(4) << debug_x << " \t " << debug_y << endl;
         }
     }
 
-    File_Blank << fixed << setprecision(4) << vectorElement[Local_count].Coord_vert[0].x << " \t " << vectorElement[Local_count].Coord_vert[0].y;
+    double debug_x = vectorElement[Local_count].Coord_vert[0].x * cos(teta_0 + omega_1 * t) + vectorElement[Local_count].Coord_vert[0].y * sin(teta_0 + omega_1 * t);
+    double debug_y = -vectorElement[Local_count].Coord_vert[0].x * sin(teta_0 + omega_1 * t) + vectorElement[Local_count].Coord_vert[0].y * cos(teta_0 + omega_1 * t);
+
+    //File_Blank << fixed << setprecision(4) << vectorElement[Local_count].Coord_vert[0].x << " \t " << vectorElement[Local_count].Coord_vert[0].y;
+    File_Blank << fixed << setprecision(4) << debug_x << " \t " << debug_y;
 
 }
 
@@ -1840,11 +1849,19 @@ void Flow_Evolution(string param) {
 
             for (int i = 0; i < count_marker; i++)
             {
+                double t = _time_Flow_Evolution + dt_m;
+                Blank(t);
+
+                double debug_x = x_m[i] * cos(omega_1 * t) + y_m[i] * sin(omega_1 * t);
+                double debug_y = -x_m[i] * sin(omega_1 * t) + y_m[i] * cos(omega_1 * t);
 
                 ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::app);
                 ofstream Flow_Evo_test(_path + "/Flow Evolution.DAT", ios_base::app);
-                Flow_Evo << fixed << setprecision(6) << x_m[i] << "\t" << y_m[i] << "\t" << i << endl;
-                Flow_Evo_test << fixed << setprecision(6) << x_m[i] << "\t" << y_m[i] << "\t" << i << endl;
+                /*Flow_Evo << fixed << setprecision(6) << x_m[i] << "\t" << y_m[i] << "\t" << i << endl;
+                Flow_Evo_test << fixed << setprecision(6) << x_m[i] << "\t" << y_m[i] << "\t" << i << endl;*/
+                Flow_Evo << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << i << endl;
+                Flow_Evo_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << i << endl;
+
 
                 i = i;
             }
@@ -2020,11 +2037,21 @@ void Flow_Evolution(string param) {
             {
                 for (int i = 0; i < x_ang[j].size(); i++)
                 {
+                    double t = _time_Flow_Evolution + dt_m;
+                    Blank(t);
+
+                    /*double debug_x = x_ang[j][i] + omega_1 * y_ang[j][i] * t;
+                    double debug_y = y_ang[j][i] - omega_1 * x_ang[j][i] * t;*/
+                    double debug_x = x_ang[j][i] * cos(omega_1 * t) + y_ang[j][i] * sin(omega_1 * t);
+                    double debug_y = -x_ang[j][i] * sin(omega_1 * t) + y_ang[j][i] * cos(omega_1 * t);
 
                     ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::app);
                     ofstream Flow_Evo_test(_path + "/Flow Evolution.DAT", ios_base::app);
-                    Flow_Evo << fixed << setprecision(6) << x_ang[j][i] << "\t" << y_ang[j][i] << "\t" << i << "\t" << j << endl;
-                    Flow_Evo_test << fixed << setprecision(6) << x_ang[j][i] << "\t" << y_ang[j][i] << "\t" << i << "\t" << j << endl;
+                    /*Flow_Evo << fixed << setprecision(6) << x_ang[j][i] << "\t" << y_ang[j][i] << "\t" << i << "\t" << j << endl;
+                    Flow_Evo_test << fixed << setprecision(6) << x_ang[j][i] << "\t" << y_ang[j][i] << "\t" << i << "\t" << j << endl;*/
+
+                    /*Flow_Evo << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << i << "\t" << j << endl;*/
+                    Flow_Evo_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << i << "\t" << j << endl;
 
                     i = i;
                 }
@@ -2048,13 +2075,17 @@ void Flow_Evolution(string param) {
                     - обход по КО, опирающимся на вершины текущего
                 3. Section_value_MUSCL____________________(coord_marker[i][0], coord_marker[i][1], "___",CV_marker[i] )
                 */
-                
-                
+
+                                
                 double debug_1 = Section_value_MUSCL(x_ang[j][i], y_ang[j][i], "U_x");
                 double debug_2 = Section_value_MUSCL(x_ang[j][i], y_ang[j][i], "U_y");
 
                 double x_tmp_n = x_ang[j][i] + Section_value_MUSCL(x_ang[j][i] + 0.5 * debug_1 * dt_m, y_ang[j][i] + 0.5 * debug_2 * dt_m, "U_x") * dt_m;
                 double y_tmp_n = y_ang[j][i] + Section_value_MUSCL(x_ang[j][i] + 0.5 * debug_1 * dt_m, y_ang[j][i] + 0.5 * debug_2 * dt_m, "U_y") * dt_m;
+
+                /*double t = _time_Flow_Evolution + dt_m;
+                double debug_x = x_tmp_n * cos(omega_1 * t) + y_tmp_n * sin(omega_1 * t);
+                double debug_y = -x_tmp_n * sin(omega_1 * t) + y_tmp_n * cos(omega_1 * t);*/
 
                 /*double debug_1_new = Section_value_MUSCL_Flow_Evo(x_ang[j][i], y_ang[j][i], all_marker, "U_x");
                 double debug_2_new = Section_value_MUSCL_Flow_Evo(x_ang[j][i], y_ang[j][i], all_marker, "U_y");
