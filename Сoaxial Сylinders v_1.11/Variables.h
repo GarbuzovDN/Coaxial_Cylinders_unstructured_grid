@@ -188,11 +188,11 @@ enum Inner_Wall {
     in_5, in_6, in_7, in_8
 };
 enum Outer_Wall {
-    out_1 = 9, out_2 
+    out_1 = 1, out_2 = 1
 
 
     /* Conf_0: out_1 = 1
-       Conf_0: out_2 = 2
+       Conf_0: out_2 = 1
        Conf_0:  in_1 = 2 */
 
        /* Conf_1: out_1 = 6 */

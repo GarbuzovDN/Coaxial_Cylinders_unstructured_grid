@@ -19,7 +19,7 @@ int main()
     {
         do
         {
-            Flow_Evolution("array"); //"line" или "array"
+            //Flow_Evolution("array"); //"line" или "array"
 
             Time();
             Redistricting();
@@ -41,7 +41,7 @@ int main()
 
             if (_time > 25.0) break;
 
-        } while (_time <= final_time/*E_U > 0.00001*/);
+        } while (/*_time <= final_time*/E_U > 0.00001);
                 
         Write_End();
     }

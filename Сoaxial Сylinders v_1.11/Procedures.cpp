@@ -575,7 +575,7 @@ void Initial_Conditions()
 
                 vectorElement[i].P = 0.0;
 
-                /* vectorElement[i].u_y = vectorElement[i].Coord_center_el.x / r_temp * U_an;
+                 /*vectorElement[i].u_y = vectorElement[i].Coord_center_el.x / r_temp * U_an;
                  vectorElement[i].U_y = vectorElement[i].u_y;
 
                  vectorElement[i].u_x = -vectorElement[i].Coord_center_el.y / r_temp * U_an;
@@ -1152,8 +1152,6 @@ void Calculation_Velocity_U()
                         int ii = vectorElement[i].Neighb_el[j];
                         double U_ik_x = 0.5 * (vectorElement[i].U_x + vectorElement[ii].U_x);
                         double U_ik_y = 0.5 * (vectorElement[i].U_y + vectorElement[ii].U_y);
-                        /*double U_ik_x = 0.5 * (Section_value_MUSCL_Face(x_ik, y_ik, "U_x", i) + Section_value_MUSCL_Face(x_ik, y_ik, "U_x", ii));
-                        double U_ik_y = 0.5 * (Section_value_MUSCL_Face(x_ik, y_ik, "U_y", i) + Section_value_MUSCL_Face(x_ik, y_ik, "U_y", ii));*/
                         double sc_n_U_ik = vectorElement[i].Normal[j][0] * U_ik_x + vectorElement[i].Normal[j][1] * U_ik_y;
                         double flux = sc_n_U_ik * vectorElement[i].Length_face_el[j];
                         double HH = vectorElement[i].h[j] + vectorElement[ii].h[j];
@@ -1214,7 +1212,7 @@ void Calculation_Velocity_U()
                     else
                     {
 
-                        double coeff = vectorElement[i].Length_face_el[j] / vectorElement[i].h[j];
+                        double coeff = vectorElement[i].Length_face_el[j] / vectorElement[i].h[j] / Re;
                         temp_sum_ux += coeff * Value_bound(x_ik, y_ik, i, j, "U_x");
                         temp_sum_uy += coeff * Value_bound(x_ik, y_ik, i, j, "U_y");
                         vectorElement[i].A_0 += coeff;
@@ -1247,14 +1245,11 @@ void Calculation_Velocity_U()
 
                     }
 
-                    double test_1 = Section_value_MUSCL_Face(x_ik, y_ik, "P", i);
-                    double test_2 = vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
-                    double test_4 = vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
-
                     Sp_x += 0.5 * (Section_value_MUSCL_Face(x_ik, y_ik, "P", i) + grad_neidghb) * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
                     Sp_y += 0.5 * (Section_value_MUSCL_Face(x_ik, y_ik, "P", i) + grad_neidghb) * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
                 }
 
+                // Коэффициенты Кориолиса
                 Sk_x = alfa_k * (2 * vectorElement[i].U_y + vectorElement[i].Coord_center_el.x) * vectorElement[i].Area_el;
                 Sk_y = alfa_k * (-2 * vectorElement[i].U_x + vectorElement[i].Coord_center_el.y) * vectorElement[i].Area_el;
 
@@ -1654,9 +1649,14 @@ void Dissipative_Function()
 
     string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
     ofstream Field_Q(_path + "/1. Field_Q_(El = " + to_string(max_el) + ").DAT");
+    ofstream Field_Q_debug(_path + "/1. Field_Q_debug(El = " + to_string(max_el) + ").DAT");
 
     Field_Q << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
         << "Q" << "\t" << "Q_analytic " << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+    
+    Field_Q_debug << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
+        << "U_ik_x_nx" << "\t" << "U_ik_y_ny " << "\t" << "U_ik_x_ny " << "\t" << "U_ik_y_nx " << "\t"
+        << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
 
     /* Нахождение функции диссипиации Q */
     for (int i = 1; i < max_el; i++)
@@ -1687,6 +1687,11 @@ void Dissipative_Function()
 
                     U_ik_x_ny += U_ik_x * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
                     U_ik_y_nx += U_ik_y * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+
+                    if (vectorElement[i].Num_bound == 1)
+                    {
+                        i = i;
+                    }
                 }
                 else
                 {
@@ -1698,6 +1703,12 @@ void Dissipative_Function()
 
                     U_ik_x_ny += U_ik_x * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
                     U_ik_y_nx += U_ik_y * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+
+                    if (vectorElement[i].Num_bound == 1)
+                    {
+                        i = i;
+                    }
+
                 }
                 
 
@@ -1709,8 +1720,16 @@ void Dissipative_Function()
             //double Q_analytic = pow((r / 0.96 * (1 + 0.04 / r / r)), 2);
             double Q_analytic = 4 * pow(1.0 / 12.0 * 1 / r / r, 2);
 
+            if (vectorElement[i].Num_bound == 1)
+            {
+                i = i;
+            }
+
             Field_Q << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
                 << vectorElement[i].Q / vectorElement[i].Area_el / vectorElement[i].Area_el << " \t "<< Q_analytic << " \t " << vectorElement[i].Num_el << endl;
+
+            Field_Q_debug << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+                << U_ik_x_nx << " \t " << U_ik_y_ny << " \t " << U_ik_x_ny << " \t " << U_ik_y_nx << " \t " << vectorElement[i].Num_el << endl;
         }
     }
 
