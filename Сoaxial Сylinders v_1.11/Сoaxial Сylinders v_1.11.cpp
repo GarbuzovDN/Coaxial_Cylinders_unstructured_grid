@@ -61,5 +61,6 @@ int main()
         } while (_time_Flow_Evolution <= final_time);
     }
 
-    //system("pause");
+    // Необходимо ставить консоль после расчета на паузу, когда запускается через exe 
+    system("pause");
 }

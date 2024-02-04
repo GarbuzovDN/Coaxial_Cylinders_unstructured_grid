@@ -1046,6 +1046,13 @@ bool Marker_in_element(double xx, double yy, int num)
 
 int Find_element_for_point(double xx, double yy, string param, int num = -10)
 {
+    /*
+    double xx - х координата точки
+    double yy - y координата точки
+    string param - TODO: данный параметр необходим, чтобы после найденного КО вернуть градиент по искомой переменной param
+    int num - номер контрольного объема в рамках (или среди соседей) которого следует искать точку. Если num не задан,
+              то используется значение по умолчанию (-10), а поиск идет по всем элементам сетки
+    */
 
     double temp_1 = 100;
     bool MarkerInOldElement = false;
@@ -1054,7 +1061,7 @@ int Find_element_for_point(double xx, double yy, string param, int num = -10)
 
     double num_el_for_pts;
            
-    /* Если num != -10, значит, что проверить принадлежность точки определенному КО */
+    /* Если num (флаг) не равен -10, то необходимо проверить принадлежность точки определенному КО, номер которого равен num */
     if (num != -10)
     {
         int num_el = vectorElement[num].Num_el;
@@ -1714,6 +1721,9 @@ void Dissipative_Function()
 
             }
 
+            // FIXME: Без умножения на 4 не бьется с аналитикой для безлопастной мешалки
+            //vectorElement[i].Q = 4 * 2 * (U_ik_x_nx * U_ik_x_nx + U_ik_y_ny * U_ik_y_ny) + pow(U_ik_x_ny + U_ik_y_nx, 2);
+
             vectorElement[i].Q = 2 * (U_ik_x_nx * U_ik_x_nx + U_ik_y_ny * U_ik_y_ny) + pow(U_ik_x_ny + U_ik_y_nx, 2);
 
             double r = sqrt(pow(vectorElement[i].Coord_center_el.x, 2) + pow(vectorElement[i].Coord_center_el.y, 2));
@@ -1797,7 +1807,7 @@ void Approximation_Accuracy(bool activate)
                     }
                 }
 
-                Q_Int += vectorElement[i].Q /*/ vectorElement[i].Area_el / vectorElement[i].Area_el*/;
+                Q_Int += vectorElement[i].Q / vectorElement[i].Area_el /*/ vectorElement[i].Area_el*/;
 
             }
         }
@@ -2327,14 +2337,14 @@ void Flow_Evolution_new(string param) {
             {
                 x += ii * h;
                 double check_y = 0;
-                int num_CV_for_chek = Find_element_for_point(x, y, "");
+                int num_CV_for_cheсk = Find_element_for_point(x, y, "");
 
-                if (vectorElement[num_CV_for_chek].Num_bound == calc)
+                if (vectorElement[num_CV_for_cheсk].Num_bound == calc)
                 {
                     marker.coord[0] = x;
                     marker.coord[1] = y;
 
-                    marker.CV_marker = num_CV_for_chek;
+                    marker.CV_marker = num_CV_for_cheсk;
 
                     vectorMarker.push_back(marker);
 
