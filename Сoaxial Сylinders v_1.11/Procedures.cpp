@@ -1117,7 +1117,7 @@ void Calculation_Velocity_U()
                     else
                     {
 
-                        double coeff = vectorElement[i].Length_face_el[j] / vectorElement[i].h[j];
+                        double coeff = vectorElement[i].Length_face_el[j] / vectorElement[i].h[j] / Re;
                         temp_sum_ux += coeff * Value_bound(x_ik, y_ik, i, j, "U_x");
                         temp_sum_uy += coeff * Value_bound(x_ik, y_ik, i, j, "U_y");
                         vectorElement[i].A_0 += coeff;
@@ -1548,7 +1548,7 @@ void Stream_Function()
 
             }
         }
-    } while (E_Stream >= 1e-8); // 1e-8
+    } while (E_Stream >= 1e-4); // 1e-8
 
 }
 
