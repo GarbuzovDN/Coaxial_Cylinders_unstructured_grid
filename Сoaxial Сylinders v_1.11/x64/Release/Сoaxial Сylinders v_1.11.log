@@ -1,16 +1,14 @@
-﻿  Procedures.cpp
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1075,20): warning C4244: return: преобразование "double" в "int", возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1090,32): warning C4244: return: преобразование "double" в "int", возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1113,28): warning C4244: return: преобразование "double" в "int", возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1274,46): warning C4101: a: неиспользованная локальная переменная
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1274,49): warning C4101: b: неиспользованная локальная переменная
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1274,52): warning C4101: c: неиспользованная локальная переменная
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1757,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1758,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1867,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(2052,37): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(2053,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(2199,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+﻿  Flow Evolution.cpp
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(187,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+  Procedures.cpp
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1179,46): warning C4101: a: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1179,49): warning C4101: b: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1179,52): warning C4101: c: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1662,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1663,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1772,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1958,37): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1959,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
   Сoaxial Сylinders v_1.11.cpp
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Main.h(169,12): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
   (компиляция исходного файла "Сoaxial Сylinders v_1.11.cpp")
@@ -18,6 +16,6 @@ C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial 
   Создание кода
   Previous IPDB not found, fall back to full compilation.
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(965): warning C4715: Section_value_MUSCL: значение возвращается не при всех путях выполнения
-  All 640 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 636 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Создание кода завершено
   Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Release\Сoaxial Сylinders v_1.11.exe

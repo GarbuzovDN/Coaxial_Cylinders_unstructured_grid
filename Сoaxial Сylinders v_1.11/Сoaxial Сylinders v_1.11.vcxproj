@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Flow Evolution.cpp" />
     <ClCompile Include="Procedures.cpp" />
     <ClCompile Include="Сoaxial Сylinders v_1.11.cpp" />
   </ItemGroup>
