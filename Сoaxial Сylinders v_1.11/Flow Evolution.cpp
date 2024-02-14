@@ -42,14 +42,14 @@ int Find_element_for_point(double xx, double yy, int num = -10)
     bool MarkerInNeibElements = false;
     bool MarkerInElement = false;
 
-    int num_el_for_pts;
+    int num_el_for_pts = 0;
 
     /* Если num (флаг) не равен -10, то необходимо проверить принадлежность точки определенному КО, номер которого равен num */
     if (num != -10)
     {
         int num_el = vectorElement[num].Num_el;
 
-        /* Проверим принадлежность точки к КО с номером num */
+        /* Проверим принадлежность точки к КО с номером num_el */
         MarkerInOldElement = Marker_in_element(xx, yy, num_el);
 
         if (MarkerInOldElement)
@@ -78,36 +78,34 @@ int Find_element_for_point(double xx, double yy, int num = -10)
 
         }
     }
-    else
+
+    /* Проверка по всем КО в том случае, когда MarkerInOldElement == MarkerInNeibElements == false.
+       Поиск идет с помощью векторного произведения */
+    for (int i = 0; i < vectorElement.size(); i++)
     {
 
-        /* Проверка по всем КО */
-        for (int i = 0; i < vectorElement.size(); i++)
+        if (vectorElement[i].Geom_el == 2)
         {
+            int num_el = vectorElement[i].Num_el;
 
-            if (vectorElement[i].Geom_el == 2)
+            MarkerInElement = Marker_in_element(xx, yy, num_el);
+
+            if (MarkerInElement)
             {
-                int num_el = vectorElement[i].Num_el;
-
-                MarkerInElement = Marker_in_element(xx, yy, num_el);
-
-                if (MarkerInElement)
-                {
-                    num_el_for_pts = vectorElement[num_el].Num_el;
-                    return num_el_for_pts;
-                }
+                num_el_for_pts = vectorElement[num_el].Num_el;
+                return num_el_for_pts;
             }
         }
-
-        /* Если не нашел элемент, к которому принадлежит точка, то возвращает флаг 0 */
-        return 0;
     }
+
+    /* Если элемент для точки не найден, то функция вернет -1 */
+    return -1;
 
 }
 
 double Section_value_MUSCL_Flow_Evo(double xx, double yy, int num_CV, string variable)
 {
-    /**
+    /*
     * Функция поиска градиента заданной переменной (Ux, Uy)
     *
     * @param xx       - х координата точки
@@ -220,46 +218,6 @@ void Flow_Evolution_new(string param) {
             double x_tmp_n = x_m[i] + Section_value_MUSCL(x_m[i] + 0.5 * debug_1 * dt_m, y_m[i] + 0.5 * debug_2 * dt_m, "U_x") * dt_m;
             double y_tmp_n = y_m[i] + Section_value_MUSCL(x_m[i] + 0.5 * debug_1 * dt_m, y_m[i] + 0.5 * debug_2 * dt_m, "U_y") * dt_m;
 
-            /*Section_value_MUSCL(x_m[i], y_m[i], "NULL");
-
-            double debug = num_el_1;
-            for (int j = 0; j < 3; j++)
-            {
-                if (vectorElement[num_el_1].Neighb_el[j] == -1)
-                {
-                    double debug_1 = Value_bound(x_m[i], y_m[i], num_el_1, j, "U_x");
-                    double debug_2 = Value_bound(x_m[i], y_m[i], num_el_1, j, "U_y");
-
-                    x_tmp_n = x_m[i] + Value_bound(x_m[i], y_m[i], num_el_1, j, "U_x") * dt_m;
-                    y_tmp_n = y_m[i] + Value_bound(x_m[i], y_m[i], num_el_1, j, "U_y") * dt_m;
-
-                }
-            }*/
-
-            /*double x_tmp_n_1 = x_tmp_n + 1.5 * Section_value_MUSCL(x_tmp_n, y_tmp_n, "U_x") * dt_m - 0.5 * Section_value_MUSCL(x_m[i], y_m[i], "U_x") * dt_m;
-            double y_tmp_n_1 = y_tmp_n + 1.5 * Section_value_MUSCL(x_tmp_n, y_tmp_n, "U_y") * dt_m - 0.5 * Section_value_MUSCL(x_m[i], y_m[i], "U_y") * dt_m;
-
-            double Ux_test = Section_value_MUSCL(x_m[i], y_m[i], "U_x");
-            double Uy_test = Section_value_MUSCL(x_m[i], y_m[i], "U_y");*/
-
-            /*double xm_1 = Section_value_MUSCL(x_m[i], y_m[i], "U_x") * dt_m;
-            double ym_1 = Section_value_MUSCL(x_m[i], y_m[i], "U_y") * dt_m;
-
-            double xm_2 = Section_value_MUSCL((x_m[i] + dt_m / 3.0), (y_m[i] + xm_1 / 3.0), "U_x") * dt_m;
-            double ym_2 = Section_value_MUSCL((x_m[i] + dt_m / 3.0), (y_m[i] + ym_1 / 3.0), "U_y") * dt_m;
-
-            double xm_3 = Section_value_MUSCL((x_m[i] + dt_m / 3.0), (y_m[i] + xm_1 / 6.0 + xm_2 / 6.0), "U_x") * dt_m;
-            double ym_3 = Section_value_MUSCL((x_m[i] + dt_m / 3.0), (y_m[i] + ym_1 / 6.0 + ym_2 / 6.0), "U_y") * dt_m;
-
-            double xm_4 = Section_value_MUSCL((x_m[i] + dt_m / 2.0), (y_m[i] + xm_1 / 8.0 + 3 * xm_3 / 8.0), "U_x") * dt_m;
-            double ym_4 = Section_value_MUSCL((x_m[i] + dt_m / 2.0), (y_m[i] + ym_1 / 8.0 + 3 * ym_3 / 8.0), "U_y") * dt_m;
-
-            double xm_5 = Section_value_MUSCL(x_m[i + 1], (y_m[i] + xm_1 / 2.0 - 3 * xm_3 / 2.0 + 2 * xm_4), "U_x") * dt_m;
-            double ym_5 = Section_value_MUSCL(x_m[i + 1], (y_m[i] + ym_1 / 2.0 - 3 * ym_3 / 2.0 + 2 * ym_4), "U_y") * dt_m;
-
-            double x_tmp_n_1 = x_m[i] + 1.0 / 6.0 * (xm_1 + 4 * xm_4 + xm_5);
-            double y_tmp_n_1 = y_m[i] + 1.0 / 6.0 * (ym_1 + 4 * ym_4 + ym_5);*/
-
             x_m[i] = x_tmp_n;
             y_m[i] = y_tmp_n;
 
@@ -313,39 +271,49 @@ void Flow_Evolution_new(string param) {
         {
             CreateDirectoryA(_path.c_str(), NULL);
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::trunc);
-            Integral_Char << "time\t" << "gamma\t" << "N1\t" << "N2\t" << "\t\t" << "Re = " << Re << endl;
+            Integral_Char << "time\t" << "rotation\t" << "gamma\t" << "N1\t" << "N2\t" << "\t\t" << "Re = " << Re << endl;
 
-            double h = 0.9;
+            double h = 0.025;
             double x = 0.0;
-            double y = 0.0;
+            double y = -1.0;
 
-            int ii = 0;
+            int i_y = 0;
 
             do
             {
-                x += ii * h;
-                double check_y = 0;
-                int num_CV_for_cheсk = Find_element_for_point(x, y);
+                int i_x = 0;
+                y += h;
 
-                if (vectorElement[num_CV_for_cheсk].Num_bound == calc)
+                do
                 {
-                    marker.coord[0] = x;
-                    marker.coord[1] = y;
+                    x = i_x * h;
 
-                    marker.CV_marker = num_CV_for_cheсk;
+                    int num_CV_for_cheсk = Find_element_for_point(x, y);
 
-                    vectorMarker.push_back(marker);
+                    if (num_CV_for_cheсk != -1) 
+                    {
+                        if (vectorElement[num_CV_for_cheсk].Num_bound == calc)
+                        {
+                            marker.coord[0] = x;
+                            marker.coord[1] = y;
 
-                }
+                            marker.CV_marker = num_CV_for_cheсk;
 
-                ii++;
+                            vectorMarker.push_back(marker);
+                        }
+                    }
 
-            } while (ii * h < 1.0);
+                    i_x++;
 
+                } while (x < 1.0);
+
+                i_y++;
+
+            } while (y < 1.0);
         }
 
         /* Запись в файл */
-        if (Iter_Glob % 1 == 0 || Iter_Glob == 1)
+        if (Iter_Glob % 50 == 0 || Iter_Glob == 1)
         {
             int temp_time = Iter_Glob;
             ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
@@ -359,10 +327,7 @@ void Flow_Evolution_new(string param) {
                 double y = marker.coord[1];
                 int CV = marker.CV_marker;
 
-                // TODO: Вынести открывание файла для записи в конец за цикл
-                //ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::app);
-                ofstream Flow_Evo_test(_path + "/Flow Evolution.DAT", ios_base::app);
-                //Flow_Evo << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
+                Flow_Evo << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
                 Flow_Evo_test << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
 
                 int debug = 0;
@@ -383,18 +348,26 @@ void Flow_Evolution_new(string param) {
                 3. Section_value_MUSCL____________________(coord_marker[i][0], coord_marker[i][1], "___",CV_marker[i] )
              */
 
-            double x = marker.coord[0];
-            double y = marker.coord[1];
+            double x = marker.coord[0], y = marker.coord[1];
+            double x_tmp_n, y_tmp_n;
             int CV = Find_element_for_point(x, y, marker.CV_marker);
 
+            /* Если маркер вышел за область моделирования или попал внутрь лопасти, то берем его старые координаты */
+            if (CV == -1) 
+            {
+                                
+                CV = marker.CV_marker;
+
+            }           
+            
             double U_x = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_x");
             double U_y = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_y");
 
-            double x_tmp_n = x + Section_value_MUSCL_Flow_Evo(x + 0.5 * U_x * dt_m, y + 0.5 * U_y * dt_m, CV, "U_x") * dt_m;
-            double y_tmp_n = y + Section_value_MUSCL_Flow_Evo(x + 0.5 * U_x * dt_m, y + 0.5 * U_y * dt_m, CV, "U_y") * dt_m;
+            x_tmp_n = x + Section_value_MUSCL_Flow_Evo(x + 0.5 * U_x * dt_m, y + 0.5 * U_y * dt_m, CV, "U_x") * dt_m;
+            y_tmp_n = y + Section_value_MUSCL_Flow_Evo(x + 0.5 * U_x * dt_m, y + 0.5 * U_y * dt_m, CV, "U_y") * dt_m;
 
             /* Расчет интегральной характеристики */
-            /*{
+            {
                 if ((x > 0 && y > 0))
                 {
                     integral_char_N1++;
@@ -406,7 +379,7 @@ void Flow_Evolution_new(string param) {
                     integral_char_N2++;
                     int debug = 0;
                 }
-            }*/
+            }
 
             marker.coord[0] = x_tmp_n;
             marker.coord[1] = y_tmp_n;
@@ -419,7 +392,9 @@ void Flow_Evolution_new(string param) {
         {
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::app);
             double integral_char = abs(integral_char_N1 - integral_char_N2) / (integral_char_N1 + integral_char_N2);
-            Integral_Char << _time_Flow_Evolution << "\t" << integral_char << "\t" << integral_char_N1 << "\t" << integral_char_N2 << endl;
+            double rotation = (_time_Flow_Evolution * omega_1) / 2.0 / Pi;
+            Integral_Char << _time_Flow_Evolution << "\t" << rotation << "\t"
+                << integral_char << "\t" << integral_char_N1 << "\t" << integral_char_N2 << endl;
 
             double debug = 0.0;
         }

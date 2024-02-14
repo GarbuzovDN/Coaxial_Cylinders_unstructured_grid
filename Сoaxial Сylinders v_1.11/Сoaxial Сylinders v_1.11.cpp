@@ -1,5 +1,6 @@
 ﻿#include "Main.h"
 #include "Declaration of procedures.h"
+#include "chrono"
 
 int main()
 {
@@ -45,22 +46,26 @@ int main()
                 
         Write_End();
     }
-
+        
     if (Start_Flow_Evolution == true)
     {
-
+        auto start_time = chrono::high_resolution_clock::now();
         Redistricting1();
 
         do
         {
             Iter_Glob++;
 
-            Flow_Evolution("array"); //"line" или "array"
+            Flow_Evolution_new("array"); //"line" или "array"
             Time();
 
         } while (_time_Flow_Evolution <= final_time);
+
+        auto end_time = chrono::high_resolution_clock::now();
+        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
+        cout << "Program execution time: " << duration.count() << " milliseconds" << std::endl;
     }
 
     // Необходимо ставить консоль после расчета на паузу при запуске через exe 
-    system("pause");
+    //system("pause");
 }

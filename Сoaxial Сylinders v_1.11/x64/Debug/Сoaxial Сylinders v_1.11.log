@@ -1,4 +1,3 @@
 ﻿  Flow Evolution.cpp
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(187,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(106): warning C4715: Find_element_for_point: значение возвращается не при всех путях выполнения
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(185,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
   Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe
