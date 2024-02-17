@@ -6,7 +6,9 @@ void Find_String(string Str);
 
 void Mesh_Init();
 
-void Blank(double t);
+void Blank();
+
+void Blank_new(double t);
 
 void Redistricting();
 

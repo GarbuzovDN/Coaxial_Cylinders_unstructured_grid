@@ -321,14 +321,25 @@ void Flow_Evolution_new(string param) {
             Flow_Evo << "time = " << (_time_Flow_Evolution + dt_m) << "\t" << "Re = " << Re << endl;
             Flow_Evo_test << "time = " << (_time_Flow_Evolution + dt_m) << "\t" << "Re = " << Re << endl;
 
+            /* Параметр для передачи в бланикровку для поворота лопасти */
+            double t = _time_Flow_Evolution + dt_m;
+            Blank_new(t);
+
             for (const auto& marker : vectorMarker)
             {
                 double x = marker.coord[0];
                 double y = marker.coord[1];
                 int CV = marker.CV_marker;
 
-                Flow_Evo << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
-                Flow_Evo_test << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
+                /* Запись в файл в СК, когда крутится стенка */
+                /*Flow_Evo << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
+                Flow_Evo_test << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;*/
+
+                /* Перевод координат в СК, где крутится лопасть */
+                double debug_x = x * cos(omega_1 * t) + y * sin(omega_1 * t);
+                double debug_y = -x * sin(omega_1 * t) + y * cos(omega_1 * t);
+                Flow_Evo << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                Flow_Evo_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
 
                 int debug = 0;
             }
