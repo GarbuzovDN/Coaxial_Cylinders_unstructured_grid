@@ -198,14 +198,14 @@ vector<Marker> vectorMarker;
 
 /* Директория файла с сеткой */
 string File_Mesh_Name =
-"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_5_(El=5742).msh";
+"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_3_(El=6943).msh";
 //"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh"; 
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Save/Re=1.000000/El = 5742/Save_(El=5742)_1.DAT";
+"Documents/Save/Re=1.000000/El = 6943/Save_(El=6943)_1.DAT";
 
 bool Start_Flow_Evolution = true;
 
