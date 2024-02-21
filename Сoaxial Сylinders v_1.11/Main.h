@@ -214,4 +214,4 @@ double dt = 0.001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
-double final_time = 50;
+double final_time = 7.8;

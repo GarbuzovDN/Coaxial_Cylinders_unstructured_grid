@@ -3,6 +3,9 @@
 
 void Blank()
 {
+    /*
+    * Процедура записывает бланкировочный файл для мешалки
+    */
 
     int Local_count = 0;
     int Local_it = 0;
@@ -95,7 +98,7 @@ void Blank_new(double t = 0.0)
 
 void Save_Write()
 {
-    //// FIXME: Добавить сохранение нумерации граничных элементов enum Inner_Wall, enum Outer_Wall
+    // FIXME: Добавить сохранение нумерации граничных элементов enum Inner_Wall, enum Outer_Wall
     string _path = "Documents/Save/Re=" + to_string(Re) + "/El = " + to_string(max_el);
     CreateDirectoryA(_path.c_str(), NULL);
 

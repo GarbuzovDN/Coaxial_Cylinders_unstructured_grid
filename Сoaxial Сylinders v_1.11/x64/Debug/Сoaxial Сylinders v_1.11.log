@@ -1,2 +1,4 @@
-﻿  Writing Functions.cpp
+﻿  Flow Evolution.cpp
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(222,36): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(410,28): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
   Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe

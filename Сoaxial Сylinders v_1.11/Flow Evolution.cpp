@@ -11,6 +11,7 @@ bool Marker_in_element(double xx, double yy, int num)
     * @param num   - номер элемента, относительно которого идет проверка
     */
 
+    // Координаты вершин треугольника (элемента сетки)
     double x1 = vectorElement[num].Coord_vert[0].x;
     double y1 = vectorElement[num].Coord_vert[0].y;
     double x2 = vectorElement[num].Coord_vert[1].x;
@@ -18,6 +19,7 @@ bool Marker_in_element(double xx, double yy, int num)
     double x3 = vectorElement[num].Coord_vert[2].x;
     double y3 = vectorElement[num].Coord_vert[2].y;
 
+    // Барицентрические координаты (векторные произведения трех сторон треугольника)
     double a = (x1 - xx) * (y2 - y1) - (x2 - x1) * (y1 - yy);
     double b = (x2 - xx) * (y3 - y2) - (x3 - x2) * (y2 - yy);
     double c = (x3 - xx) * (y1 - y3) - (x1 - x3) * (y3 - yy);
@@ -30,14 +32,14 @@ bool Marker_in_element(double xx, double yy, int num)
 int Find_element_for_point(double xx, double yy, int num = -10)
 {
     /*
-    * Функция ищет номер контрольного объема, в котором находится заданная точка
+    * Функция ищет номер контрольного объема, в котором находится заданная точка с помошью барицентрических координат
     * @param xx - х координата точки
     * @param yy - y координата точки
     * @param num - номер контрольного объема, в рамках (или среди соседей) которого следует искать точку. 
                    Если num не задан, то используется значение по умолчанию (-10), а поиск идет по всем элементам сетки
     */
 
-    double temp_1 = 100;
+    // Флаги нахождения/НЕнахождения точки в элементе (треугольнике)
     bool MarkerInOldElement = false;
     bool MarkerInNeibElements = false;
     bool MarkerInElement = false;
@@ -103,6 +105,45 @@ int Find_element_for_point(double xx, double yy, int num = -10)
 
 }
 
+int Find_element_for_point_old(double xx, double yy)
+{
+    /*
+    * Функция ищет номер контрольного объема, в котором находится заданная точка с помошью расстояния до ближайшего центра КО
+    * Предполагается использовать эту функцию в исключительных случаях
+    * 
+    * @param xx - х координата точки
+    * @param yy - y координата точки
+    */
+
+    double dl;
+    double temp_1 = 100;
+
+    int num_el_for_pts = -1;
+
+    for (int i = 0; i < vectorElement.size(); i++)
+    {
+        if (vectorElement[i].Geom_el == 2)
+        {
+
+            dl = sqrt(pow((vectorElement[i].Coord_center_el.x - xx), 2) + pow((vectorElement[i].Coord_center_el.y - yy), 2));
+
+            if (dl < temp_1)
+            {
+
+                temp_1 = dl;
+                num_el_for_pts = vectorElement[i].Num_el;
+
+                i = i;
+
+            }
+        }
+
+    }
+
+    return num_el_for_pts;
+
+}
+
 double Section_value_MUSCL_Flow_Evo(double xx, double yy, int num_CV, string variable)
 {
     /*
@@ -110,13 +151,9 @@ double Section_value_MUSCL_Flow_Evo(double xx, double yy, int num_CV, string var
     *
     * @param xx       - х координата точки
     * @param yy       - y координата точки
-    * @param CV       - номер контрольного объема, внутри которого может находиться точка
+    * @param CV       - номер контрольного объема, внутри которого находится точка
     * @param variable - переменная, для которой ищется градиент
     */
-
-    double temp_1 = 100;
-
-    double test = 0.0;
 
     /* Интерполяция внутри элемента */
     {
@@ -159,30 +196,47 @@ void Flow_Evolution_new(string param) {
     if (param == "line")
     {
         string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Fixed Profile";
-        CreateDirectoryA(_path.c_str(), NULL);
-
+                
+        int all_marker = 0;
+        double t = 0.0;
         double h = 0.05;
+
+        // Переменная для перехода в СК, где крутится лопасть
+        bool WallRotate = false;
 
         /* Начально условие */
         if (Iter_Glob == 1)
         {
-
-            int ii = 0;
+            CreateDirectoryA(_path.c_str(), NULL);
+                        
+            double x, y;
+            int i_x = 0;
+            double r = 0.0, angle = 0.0;
 
             do
             {
+                r = R0 + i_x * h;
+                angle = 45 * Pi / 180;
 
-                double r = R0 + ii * h;
-                double angle = 45 * Pi / 180;
+                x = r * cos(angle);
+                y = r * sin(angle);
 
-                x_m.push_back(r * cos(angle));
-                y_m.push_back(r * sin(angle));
+                int num_CV_for_cheсk = Find_element_for_point(x, y);
 
-                ii++;
+                // Если в начальный момент времени элемент не нашелся, то ищем его старым способом 
+                // (сравнивая расстояния от точки до центра КО)
+                if (num_CV_for_cheсk == -1) 
+                    num_CV_for_cheсk = Find_element_for_point_old(x, y);
 
-            } while ((0.2 + ii * h) <= 1.0);
+                marker.coord[0] = x;
+                marker.coord[1] = y;
+                marker.CV_marker = num_CV_for_cheсk;
 
-            count_marker = x_m.size();
+                vectorMarker.push_back(marker);
+
+                i_x++;
+
+            } while (r < 1.0);
         }
 
         /* Запись в файл */
@@ -194,67 +248,109 @@ void Flow_Evolution_new(string param) {
             Flow_Evo << "time = " << (_time_Flow_Evolution + dt_m) << "\t" << "Re = " << Re << endl;
             Flow_Evo_test << "time = " << (_time_Flow_Evolution + dt_m) << "\t" << "Re = " << Re << endl;
 
-            for (int i = 0; i < count_marker; i++)
+            if (!WallRotate)
             {
+                /* Параметр, который передается в бланикровку для поворота лопасти */
+                t = _time_Flow_Evolution + dt_m;
+                Blank_new(t);
+            }
 
-                ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::app);
-                ofstream Flow_Evo_test(_path + "/Flow Evolution.DAT", ios_base::app);
-                Flow_Evo << fixed << setprecision(6) << x_m[i] << "\t" << y_m[i] << "\t" << i << endl;
-                Flow_Evo_test << fixed << setprecision(6) << x_m[i] << "\t" << y_m[i] << "\t" << i << endl;
+            for (const auto& marker : vectorMarker)
+            {
+                double x = marker.coord[0];
+                double y = marker.coord[1];
+                int CV = marker.CV_marker;
 
-                i = i;
+                if (WallRotate)
+                {
+                    /* Запись в файл в СК, когда крутится стенка */
+                    Flow_Evo << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
+                    Flow_Evo_test << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
+                }
+
+                if (!WallRotate)
+                {
+                    /* Перевод координат в СК, где крутится лопасть */
+                    double debug_x = x * cos(omega_1 * t) + y * sin(omega_1 * t);
+                    double debug_y = -x * sin(omega_1 * t) + y * cos(omega_1 * t);
+                    Flow_Evo << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                    Flow_Evo_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                }
+
+                int debug = 0;
             }
 
             double debug = 0.0;
         }
 
-        /* Основной цикл */
-        for (int i = count_marker - 1; i >= 0; i--)
+        /* Добавление и удаление маркеров */
+        for (int i = 1; i < vectorMarker.size(); i++)
         {
+            double x0 = vectorMarker[i - 1].coord[0];
+            double x1 = vectorMarker[i].coord[0];
 
-            double debug_1 = Section_value_MUSCL(x_m[i], y_m[i], "U_x");
-            double debug_2 = Section_value_MUSCL(x_m[i], y_m[i], "U_y");
+            double y0 = vectorMarker[i - 1].coord[1];
+            double y1 = vectorMarker[i].coord[1];
 
-            double x_tmp_n = x_m[i] + Section_value_MUSCL(x_m[i] + 0.5 * debug_1 * dt_m, y_m[i] + 0.5 * debug_2 * dt_m, "U_x") * dt_m;
-            double y_tmp_n = y_m[i] + Section_value_MUSCL(x_m[i] + 0.5 * debug_1 * dt_m, y_m[i] + 0.5 * debug_2 * dt_m, "U_y") * dt_m;
+            double dx = (x1 - x0) * (x1 - x0);
+            double dy = (y1 - y0) * (y1 - y0);
 
-            x_m[i] = x_tmp_n;
-            y_m[i] = y_tmp_n;
-
-        }
-
-        /* Добавление маркеров */
-        for (int i = 1; i < count_marker; i++)
-        {
-
-            double dx = (x_m[i] - x_m[i - 1]) * (x_m[i] - x_m[i - 1]);
-            double dy = (y_m[i] - y_m[i - 1]) * (y_m[i] - y_m[i - 1]);
+            double debug_0 = pow(x0 * x0 + y0 * y0, 0.5);
+            double debug_1 = pow(x1 * x1 + y1 * y1, 0.5);
 
             double ds = sqrt(dx + dy);
 
+            // Добавление 
             if (ds > h + 0.01)
             {
-                x_m.resize(x_m.size() + 1);
-                y_m.resize(x_m.size() + 1);
+                vectorMarker.resize(vectorMarker.size() + 1);
 
-                // смещение от i + 1 до count_marker вправо на 1
-                for (int j = count_marker; j >= i + 1; j--)
+                // Смещение от элементов вектора маркеров вправо на 1
+                for (int j = vectorMarker.size() - 1; j >= i + 1; j--)
                 {
-
-                    x_m[j] = x_m[j - 1];
-                    y_m[j] = y_m[j - 1];
-
+                    vectorMarker[j] = vectorMarker[j - 1];
                 }
 
-                // вставка нового маркера
-                x_m[i] = 0.5 * (x_m[i - 1] + x_m[i]);
-                y_m[i] = 0.5 * (y_m[i - 1] + y_m[i]);
-
-                count_marker++;
-
+                // Вставка нового маркера
+                vectorMarker[i].coord[0] = 0.5 * (x0 + x1);
+                vectorMarker[i].coord[1] = 0.5 * (y0 + y1);
             }
 
+            // Удаление
+            if (ds < 0.5 * h)
+            {
+                vectorMarker.erase(vectorMarker.begin() + i);
+            }
         }
+
+        /* Основный цикл */
+        for (auto& marker : vectorMarker)
+        {
+            double x = marker.coord[0], y = marker.coord[1];
+            double x_tmp_n, y_tmp_n;
+            int CV = Find_element_for_point(x, y, marker.CV_marker);
+
+            /* Если маркер вышел за область моделирования или попал внутрь лопасти, то берем коорд. центра последнего КО */
+            if (CV == -1)
+            {
+                CV = marker.CV_marker;
+                /*x = vectorElement[CV].Coord_center_el.x;
+                y = vectorElement[CV].Coord_center_el.y;*/
+            }
+
+            double U_x = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_x");
+            double U_y = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_y");
+
+            x_tmp_n = x + Section_value_MUSCL_Flow_Evo(x + 0.5 * U_x * dt_m, y + 0.5 * U_y * dt_m, CV, "U_x") * dt_m;
+            y_tmp_n = y + Section_value_MUSCL_Flow_Evo(x + 0.5 * U_x * dt_m, y + 0.5 * U_y * dt_m, CV, "U_y") * dt_m;
+
+            marker.coord[0] = x_tmp_n;
+            marker.coord[1] = y_tmp_n;
+            marker.CV_marker = CV;
+
+            int debug = 0;
+        }
+
     }
 
     if (param == "array")
@@ -265,6 +361,10 @@ void Flow_Evolution_new(string param) {
         double integral_char_N1 = 0.0;
         double integral_char_N2 = 0.0;
         int all_marker = 0;
+        double t = 0.0;
+
+        // Переменная для перехода в СК, где крутится лопасть
+        bool WallRotate = false;
 
         /* Начально условие */
         if (Iter_Glob == 1)
@@ -321,9 +421,13 @@ void Flow_Evolution_new(string param) {
             Flow_Evo << "time = " << (_time_Flow_Evolution + dt_m) << "\t" << "Re = " << Re << endl;
             Flow_Evo_test << "time = " << (_time_Flow_Evolution + dt_m) << "\t" << "Re = " << Re << endl;
 
-            /* Параметр для передачи в бланикровку для поворота лопасти */
-            double t = _time_Flow_Evolution + dt_m;
-            Blank_new(t);
+            if (!WallRotate) 
+            {
+                /* Параметр, который передается в бланикровку для поворота лопасти */
+                t = _time_Flow_Evolution + dt_m;
+                /* ОТКЛЮЧИТЬ, ЕСЛИ КРУТИТСЯ СТЕНКА */
+                Blank_new(t);
+            }
 
             for (const auto& marker : vectorMarker)
             {
@@ -331,15 +435,21 @@ void Flow_Evolution_new(string param) {
                 double y = marker.coord[1];
                 int CV = marker.CV_marker;
 
-                /* Запись в файл в СК, когда крутится стенка */
-                /*Flow_Evo << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
-                Flow_Evo_test << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;*/
-
-                /* Перевод координат в СК, где крутится лопасть */
-                double debug_x = x * cos(omega_1 * t) + y * sin(omega_1 * t);
-                double debug_y = -x * sin(omega_1 * t) + y * cos(omega_1 * t);
-                Flow_Evo << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
-                Flow_Evo_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                if (WallRotate)
+                {
+                    /* Запись в файл в СК, когда крутится стенка */
+                    Flow_Evo << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
+                    Flow_Evo_test << fixed << setprecision(6) << x << "\t" << y << "\t" << CV << "\t" << endl;
+                }
+                
+                if (!WallRotate)
+                {
+                    /* Перевод координат в СК, где крутится лопасть */
+                    double debug_x = x * cos(omega_1 * t) + y * sin(omega_1 * t);
+                    double debug_y = -x * sin(omega_1 * t) + y * cos(omega_1 * t);
+                    Flow_Evo << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                    Flow_Evo_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                }
 
                 int debug = 0;
             }
@@ -350,25 +460,14 @@ void Flow_Evolution_new(string param) {
         /* Основный цикл */
         for (auto& marker : vectorMarker)
         {
-            // TODO: сделать следующиим образом 
-            /* обход одномерный
-                1.вычисляет векторное произведение dot по КО CV_marker & coord_marker
-                2. if (dot false) {поиск нового контрольного объема и перепприсвоение CV_marker[i]}
-                    - обход по всем элементам;
-                    - обход по КО, опирающимся на вершины текущего
-                3. Section_value_MUSCL____________________(coord_marker[i][0], coord_marker[i][1], "___",CV_marker[i] )
-             */
-
             double x = marker.coord[0], y = marker.coord[1];
             double x_tmp_n, y_tmp_n;
             int CV = Find_element_for_point(x, y, marker.CV_marker);
 
             /* Если маркер вышел за область моделирования или попал внутрь лопасти, то берем его старые координаты */
             if (CV == -1) 
-            {
-                                
+            {                                
                 CV = marker.CV_marker;
-
             }           
             
             double U_x = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_x");
@@ -399,6 +498,7 @@ void Flow_Evolution_new(string param) {
             int debug = 0;
         }
 
+        /* Запись интегральной характеристики */
         if (Iter_Glob % 200 == 0 || Iter_Glob == 1)
         {
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::app);
