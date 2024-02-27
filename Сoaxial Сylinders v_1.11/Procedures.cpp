@@ -14,11 +14,6 @@ void Create_WriteDir()
     _path = "Documents/Figure/Re=" + to_string(Re);
     CreateDirectoryA(_path.c_str(), NULL);
     _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
-    CreateDirectoryA(_path.c_str(), NULL);
-    _path = "Documents/Save";
-    CreateDirectoryA(_path.c_str(), NULL);
-    _path = "Documents/Save/Re=" + to_string(Re);
-    CreateDirectoryA(_path.c_str(), NULL);
 }
 
 void Find_String(string Str)
@@ -80,6 +75,10 @@ void Save_Read()
         File_Read_Save >> Re >> num_el_1 >> num_el_2 >> num_el_3;
         File_Read_Save >> num_el_1_MUSCL >> xx_1 >> yy_1 >> E_U >> E_U_Num_el;
         File_Read_Save >> maxP_Corr >> maxP_Cor_num_el >> maxdivU >> maxdivU_num_el >> dt;
+
+        /* Заполнение нумерации гарниц */
+        File_Read_Save >> border.calc >> border.in_1;
+        File_Read_Save >> border.out_1 >> border.out_2;
 
         Point node;
 
@@ -233,7 +232,7 @@ void Mesh_Init()
                 el.Coord_vert[1] = vectorPoint[el.Num_vert[1]];
                 el.Coord_vert[2] = vectorPoint[el.Num_vert[2]];
 
-                el.Num_bound = calc;
+                el.Num_bound = border.calc;
 
                 /* Блок нахождения нормали к граням элемента */
                 {
@@ -570,7 +569,7 @@ double Value_bound(double x, double y, int ii, int jj, string param)
 
     if (param == "U_x")
     {
-        if (vectorElement[ii].Num_bound == out_1 || vectorElement[ii].Num_bound == out_2)
+        if (vectorElement[ii].Num_bound == border.out_1 || vectorElement[ii].Num_bound == border.out_2)
         {
             value_bound = -omega_1 * sqrt(x * x + y * y) * vectorElement[ii].Normal[jj][1];
         }
@@ -581,7 +580,7 @@ double Value_bound(double x, double y, int ii, int jj, string param)
     }
     if (param == "U_y")
     {
-        if (vectorElement[ii].Num_bound == out_1 || vectorElement[ii].Num_bound == out_2)
+        if (vectorElement[ii].Num_bound == border.out_1 || vectorElement[ii].Num_bound == border.out_2)
         {
             value_bound = omega_1 * sqrt(x * x + y * y) * vectorElement[ii].Normal[jj][0];
         }
@@ -1479,7 +1478,7 @@ void Stream_Function()
                         S_dS += vectorElement[i].Length_face_el[j] / HH;
                     }
 
-                    else if (vectorElement[i].Num_bound == out_1 || vectorElement[i].Num_bound == out_2)
+                    else if (vectorElement[i].Num_bound == border.out_1 || vectorElement[i].Num_bound == border.out_2)
                     {
                         double HH = 2.0 * vectorElement[i].h[j];
                         S_dS += vectorElement[i].Length_face_el[j] / HH;

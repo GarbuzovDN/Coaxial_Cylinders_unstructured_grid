@@ -392,7 +392,7 @@ void Flow_Evolution_new(string param) {
 
                     if (num_CV_for_cheñk != -1) 
                     {
-                        if (vectorElement[num_CV_for_cheñk].Num_bound == calc)
+                        if (vectorElement[num_CV_for_cheñk].Num_bound == border.calc)
                         {
                             marker.coord[0] = x;
                             marker.coord[1] = y;

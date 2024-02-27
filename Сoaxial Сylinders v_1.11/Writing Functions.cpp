@@ -15,8 +15,8 @@ void Blank()
     /* Запись заголовка бланкировочного файла */
     for (int i = 1; i < max_el; i++)
     {
-        if (vectorElement[i].Geom_el == 1 && (vectorElement[i].Num_bound != out_1 && vectorElement[i].Num_bound != out_2
-            && vectorElement[i].Num_bound != calc))
+        if (vectorElement[i].Geom_el == 1 && (vectorElement[i].Num_bound != border.out_1 && vectorElement[i].Num_bound != border.out_2
+            && vectorElement[i].Num_bound != border.calc))
         {
             Local_it++;
             if (Local_it == 1) Local_count = i;
@@ -30,8 +30,8 @@ void Blank()
     /* Запись коррдинат */
     for (int i = 0; i < max_el; i++)
     {
-        if (vectorElement[i].Geom_el == 1 && (vectorElement[i].Num_bound != out_1 && vectorElement[i].Num_bound != out_2
-            && vectorElement[i].Num_bound != calc))
+        if (vectorElement[i].Geom_el == 1 && (vectorElement[i].Num_bound != border.out_1 && vectorElement[i].Num_bound != border.out_2
+            && vectorElement[i].Num_bound != border.calc))
         {
             File_Blank << fixed << setprecision(4) << vectorElement[i].Coord_vert[0].x << " \t " << vectorElement[i].Coord_vert[0].y << endl;
         }
@@ -69,8 +69,8 @@ void Blank_new(double t = 0.0)
     /* Запись коррдинат */
     for (int i = 0; i < max_el; i++)
     {
-        if (vectorElement[i].Geom_el == 1 && (vectorElement[i].Num_bound != out_1 && vectorElement[i].Num_bound != out_2
-            && vectorElement[i].Num_bound != calc))
+        if (vectorElement[i].Geom_el == 1 && (vectorElement[i].Num_bound != border.out_1 && vectorElement[i].Num_bound != border.out_2
+            && vectorElement[i].Num_bound != border.calc))
         {
             double debug_x = vectorElement[i].Coord_vert[0].x * cos(teta_0 + omega_1 * t) + vectorElement[i].Coord_vert[0].y * sin(teta_0 + omega_1 * t);
             double debug_y = -vectorElement[i].Coord_vert[0].x * sin(teta_0 + omega_1 * t) + vectorElement[i].Coord_vert[0].y * cos(teta_0 + omega_1 * t);
@@ -99,7 +99,7 @@ void Blank_new(double t = 0.0)
 void Save_Write()
 {
     // FIXME: Добавить сохранение нумерации граничных элементов enum Inner_Wall, enum Outer_Wall
-    string _path = "Documents/Save/Re=" + to_string(Re) + "/El = " + to_string(max_el);
+    string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Save";
     CreateDirectoryA(_path.c_str(), NULL);
 
     ofstream File_Save(_path + "/Save_(El=" + to_string(max_el) + ").DAT", ios_base::trunc);
@@ -107,6 +107,10 @@ void Save_Write()
     File_Save << fixed << setprecision(25) << Re << "\t" << num_el_1 << "\t" << num_el_2 << "\t" << num_el_3 << endl;
     File_Save << fixed << setprecision(25) << num_el_1_MUSCL << "\t" << xx_1 << "\t" << yy_1 << "\t" << E_U << "\t" << E_U_Num_el << endl;
     File_Save << fixed << setprecision(25) << maxP_Corr << "\t" << maxP_Cor_num_el << "\t" << maxdivU << "\t" << maxdivU_num_el << "\t" << dt << endl;
+
+    /* Запись нумерации гарниц */
+    File_Save << border.calc << "\t" << border.in_1 << endl;
+    File_Save << border.out_1 << "\t" << border.out_2 << endl;
 
     /* Запись структуры точек */
     for (int i = 0; i < max_node; i++)

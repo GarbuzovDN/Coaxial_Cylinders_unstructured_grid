@@ -1,12 +1,19 @@
 ﻿  Flow Evolution.cpp
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(309,28): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+  Procedures.cpp
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1133,46): warning C4101: a: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1133,49): warning C4101: b: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1133,52): warning C4101: c: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1616,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1617,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+  Writing Functions.cpp
   Сoaxial Сylinders v_1.11.cpp
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Main.h(169,12): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Main.h(171,12): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
   (компиляция исходного файла "Сoaxial Сylinders v_1.11.cpp")
   
   Создание кода
-  29 of 608 functions ( 4.8%) were compiled, the rest were copied from previous compilation.
+  16 of 542 functions ( 3.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    120 functions had inline decision re-evaluated but remain unchanged
+    62 functions had inline decision re-evaluated but remain unchanged
   Создание кода завершено
   Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Release\Сoaxial Сylinders v_1.11.exe

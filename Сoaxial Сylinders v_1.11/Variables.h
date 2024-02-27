@@ -6,7 +6,6 @@
 #include <vector>
 #include <string>
 #include <windows.h>
-#include <map>
 
 using namespace std;
 
@@ -46,15 +45,6 @@ extern int maxP_Cor_num_el;
 extern double maxdivU;
 extern int maxdivU_num_el;
 
-/* Параметры маркерной визуализации */
-extern int count_marker;
-extern int count_angle;
-extern vector<double> x_m, y_m;
-extern vector<vector<double>>x_ang;
-extern vector<vector<double>>y_ang;
-extern double dt_m;
-extern map<int, int> num_el_for_marker;
-
 /* Параметры для оптимизированной маркерной визуализации */
 struct Marker
 {
@@ -64,6 +54,7 @@ struct Marker
     /* Псоледний КО, в котором находтлся маркер */
     int CV_marker;
 };
+extern double dt_m;
 
 extern Marker marker;
 extern vector<Marker> vectorMarker;
@@ -180,27 +171,35 @@ struct Element
 
 };
 
-enum Calculation_Area {
-    calc
-};
-enum Inner_Wall {
-    in_1 = 1, in_2, in_3, in_4,
-    in_5, in_6, in_7, in_8
-};
-enum Outer_Wall {
-    out_1 = 17, out_2
+// FIXME: Зашить нумерацию границ в файл сетки, чтобы не следить
+// за их правильностью в коде
+// Нумерация элепментов границ
+struct Border {
+    // Расчетная область
+    int calc;
+    // Первый элемент внутренней стенки
+    int in_1;
 
+    // Первый элемент внутренней стенки (1 дуга внешней стенки)
+    int out_1;
+    // Второй элемент внутренней стенки (2 дуга внешней стенки)
+    int out_2;
 
-    /* Conf_0: out_1 = 1
-       Conf_0: out_2 = 1
-       Conf_0:  in_1 = 2 */
+    /* Нумерация границ для разных конфигураций */
+    /*
+    Conf_0: out_1 = 1
+    Conf_0: out_2 = 1
+    Conf_0:  in_1 = 2
 
-       /* Conf_1: out_1 = 6 */
-       /* Conf_2: out_1 = 9 */
-       /* Conf_3: out_1 = 17 */
-       /* Conf_4: out_1 = 10 */
-       /* Conf_5: out_1 = 18 */
+    Conf_1: out_1 = 6
+    Conf_2: out_1 = 9
+    Conf_3: out_1 = 17
+    Conf_4: out_1 = 10
+    Conf_5: out_1 = 18
+    */
 };
+
+extern Border border;
 
 extern vector<Point> vectorPoint;
 extern vector<Element> vectorElement;

@@ -7,7 +7,6 @@
 #include <vector>
 #include <string>
 #include <windows.h>
-#include <map>
 
 using namespace std;
 
@@ -20,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 1.0;
+double Re = 90.0;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -126,29 +125,32 @@ struct Element
 
 };
 
-//Здесь можно не задавать сами значения
-enum Calculation_Area {
-    calc
-};
-enum Inner_Wall {
-    in_1, in_2, in_3, in_4,
-    in_5, in_6, in_7, in_8
-};
-enum Outer_Wall {
-    out_1, out_2
+// Нумерация элепментов границ
+struct Border {
+    // Расчетная область
+    int calc = 0;
+    // Первый элемент внутренней стенки
+    int in_1 = 1;
 
-    //Здесь можно не задавать сами значения
+    // Первый элемент внутренней стенки (1 дуга внешней стенки)
+    int out_1 = 9;
+    // Второй элемент внутренней стенки (2 дуга внешней стенки)
+    int out_2 = out_1 + 1;
 
-    /* Conf_0: out_1 = 1
-       Conf_0: out_2 = 1 
-       Conf_0:  in_1 = 2 */
+    /* Нумерация границ для разных конфигураций */
+    /*
+    Conf_0: out_1 = 1
+    Conf_0: out_2 = 1
+    Conf_0:  in_1 = 2
 
-    /* Conf_1: out_1 = 6 */
-    /* Conf_2: out_1 = 9 */
-    /* Conf_3: out_1 = 17 */
-    /* Conf_4: out_1 = 10 */
-    /* Conf_5: out_1 = 18 */
+    Conf_1: out_1 = 6
+    Conf_2: out_1 = 9
+    Conf_3: out_1 = 17
+    Conf_4: out_1 = 10
+    Conf_5: out_1 = 18
+    */
 };
+Border border;
 
 /* Вектор точек и вектор элементов */
 vector<Point> vectorPoint;
@@ -174,15 +176,6 @@ int maxP_Cor_num_el = 0;
 double maxdivU = 0.0;
 int maxdivU_num_el = 0;
 
-/* Параметр для маркерной визуализации */
-int count_marker = 0;
-int count_angle = 0;
-vector<double> x_m, y_m;
-vector<vector<double>>x_ang;
-vector<vector<double>>y_ang;
-double dt_m = 0.001;
-map<int, int> num_el_for_marker;
-
 /* Параметры для оптимизированной маркерной визуализации */
 struct Marker 
 {
@@ -192,22 +185,23 @@ struct Marker
     /* Псоледний КО, в котором находился маркер */
     int CV_marker;
 };
+double dt_m = 0.001;
 
 Marker marker;
 vector<Marker> vectorMarker;
 
 /* Директория файла с сеткой */
 string File_Mesh_Name =
-"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_3_(El=6943).msh";
+"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_2_(El=6979).msh";
 //"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh"; 
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
-bool Read_From_Save = false;
+bool Read_From_Save = true;
 string File_Save_Name =
-"Documents/Save/Re=1.000000/El = 6943/Save_(El=6943)_1.DAT";
+"Documents/Figure/Re=90.000000/El = 6979/Save/Save_(El=6979)_1.DAT";
 
-bool Start_Flow_Evolution = true;
+bool Start_Flow_Evolution = false;
 
 /* Шаг и счетчик времени */
 double dt = 0.001;
