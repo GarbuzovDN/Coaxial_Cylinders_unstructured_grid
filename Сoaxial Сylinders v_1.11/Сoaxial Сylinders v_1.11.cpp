@@ -56,7 +56,7 @@ int main()
         {
             Iter_Glob++;
 
-            Flow_Evolution_new("line"); //"line" или "array"
+            Flow_Evolution_new("array"); //"line" или "array"
             Time();
 
         } while (_time_Flow_Evolution <= final_time);

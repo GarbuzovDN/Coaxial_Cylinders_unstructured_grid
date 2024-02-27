@@ -1,6 +1,9 @@
 $MeshFormat
 2.2 0 8
 $EndMeshFormat
+$BorderNumbers
+0 0 1 17 18
+$EndBorderNumbers
 $Nodes
 3463
 1 0 0 0

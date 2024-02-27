@@ -19,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 90.0;
+double Re = 1.0;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -192,14 +192,14 @@ vector<Marker> vectorMarker;
 
 /* Директория файла с сеткой */
 string File_Mesh_Name =
-"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_2_(El=6979).msh";
+"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_3_(El=6943).msh";
 //"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh"; 
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
-bool Read_From_Save = true;
+bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Figure/Re=90.000000/El = 6979/Save/Save_(El=6979)_1.DAT";
+"Documents/Figure/Re=1.000000/El = 6943/Save/Save_(El=6943)_2.DAT";
 
 bool Start_Flow_Evolution = false;
 
@@ -208,4 +208,4 @@ double dt = 0.001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
-double final_time = 7.8;
+double final_time = 250;

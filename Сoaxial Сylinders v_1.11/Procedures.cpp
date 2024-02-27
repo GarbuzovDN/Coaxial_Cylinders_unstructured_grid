@@ -147,6 +147,11 @@ void Mesh_Init()
     if (Read_From_Save == false && Start_Flow_Evolution == false)
     {
 
+        Find_String("$BorderNumbers");
+
+        /* Заполнение нумерации гарниц */
+        File_Mesh >> border.calc >> border.in_1 >> border.out_1 >> border.out_2;
+
         Find_String("$Nodes");
 
         max_node = max_str;
