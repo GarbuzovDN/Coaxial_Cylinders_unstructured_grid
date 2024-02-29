@@ -14,6 +14,7 @@ void Create_WriteDir()
     _path = "Documents/Figure/Re=" + to_string(Re);
     CreateDirectoryA(_path.c_str(), NULL);
     _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
+    CreateDirectoryA(_path.c_str(), NULL);
 }
 
 void Find_String(string Str)
@@ -1683,17 +1684,20 @@ void Approximation_Accuracy(bool activate)
         string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
         ofstream Field_Approx(_path + "/3. Table_Approx_(El = " + to_string(max_el) + ").DAT");
 
-        Field_Approx << fixed << setprecision(4) << "N (Mesh)" << " \t " << "h1 (face)" << " \t " << "h2 (radius)" << " \t " 
-            << "h3 (area)" << " \t " << "Max (h1)" << " \t " << "Max (h2)" << "\t" << "Max (h3)" << "\t" << "Ux" 
-            << "\t" << "Ф" << "\t" << "Ф_an" << "\t" << "Ф_Integral" << "\t" << "Ф_Integral_an" << "\t\t\t" << "Time: " << _time << "\t" << "x: " << xx_1 << "\t" << "y: " << yy_1 << endl;
+        Field_Approx << fixed << setprecision(4) << "N (Mesh)" << " \t " << "h1 (face)" << " \t " << "h2 (radius)" << " \t "
+            << "h3 (area)" << " \t " << "Max (h1)" << " \t " << "Max (h2)" << "\t" << "Max (h3)" << "\t" << "Ux"
+            << "\t" << "Ф" << "\t" << "Ф_an" << "\t" << "Ф_Integral" << "\t" << "Power_Number" << "\t" << "Re"
+            << "\t\t\t" << "Time: " << _time << "\t" << "x: " << xx_1 << "\t" << "y: " << yy_1 << endl;
         
         double r = sqrt(vectorElement[num_el_1].Coord_center_el.x * vectorElement[num_el_1].Coord_center_el.x + vectorElement[num_el_1].Coord_center_el.y * vectorElement[num_el_1].Coord_center_el.y);
         double Q_analytic = 4 * pow(1.0 / 12.0 * 1 / r / r, 2);
+        // Число мощности
+        double Np = 32 * Q_Int / Re;
 
         Field_Approx << fixed << setprecision(10) << max_el << " \t " << h1 << " \t " << h2 << " \t " << h3 << " \t "
             << max_l << " \t " << 2 * max_R << " \t " << max_S << " \t " << Section_value_MUSCL(xx_1, yy_1, "U_x") << " \t " 
             << vectorElement[num_el_1].Q / vectorElement[num_el_1].Area_el / vectorElement[num_el_1].Area_el << "\t" 
-            << Q_analytic << "\t" << Q_Int << "\t" << endl;
+            << Q_analytic << "\t" << Q_Int << "\t" << Np << "\t" << Re << "\t" << endl;
     }
 }
 
