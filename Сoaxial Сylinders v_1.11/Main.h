@@ -19,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 30.0;
+double Re = 90.0;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -127,15 +127,18 @@ struct Element
 
 // Нумерация элепментов границ
 struct Border {
+    // По умолчанию установим значение -1, 
+    // чтобы проще отслеживать ошибки считывания топологии 
+    
     // Расчетная область
-    int calc = 0;
+    int calc = -1;
     // Первый элемент внутренней стенки
-    int in_1 = 1;
+    int in_1 = -1;
 
     // Первый элемент внутренней стенки (1 дуга внешней стенки)
-    int out_1 = 9;
+    int out_1 = -1;
     // Второй элемент внутренней стенки (2 дуга внешней стенки)
-    int out_2 = out_1 + 1;
+    int out_2 = -1;
 
     /* Нумерация границ для разных конфигураций */
     /*
@@ -186,6 +189,8 @@ struct Marker
     int CV_marker;
 };
 double dt_m = 0.001;
+double exp_moving_old = 1.0;
+
 
 Marker marker;
 vector<Marker> vectorMarker;
@@ -199,13 +204,13 @@ ifstream File_Mesh(File_Mesh_Name);
 /* Директория файла с Save */
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Figure/Re=0.500000/El = 6923/Save/Save_(El=6923).DAT";
+"Documents/Figure/Re=90.000000/El = 6923/Save/Save_(El=6923)_1.DAT";
 
-bool Start_Flow_Evolution = false;
+bool Start_Flow_Evolution = true;
 
 /* Шаг и счетчик времени */
 double dt = 0.001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
-double final_time = 250;
+double final_time = 500;

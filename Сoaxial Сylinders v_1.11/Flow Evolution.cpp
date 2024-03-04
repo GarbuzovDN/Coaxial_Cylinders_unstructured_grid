@@ -1,5 +1,6 @@
 #include "Variables.h"
 #include "Declaration of procedures.h"
+#include <random>
 
 bool Marker_in_element(double xx, double yy, int num)
 {
@@ -355,7 +356,7 @@ void Flow_Evolution_new(string param) {
 
     if (param == "array")
     {
-        string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Marker Array";
+        string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Marker Array 1";
 
         ofstream Integral_Char;
         double integral_char_N1 = 0.0;
@@ -366,12 +367,16 @@ void Flow_Evolution_new(string param) {
         // Переменная для перехода в СК, где крутится лопасть
         bool WallRotate = false;
 
+        // Переменная для добавления шумма к начальным координатам
+        bool AddDataNoise = true;
+
         /* Начально условие */
         if (Iter_Glob == 1)
         {
             CreateDirectoryA(_path.c_str(), NULL);
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::trunc);
-            Integral_Char << "time\t" << "rotation\t" << "gamma\t" << "N1\t" << "N2\t" << "\t\t" << "Re = " << Re << endl;
+            Integral_Char << "time\t" << "rotation\t" << "gamma\t" << "N1\t" << "N2\t"  << "exp_moving"
+                << "\t\t" << "Re = " << Re << "\tMesh: " << max_el << endl;
 
             double h = 0.025;
             double x = 0.0;
@@ -379,18 +384,66 @@ void Flow_Evolution_new(string param) {
 
             int i_y = 0;
 
-            do
+            // Добавление РАВНОМЕРНЫХ координат для x, y 
+            if (!AddDataNoise)
             {
-                int i_x = 0;
-                y += h;
-
                 do
                 {
-                    x = i_x * h;
+                    int i_x = 0;
+                    y += h;
+
+                    do
+                    {
+                        x = i_x * h;
+
+                        int num_CV_for_cheсk = Find_element_for_point(x, y);
+
+                        if (num_CV_for_cheсk != -1)
+                        {
+                            if (vectorElement[num_CV_for_cheсk].Num_bound == border.calc)
+                            {
+                                marker.coord[0] = x;
+                                marker.coord[1] = y;
+
+                                marker.CV_marker = num_CV_for_cheсk;
+
+                                vectorMarker.push_back(marker);
+                            }
+                        }
+
+                        i_x++;
+
+                    } while (x < 1.0);
+
+                    i_y++;
+
+                } while (y < 1.0);
+            }
+            
+            
+            // Добавление псевдоСЛУЧАЙНЫХ координат для x, y 
+            if (AddDataNoise)
+            {
+                double uniformNoise_x;
+                double uniformNoise_y;
+
+                random_device rd;
+                mt19937 gen(0);
+                do
+                {
+                    
+                    uniform_real_distribution<> dis_x(0, 1);
+                    uniform_real_distribution<> dis_y(-1, 1);
+
+                    uniformNoise_x = dis_x(gen);
+                    uniformNoise_y = dis_y(gen);
+
+                    x = uniformNoise_x;
+                    y = uniformNoise_y;
 
                     int num_CV_for_cheсk = Find_element_for_point(x, y);
 
-                    if (num_CV_for_cheсk != -1) 
+                    if (num_CV_for_cheсk != -1)
                     {
                         if (vectorElement[num_CV_for_cheсk].Num_bound == border.calc)
                         {
@@ -403,13 +456,8 @@ void Flow_Evolution_new(string param) {
                         }
                     }
 
-                    i_x++;
-
-                } while (x < 1.0);
-
-                i_y++;
-
-            } while (y < 1.0);
+                } while (vectorMarker.size() < 2500);
+            }
         }
 
         /* Запись в файл */
@@ -504,9 +552,16 @@ void Flow_Evolution_new(string param) {
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::app);
             double integral_char = abs(integral_char_N1 - integral_char_N2) / (integral_char_N1 + integral_char_N2);
             double rotation = (_time_Flow_Evolution * omega_1) / 2.0 / Pi;
-            Integral_Char << _time_Flow_Evolution << "\t" << rotation << "\t"
-                << integral_char << "\t" << integral_char_N1 << "\t" << integral_char_N2 << endl;
 
+            //FIXME: Написать комментарии к эксп скользящей
+            double alfa_exp = 0.01;
+            double exp_moving_current = alfa_exp * integral_char + (1 - alfa_exp) * exp_moving_old;
+            if (Iter_Glob == 1) exp_moving_current = integral_char;
+
+            Integral_Char << _time_Flow_Evolution << "\t" << rotation << "\t" << integral_char << "\t" 
+                << integral_char_N1 << "\t" << integral_char_N2 << "\t" << exp_moving_current << endl;
+
+            exp_moving_old = exp_moving_current;
             double debug = 0.0;
         }
     }

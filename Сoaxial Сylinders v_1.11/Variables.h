@@ -55,6 +55,7 @@ struct Marker
     int CV_marker;
 };
 extern double dt_m;
+extern double exp_moving_old;
 
 extern Marker marker;
 extern vector<Marker> vectorMarker;
