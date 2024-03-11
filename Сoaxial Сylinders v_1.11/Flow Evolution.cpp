@@ -197,8 +197,7 @@ void Flow_Evolution_new(string param) {
     if (param == "line")
     {
         string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Fixed Profile";
-                
-        int all_marker = 0;
+        
         double t = 0.0;
         double h = 0.05;
 
@@ -356,16 +355,17 @@ void Flow_Evolution_new(string param) {
 
     if (param == "array")
     {
-        string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Marker Array 1";
+        string _path = 
+        "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Marker Array 3";
 
         ofstream Integral_Char;
         double integral_char_N1 = 0.0;
         double integral_char_N2 = 0.0;
-        int all_marker = 0;
         double t = 0.0;
+        double rotation = (_time_Flow_Evolution * omega_1) / 2.0 / Pi;
 
         // Переменная для перехода в СК, где крутится лопасть
-        bool WallRotate = false;
+        bool WallRotate = true;
 
         // Переменная для добавления шумма к начальным координатам
         bool AddDataNoise = true;
@@ -427,11 +427,14 @@ void Flow_Evolution_new(string param) {
                 double uniformNoise_x;
                 double uniformNoise_y;
 
+                // Специально берется псевдослучайное распределение (gen(0); 0 - seed), 
+                // чтобы при перезапуске расчета получать одинаковое начальное распределение
                 random_device rd;
                 mt19937 gen(0);
                 do
                 {
                     
+                    // Псевдослучайное распределение маркеов в нужных границ по x(0, 1) и y(-1, 1)
                     uniform_real_distribution<> dis_x(0, 1);
                     uniform_real_distribution<> dis_y(-1, 1);
 
@@ -441,8 +444,11 @@ void Flow_Evolution_new(string param) {
                     x = uniformNoise_x;
                     y = uniformNoise_y;
 
+                    // Проверка на принадлежность области расчета
                     int num_CV_for_cheсk = Find_element_for_point(x, y);
 
+                    //Если num_CV_for_cheсk = -1, то элемент сетки для маркера не найден => 
+                    // => маркер не принадлежит расчетной области
                     if (num_CV_for_cheсk != -1)
                     {
                         if (vectorElement[num_CV_for_cheсk].Num_bound == border.calc)
@@ -461,13 +467,22 @@ void Flow_Evolution_new(string param) {
         }
 
         /* Запись в файл */
-        if (Iter_Glob % 50 == 0 || Iter_Glob == 1)
+        int write_step = 0.0;
+
+        // Первые 50 у.е. по времени записываем часто, чтобы визуализировать результат в GIF, 
+        // дальше записываем реже, чтобы не тратить много памяти
+        if (_time_Flow_Evolution <= 50) write_step = 50;
+        if (_time_Flow_Evolution > 50) write_step = 10000;
+
+        if (Iter_Glob % write_step == 0 || Iter_Glob == 1)
         {
             int temp_time = Iter_Glob;
             ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
             ofstream Flow_Evo_test(_path + "/Flow Evolution.DAT", ios_base::trunc);
-            Flow_Evo << "time = " << (_time_Flow_Evolution + dt_m) << "\t" << "Re = " << Re << endl;
-            Flow_Evo_test << "time = " << (_time_Flow_Evolution + dt_m) << "\t" << "Re = " << Re << endl;
+            Flow_Evo << "time = " << (_time_Flow_Evolution + dt_m) 
+                << "\tRe = " << Re << "\trotation = " << rotation << endl;
+            Flow_Evo_test << "time = " << (_time_Flow_Evolution + dt_m) 
+                << "\tRe = " << Re << "\trotation = " << rotation << endl;
 
             if (!WallRotate) 
             {
@@ -505,14 +520,15 @@ void Flow_Evolution_new(string param) {
             double debug = 0.0;
         }
 
-        /* Основный цикл */
+        // Основный цикл
         for (auto& marker : vectorMarker)
         {
             double x = marker.coord[0], y = marker.coord[1];
             double x_tmp_n, y_tmp_n;
             int CV = Find_element_for_point(x, y, marker.CV_marker);
 
-            /* Если маркер вышел за область моделирования или попал внутрь лопасти, то берем его старые координаты */
+            // Если маркер вышел за область моделирования или попал внутрь лопасти, 
+            // то берем его старые координаты
             if (CV == -1) 
             {                                
                 CV = marker.CV_marker;
@@ -524,7 +540,7 @@ void Flow_Evolution_new(string param) {
             x_tmp_n = x + Section_value_MUSCL_Flow_Evo(x + 0.5 * U_x * dt_m, y + 0.5 * U_y * dt_m, CV, "U_x") * dt_m;
             y_tmp_n = y + Section_value_MUSCL_Flow_Evo(x + 0.5 * U_x * dt_m, y + 0.5 * U_y * dt_m, CV, "U_y") * dt_m;
 
-            /* Расчет интегральной характеристики */
+            // Расчет интегральной характеристики
             {
                 if ((x > 0 && y > 0))
                 {
@@ -546,14 +562,13 @@ void Flow_Evolution_new(string param) {
             int debug = 0;
         }
 
-        /* Запись интегральной характеристики */
+        // Запись интегральной характеристики
         if (Iter_Glob % 200 == 0 || Iter_Glob == 1)
         {
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::app);
             double integral_char = abs(integral_char_N1 - integral_char_N2) / (integral_char_N1 + integral_char_N2);
-            double rotation = (_time_Flow_Evolution * omega_1) / 2.0 / Pi;
 
-            //FIXME: Написать комментарии к эксп скользящей
+            // Сглаживание интегральной характеристики путем расчета эксп. скользящей средней
             double alfa_exp = 0.01;
             double exp_moving_current = alfa_exp * integral_char + (1 - alfa_exp) * exp_moving_old;
             if (Iter_Glob == 1) exp_moving_current = integral_char;

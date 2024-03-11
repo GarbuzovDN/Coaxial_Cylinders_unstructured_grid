@@ -560,7 +560,7 @@ void Initial_Conditions()
 
         string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
         ofstream development(_path + "/2. development_(El = " + to_string(max_el) + ").DAT", ios_base::trunc);
-        development << "Time" << "\t" << "U_x" << "\t" << "U_y" << "\t" << "P" << "\t" << "Max.Res." << endl;
+        development << "Time" << "\tU_x" << "\tU_y" << "\tP" << "\tMax.Res." << "\tOmega_1(Wall)" << endl;
 
         _time_Flow_Evolution = 0.0;
 

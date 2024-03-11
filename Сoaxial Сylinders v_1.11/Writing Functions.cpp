@@ -272,7 +272,7 @@ void Write()
     ofstream development(_path + "/2. development_(El = " + to_string(max_el) + ").DAT", ios_base::app);
 
     development << _time << "\t" << setprecision(10) << vectorElement[num_el_1].U_x << "\t" << vectorElement[num_el_1].U_y
-        << "\t" << vectorElement[num_el_1].P << "\t" << E_U << endl;
+        << "\t" << vectorElement[num_el_1].P << "\t" << E_U << "\t" << omega_1 << endl;
 
     //string _path = "Documents/Figure/El = " + to_string(max_el);
     //ofstream Profile_P_MUSCL(_path + "/2. Profile_P_MUSCL_(El = " + to_string(max_el) + ").DAT");

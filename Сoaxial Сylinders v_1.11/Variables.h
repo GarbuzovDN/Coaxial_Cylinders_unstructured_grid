@@ -69,6 +69,9 @@ extern string File_Save_Name;
 
 extern bool Start_Flow_Evolution;
 
+/* Расчет при переменной скорости*/
+extern bool Variable_Speed;
+
 /* Шаг и счетчик времени */
 extern double dt;
 extern double _time;

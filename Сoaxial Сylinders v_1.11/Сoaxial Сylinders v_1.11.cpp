@@ -20,9 +20,15 @@ int main()
     {
         do
         {
-            //Flow_Evolution("array"); //"line" или "array"
-
             Time();
+
+            if (Variable_Speed)
+            {
+                Flow_Evolution_new("array"); //"line" или "array"
+                double debug = cos(2.0 * Pi * Pi * _time / 4.0);
+                omega_1 = 0.5 * (1.0 - debug);
+            }
+
             Redistricting();
             Iter_Glob++;
 
@@ -40,9 +46,9 @@ int main()
             Development();
             Write();        
 
-            if (_time > 25.0) break;
+            if (!Variable_Speed) if (_time > 25.0) break;
 
-        } while (/*_time <= final_time*/E_U > 0.00001);
+        } while (_time <= final_time/*E_U > 1.0E-5*/);
                 
         Write_End();
     }
@@ -62,8 +68,8 @@ int main()
         } while (_time_Flow_Evolution <= final_time);
 
         auto end_time = chrono::high_resolution_clock::now();
-        auto duration = chrono::duration_cast<chrono::milliseconds>(end_time - start_time);
-        cout << "Program execution time: " << duration.count() << " milliseconds" << std::endl;
+        auto duration = chrono::duration_cast<chrono::minutes>(end_time - start_time);
+        cout << "Program execution time: " << duration.count() << " minutes" << std::endl;
     }
 
     // Необходимо ставить консоль после расчета на паузу при запуске через exe 
