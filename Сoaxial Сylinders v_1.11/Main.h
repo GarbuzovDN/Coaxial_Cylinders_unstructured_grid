@@ -198,7 +198,7 @@ vector<Marker> vectorMarker;
 /* Директория файла с сеткой */
 string File_Mesh_Name =
 //"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_1_(El=3531).msh";
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_3.1_(El=6943).msh"; 
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_5_(El=5742).msh"; 
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
