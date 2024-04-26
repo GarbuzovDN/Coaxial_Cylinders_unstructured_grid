@@ -1692,7 +1692,8 @@ void Approximation_Accuracy(bool activate)
         double r = sqrt(vectorElement[num_el_1].Coord_center_el.x * vectorElement[num_el_1].Coord_center_el.x + vectorElement[num_el_1].Coord_center_el.y * vectorElement[num_el_1].Coord_center_el.y);
         double Q_analytic = 4 * pow(1.0 / 12.0 * 1 / r / r, 2);
         // Число мощности
-        double Np = 32 * Q_Int / Re;
+        double Np = Q_Int / Re / pow(2.0 * 0.779, 5);
+        //double Np = 32 * Q_Int / Re;
 
         Field_Approx << fixed << setprecision(10) << max_el << " \t " << h1 << " \t " << h2 << " \t " << h3 << " \t "
             << max_l << " \t " << 2 * max_R << " \t " << max_S << " \t " << Section_value_MUSCL(xx_1, yy_1, "U_x") << " \t " 

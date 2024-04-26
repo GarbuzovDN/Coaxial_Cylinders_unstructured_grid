@@ -12,14 +12,14 @@ using namespace std;
 
 double Pi = 3.14159;
 
-double R0 = 0.2;
+double R0 = 0.025;
 double R1 = 1.0;
 
 /* Количество элементов */
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 40.0;
+double Re = 0.1;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -171,7 +171,7 @@ double E_U;
 int E_U_Num_el;
 
 /* Коэффициент учета силы Кориолиса */
-int alfa_k = 1.0;
+int alfa_k = 0.0;
 
 /* Максимальная поправка давления */
 double maxP_Corr = 0.0;
@@ -198,22 +198,23 @@ vector<Marker> vectorMarker;
 /* Директория файла с сеткой */
 string File_Mesh_Name =
 //"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_1_(El=3531).msh";
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_5_(El=5742).msh"; 
+//"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh"; 
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_4_Jo_(El=9133).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Figure/Re=1.000000/El = 6943/Save/Save_(El=6943)_1.DAT";
+"Documents/Figure/Re=1.000000/El = 9133/Save/Save_(El=9133)_1.DAT";
 
 /* Расчет распределения маркерных частиц для постоянной скорости*/
 bool Start_Flow_Evolution = false;
 
 /* Расчет при переменной скорости*/
-bool Variable_Speed = true;
+bool Variable_Speed = false;
 
 /* Шаг и счетчик времени */
-double dt = 0.001;
+double dt = 0.0001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 

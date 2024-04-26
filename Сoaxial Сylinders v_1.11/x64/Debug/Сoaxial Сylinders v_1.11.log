@@ -1,7 +1,6 @@
-﻿  Writing Functions.cpp
-  Сoaxial Сylinders v_1.11.cpp
+﻿  Сoaxial Сylinders v_1.11.cpp
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Main.h(174,12): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
   (компиляция исходного файла "Сoaxial Сylinders v_1.11.cpp")
   
-  Создание кода...
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11.cpp(61,24): warning C4804: >: небезопасное использование типа "bool" в операции
   Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe

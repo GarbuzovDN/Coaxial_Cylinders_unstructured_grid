@@ -166,7 +166,7 @@ void Write_Figure()
 
     ofstream Field_U_x(_path + "/1. Field_U_x_(El = " + to_string(max_el) + ").DAT");
     ofstream Field_U_y(_path + "/1. Field_U_y_(El = " + to_string(max_el) + ").DAT");
-    ofstream Field_U_eps(_path + "/1. Field_U_eps_(El = " + to_string(max_el) + ").DAT");
+    ofstream Field_U_eps(_path + "/1. Field_Ueps_Ur_(El = " + to_string(max_el) + ").DAT");
     ofstream Field_P(_path + "/1. Field_P_(El = " + to_string(max_el) + ").DAT");
     ofstream Field_Psi(_path + "/1. Field_Psi_(El = " + to_string(max_el) + ").DAT");
     ofstream Profile_P_MUSCL(_path + "/2. Profile_P_MUSCL_(El = " + to_string(max_el) + ").DAT");
@@ -174,13 +174,13 @@ void Write_Figure()
     ofstream Profile_U_y_MUSCL(_path + "/2. Profile_U_y_MUSCL_(El = " + to_string(max_el) + ").DAT");
 
     Field_U_x << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "U_x_wall" << "\t" << "U_x_obst" << "\t"
+        << "U_x_wall" << "\t" << "U_x_obst" << "\t" << "U_wall" << "\t" << "U_obst" << "\t"
         << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_U_y << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "U_y_wall" << "\t" << "U_y_obst" << "\t"
+        << "U_y_wall" << "\t" << "U_y_obst" << "\t" << "U_wall" << "\t" << "U_obst" << "\t"
         << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_U_eps << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "U_eps_wall" << "\t" << "U_eps_obst" << "\t"
+        << "U_eps_wall" << "\t" << "U_r_wall" << "\t"
         << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     Field_P << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
         << "P" << "\t"
@@ -191,50 +191,77 @@ void Write_Figure()
     /* Запись распределния полей */
     for (int i = 0; i < max_el; i++)
     {
-        double r_temp, U_eps;
+        double r_temp, U_eps, U_r;
 
         if (vectorElement[i].Geom_el == 2)
         {
 
+            double Ux_obst = vectorElement[i].U_x + omega_1 * vectorElement[i].Coord_center_el.y;
+            double Uy_obst = vectorElement[i].U_y - omega_1 * vectorElement[i].Coord_center_el.x;
+
             Field_U_x << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
-                << vectorElement[i].U_x << " \t " << vectorElement[i].U_x + omega_1 * vectorElement[i].Coord_center_el.y << " \t " << vectorElement[i].Num_el << endl;
+                << vectorElement[i].U_x << " \t " << Ux_obst << " \t "
+                << sqrt(vectorElement[i].U_x * vectorElement[i].U_x + vectorElement[i].U_y * vectorElement[i].U_y) << " \t " 
+                << sqrt(Ux_obst * Ux_obst + Uy_obst * Uy_obst) << " \t " << vectorElement[i].Num_el << endl;
+
             Field_U_y << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
-                << vectorElement[i].U_y << " \t " << vectorElement[i].U_y - omega_1 * vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Num_el << endl;
+                << vectorElement[i].U_y << " \t " << Uy_obst << " \t "
+                << sqrt(vectorElement[i].U_x * vectorElement[i].U_x + vectorElement[i].U_y * vectorElement[i].U_y) << " \t " 
+                << sqrt(Ux_obst * Ux_obst + Uy_obst * Uy_obst) << " \t " << vectorElement[i].Num_el << endl;
+
             Field_P << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
                 << vectorElement[i].P << " \t " << vectorElement[i].Num_el << endl;
+
             Field_Psi << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
                 << vectorElement[i].Psi << " \t " << vectorElement[i].Num_el << endl;
 
-            /* Запись угловой скорости в цилиндрической СК */
+            /* Запись скорости в цилиндрической СК */
             r_temp = pow(vectorElement[i].Coord_center_el.x * vectorElement[i].Coord_center_el.x + vectorElement[i].Coord_center_el.y * vectorElement[i].Coord_center_el.y, 0.5);
-            U_eps = vectorElement[i].U_x * r_temp / vectorElement[i].Coord_center_el.y + vectorElement[i].U_y * r_temp / vectorElement[i].Coord_center_el.x;
+            U_r = vectorElement[i].U_x * vectorElement[i].Coord_center_el.x / r_temp + vectorElement[i].U_y * vectorElement[i].Coord_center_el.y / r_temp;
+            U_eps = -vectorElement[i].U_x * vectorElement[i].Coord_center_el.y / r_temp + vectorElement[i].U_y * vectorElement[i].Coord_center_el.x / r_temp;
 
             Field_U_eps << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
-                << U_eps << " \t " << r_temp << " \t " << vectorElement[i].Num_el << endl;
+                << U_eps << " \t " << U_r << " \t " << vectorElement[i].Num_el << endl;
         }
 
     }
+
+    double section = 180;
+
+    Profile_P_MUSCL << fixed << setprecision(4) << "r" << " \t P" << " \t Time: " << _time << " \t Mesh (Number of cells): " << max_el << "\tAngle: " << section << endl;
+    Profile_U_x_MUSCL << fixed << setprecision(4) << "r" << " \t U_x" << " \t U_r" << " \t Time: " << _time << " \t Mesh (Number of cells): " << max_el << "\tAngle: " << section << endl;
+    Profile_U_y_MUSCL << fixed << setprecision(4) << "r" << " \t U_y" << " \t U_eps" << " \t Time: " << _time << " \t Mesh (Number of cells): " << max_el << "\tAngle: " << section << endl;
 
     /* Запись контрольных параметров в сечении */
     int ii = 0;
     double h = 0.01;
     do
-    {
-
-        double angle = 270 * Pi / 180.0;
+    {        
+        double angle = section * Pi / 180.0;
         double test_1 = cos(angle);
         double test_2 = sin(angle);
 
-        double x = (0.2 + ii * h) * cos(angle);
-        double y = (0.2 + ii * h) * sin(angle);
+        double x = (R0 + ii * h) * cos(angle);
+        double y = (R0 + ii * h) * sin(angle);
 
-        Profile_P_MUSCL << fixed << setprecision(9) << 0.2 + ii * h << "\t" << Section_value_MUSCL(x, y, "P") << endl;
-        Profile_U_x_MUSCL << fixed << setprecision(9) << 0.2 + ii * h << "\t" << Section_value_MUSCL(x, y, "U_x") << endl;
-        Profile_U_y_MUSCL << fixed << setprecision(9) << 0.2 + ii * h << "\t" << Section_value_MUSCL(x, y, "U_y") << endl;
+        double P = Section_value_MUSCL(x, y, "P");
+
+        /* Скорость в декартовой СК */
+        double Ux = Section_value_MUSCL(x, y, "U_x");
+        double Uy = Section_value_MUSCL(x, y, "U_y");
+
+        /* Скорость в цилиндрической СК */
+        double U_r = Ux * cos(angle) + Uy * sin(angle);
+        double U_eps = -Ux * sin(angle) + Uy * cos(angle);
+
+
+        Profile_P_MUSCL << fixed << setprecision(9) << R0 + ii * h << "\t" << P << endl;
+        Profile_U_x_MUSCL << fixed << setprecision(9) << R0 + ii * h << "\t" << Ux << "\t" << U_r << endl;
+        Profile_U_y_MUSCL << fixed << setprecision(9) << R0 + ii * h << "\t" << Uy << "\t" << U_eps << endl;
 
         ii++;
 
-    } while ((0.2 + ii * h) <= 1.0);
+    } while ((R0 + ii * h) <= 1.0);
 
     Field_U_x.close();
     Field_U_y.close();
