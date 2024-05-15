@@ -12,21 +12,21 @@ using namespace std;
 
 double Pi = 3.14159;
 
-double R0 = 0.025;
+double R0 = 0.06;
 double R1 = 1.0;
 
 /* Количество элементов */
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 0.1;
+double Re = 193.92;
 
 /* Счетчик итераций */
 int Iter_Glob;
 
 /* Граничные условия */
 double omega_0 = 0.0;
-double omega_1 = 1.0;
+double omega_1 = -1.0;
 
 /* Структура точек и структура элементов*/
 struct Point
@@ -198,14 +198,14 @@ vector<Marker> vectorMarker;
 /* Директория файла с сеткой */
 string File_Mesh_Name =
 //"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_1_(El=3531).msh";
-//"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_2.1_(El=5013).msh"; 
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_4_Jo_(El=9133).msh";
+//"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_5_(El=5742).msh"; 
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_4_Tanguy_(El=9161).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
 bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Figure/Re=1.000000/El = 9133/Save/Save_(El=9133)_1.DAT";
+"Documents/Figure/Re=103.536000/El = 9293/Save/Save_(El=9293)_1.DAT";
 
 /* Расчет распределения маркерных частиц для постоянной скорости*/
 bool Start_Flow_Evolution = false;

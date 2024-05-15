@@ -230,9 +230,9 @@ void Mesh_Init()
                 int temp_int_1, temp_int_2, temp_int_3;
 
                 File_Mesh >> temp >> temp >> temp >> temp_int_1 >> temp_int_2 >> temp_int_3;
-                el.Num_vert[0] = temp_int_1 - 1;
+                el.Num_vert[0] = temp_int_3 - 1;
                 el.Num_vert[1] = temp_int_2 - 1;
-                el.Num_vert[2] = temp_int_3 - 1;
+                el.Num_vert[2] = temp_int_1 - 1;
 
                 el.Coord_vert[0] = vectorPoint[el.Num_vert[0]];
                 el.Coord_vert[1] = vectorPoint[el.Num_vert[1]];
@@ -1496,7 +1496,7 @@ void Stream_Function()
                     {
                         double HH = 2.0 * vectorElement[i].h[j];
                         S_dS += vectorElement[i].Length_face_el[j] / HH;
-                        S_Psi += (-vectorElement[i].Psi) * vectorElement[i].Length_face_el[j] / HH;
+                        S_Psi += (+vectorElement[i].Psi) * vectorElement[i].Length_face_el[j] / HH;
                     }
 
                 }
@@ -1512,7 +1512,7 @@ void Stream_Function()
 
             }
         }
-    } while (E_Stream >= 1e-8); // 1e-8
+    } while (E_Stream >= 1e-5); // 1e-8
 
 }
 
@@ -1692,7 +1692,7 @@ void Approximation_Accuracy(bool activate)
         double r = sqrt(vectorElement[num_el_1].Coord_center_el.x * vectorElement[num_el_1].Coord_center_el.x + vectorElement[num_el_1].Coord_center_el.y * vectorElement[num_el_1].Coord_center_el.y);
         double Q_analytic = 4 * pow(1.0 / 12.0 * 1 / r / r, 2);
         // Число мощности
-        double Np = Q_Int / Re / pow(2.0 * 0.779, 5);
+        double Np = Q_Int / Re / pow(0.9, 5) / 4.0 * pow(Pi, 3);
         //double Np = 32 * Q_Int / Re;
 
         Field_Approx << fixed << setprecision(10) << max_el << " \t " << h1 << " \t " << h2 << " \t " << h3 << " \t "

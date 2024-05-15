@@ -226,7 +226,7 @@ void Write_Figure()
 
     }
 
-    double section = 180;
+    double section = 0;
 
     Profile_P_MUSCL << fixed << setprecision(4) << "r" << " \t P" << " \t Time: " << _time << " \t Mesh (Number of cells): " << max_el << "\tAngle: " << section << endl;
     Profile_U_x_MUSCL << fixed << setprecision(4) << "r" << " \t U_x" << " \t U_r" << " \t Time: " << _time << " \t Mesh (Number of cells): " << max_el << "\tAngle: " << section << endl;

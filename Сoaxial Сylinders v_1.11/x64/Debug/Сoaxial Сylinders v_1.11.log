@@ -1,6 +1,15 @@
-﻿  Сoaxial Сylinders v_1.11.cpp
+﻿  Procedures.cpp
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1139,46): warning C4101: a: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1139,49): warning C4101: b: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1139,52): warning C4101: c: неиспользованная локальная переменная
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1622,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(1623,16): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+  Writing Functions.cpp
+  Сoaxial Сylinders v_1.11.cpp
 C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Main.h(174,12): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
   (компиляция исходного файла "Сoaxial Сylinders v_1.11.cpp")
   
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11.cpp(61,24): warning C4804: >: небезопасное использование типа "bool" в операции
+  Создание кода...
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Procedures.cpp(925,1): warning C4715: Section_value_MUSCL: значение возвращается не при всех путях выполнения
+  LINK : не найден или не выполнена сборка C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe при последней инкрементной компоновке; выполняется полная компоновка
   Сoaxial Сylinders v_1.11.vcxproj -> C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\x64\Debug\Сoaxial Сylinders v_1.11.exe
