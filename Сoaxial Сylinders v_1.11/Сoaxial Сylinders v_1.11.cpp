@@ -67,12 +67,17 @@ int main()
     {
         auto start_time = chrono::high_resolution_clock::now();
         Redistricting1();
+        double t = 0.0;
 
         do
         {
             Iter_Glob++;
 
-            Flow_Evolution_new("array"); //"line" или "array"
+            //Flow_Evolution_new("array"); //"line" или "array"
+
+            /* Параметр, который передается в бланикровку для поворота лопасти */
+            t = _time_Flow_Evolution + dt_m;
+            Blank_new(t);
             Time();
 
         } while (_time_Flow_Evolution <= final_time);
@@ -83,5 +88,5 @@ int main()
     }
 
     // Необходимо ставить консоль после расчета на паузу при запуске через exe 
-    system("pause");
+    //system("pause");
 }

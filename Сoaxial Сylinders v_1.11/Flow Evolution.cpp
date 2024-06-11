@@ -356,7 +356,7 @@ void Flow_Evolution_new(string param) {
     if (param == "array")
     {
         string _path = 
-        "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Marker Array 5";
+        "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el) + "/Flow Evolution/Marker Array";
 
         ofstream Integral_Char;
         double integral_char_N1 = 0.0;
@@ -365,7 +365,7 @@ void Flow_Evolution_new(string param) {
         double rotation = (_time_Flow_Evolution * omega_1) / 2.0 / Pi;
 
         // Переменная для перехода в СК, где крутится лопасть
-        bool WallRotate = true;
+        bool WallRotate = false;
 
         // Переменная для добавления шумма к начальным координатам
         bool AddDataNoise = true;
@@ -462,7 +462,7 @@ void Flow_Evolution_new(string param) {
                         }
                     }
 
-                } while (vectorMarker.size() < 2500);
+                } while (vectorMarker.size() < 10000);
             }
         }
 
@@ -488,7 +488,6 @@ void Flow_Evolution_new(string param) {
             {
                 /* Параметр, который передается в бланикровку для поворота лопасти */
                 t = _time_Flow_Evolution + dt_m;
-                /* ОТКЛЮЧИТЬ, ЕСЛИ КРУТИТСЯ СТЕНКА */
                 Blank_new(t);
             }
 
@@ -566,7 +565,7 @@ void Flow_Evolution_new(string param) {
         if (Iter_Glob % 200 == 0 || Iter_Glob == 1)
         {
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::app);
-            double integral_char = abs(integral_char_N1 - integral_char_N2) / (integral_char_N1 + integral_char_N2);
+            double integral_char = (integral_char_N1 - integral_char_N2) / (integral_char_N1 + integral_char_N2);
 
             // Сглаживание интегральной характеристики путем расчета эксп. скользящей средней
             double alfa_exp = 0.01;
