@@ -35,8 +35,12 @@ int main()
                 omega_1 = 0.5 * (1.0 - debug);*/
 
                 // Знакоперменная скорость
-                double debug = cos(_time);
-                omega_1 = 2.0 / 3.0 * (0.5 - debug);
+                //double debug = cos(_time);
+                //omega_1 = 2.0 / 3.0 * (0.5 - debug);
+
+                // Скорость для сравнения с экспериментом Комоды
+                double debug = cos(Pi / 2.0 + 2 * Pi * _time);
+                omega_1 = debug;
             }
 
             Redistricting();
@@ -58,7 +62,7 @@ int main()
 
             if (!Variable_Speed) if (_time > 25.0) break;
 
-        } while (/*_time <= final_time*/E_U > 1.0E-5);
+        } while (_time <= final_time/*E_U > 1.0E-5*/);
                 
         Write_End();
     }
@@ -73,11 +77,12 @@ int main()
         {
             Iter_Glob++;
 
-            //Flow_Evolution_new("array"); //"line" или "array"
+            Flow_Evolution_new("array"); //"line" или "array"
 
             /* Параметр, который передается в бланикровку для поворота лопасти */
-            t = _time_Flow_Evolution + dt_m;
-            Blank_new(t);
+            //t = _time_Flow_Evolution + dt_m;
+            //Blank_new(t);
+
             Time();
 
         } while (_time_Flow_Evolution <= final_time);

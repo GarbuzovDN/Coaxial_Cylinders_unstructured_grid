@@ -49,11 +49,11 @@ While i <= 5000
 Set Obst = Plot.Shapes.AddLinePlotGraph("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Blank\Blank Flow Evolution\Blank_R0"+Str(i)+".BLN")
 
 'Open the worksheet
-Set Wks = Docs.Open("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 12861\Flow Evolution\Marker Array 1\Flow Evolution"+Str(i)+".DAT")
+Set Wks = Docs.Open("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 11069\Flow Evolution\Marker Array\Flow Evolution"+Str(i)+".DAT")
 'Set Wks = Docs.Open("C:\Users\Äìèòðèé\Desktop\ÒÃÓ\_Íàó÷êà\Êóðñîâûå ðàáîòû\7 êóðñ\Ìåæñåçîíüå\2023\Ðèñóíêè\Data\Ïåðåìåííàÿ ñêîðîñòü\Êîíôèãóðàöèÿ ¹1\Re=40.000000\El = 3531\Flow Evolution\Marker Array 4\Flow Evolution"+Str(i)+".DAT")
 
 'Read the contents of a cell for text
-Text1 = Wks.Cells("C1")
+Text1 = Wks.Cells("A1")
 Text2 = Wks.Cells("B1")
 
 Graph.title.text = Text1 + "; " + Text2
@@ -89,7 +89,7 @@ Obst_1.Fill.SetPattern("Solid")
 Obst_1.Fill.foreColor = grfColorBlack30
 Obst_1.Fill.ForeOpacity = 100
 
-Set Evo_Black = Graph.AddLinePlot("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 12861\Flow Evolution\Marker Array 1\Flow Evolution"+Str(i)+".DAT")
+Set Evo_Black = Graph.AddLinePlot("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 11069\Flow Evolution\Marker Array\Flow Evolution"+Str(i)+".DAT")
 
 Evo_Black.line.foreColor  = grfColorBlue
 Evo_Black.line.style = "Invisible"
@@ -98,7 +98,7 @@ Evo_Black.symbol.Index = 12
 Evo_Black.symbol.size = 0.004
 Evo_Black.symbol.line.foreColor = grfColorBlack
 
-Plot.Export2("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 12861\Flow Evolution\Marker Array 1\GIF\"+Str(i)+".jpg",False,"ColorDepth=24;ColorReductionMethod=5;ExportImageFormatBGR24=1;HDPI=1000;Height=3477;KeepAspect=1;KeepPixelSize=0;Quality=100;Update_ColorDepth=24;Update_ColorReductionMethod=5;Update_Height=3477;Update_Width=3492;VDPI=1000;Width=3492",True,"jpg")
+Plot.Export2("C:\Program Visual Studio\Coaxial Ñylinders\Ñoaxial Ñylinders v_1.11\Ñoaxial Ñylinders v_1.11\Documents\Figure\Re=1.000000\El = 11069\Flow Evolution\Marker Array\GIF\"+Str(i)+".jpg",False,"ColorDepth=24;ColorReductionMethod=5;ExportImageFormatBGR24=1;HDPI=1000;Height=3477;KeepAspect=1;KeepPixelSize=0;Quality=100;Update_ColorDepth=24;Update_ColorReductionMethod=5;Update_Height=3477;Update_Width=3492;VDPI=1000;Width=3492",True,"jpg")
 
 Evo_Black.Delete
 Obst.Delete

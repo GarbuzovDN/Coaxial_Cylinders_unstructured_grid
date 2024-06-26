@@ -1,7 +1,7 @@
-﻿  Сoaxial Сylinders v_1.11.cpp
-C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Main.h(174,12): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
-  (компиляция исходного файла "Сoaxial Сylinders v_1.11.cpp")
-  
+﻿  Flow Evolution.cpp
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(309,28): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(470,24): warning C4244: инициализация: преобразование "double" в "int", возможна потеря данных
+C:\Program Visual Studio\Coaxial Сylinders\Сoaxial Сylinders v_1.11\Сoaxial Сylinders v_1.11\Flow Evolution.cpp(432,31): warning C4101: rd: неиспользованная локальная переменная
   Создание кода
   1 of 555 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
