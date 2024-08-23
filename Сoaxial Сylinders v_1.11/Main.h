@@ -19,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 193.92;
+double Re = 1.0;
 
 /* Счетчик итераций */
 int Iter_Glob;
@@ -198,8 +198,8 @@ vector<Marker> vectorMarker;
 /* Директория файла с сеткой */
 string File_Mesh_Name =
 //"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_1_(El=3531).msh";
-//"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_5_(El=5742).msh"; 
-"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_4_Tanguy_(El=9161).msh";
+"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_1_(El=5089).msh"; 
+//"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_4_Tanguy_(El=9161).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */

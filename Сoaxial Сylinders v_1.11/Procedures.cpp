@@ -230,9 +230,9 @@ void Mesh_Init()
                 int temp_int_1, temp_int_2, temp_int_3;
 
                 File_Mesh >> temp >> temp >> temp >> temp_int_1 >> temp_int_2 >> temp_int_3;
-                el.Num_vert[0] = temp_int_3 - 1;
+                el.Num_vert[0] = temp_int_1 - 1;
                 el.Num_vert[1] = temp_int_2 - 1;
-                el.Num_vert[2] = temp_int_1 - 1;
+                el.Num_vert[2] = temp_int_3 - 1;
 
                 el.Coord_vert[0] = vectorPoint[el.Num_vert[0]];
                 el.Coord_vert[1] = vectorPoint[el.Num_vert[1]];
@@ -1624,6 +1624,7 @@ void Approximation_Accuracy(bool activate)
 
         double max_R = 0.0;
         double max_l = 0.0;
+        double min_l = 1000.0;
         double max_S = 0.0;
 
         int test1 = 0;
@@ -1670,6 +1671,11 @@ void Approximation_Accuracy(bool activate)
                     {
                         max_l = vectorElement[i].Length_face_el[j];
                     }
+
+                    if (min_l > vectorElement[i].Length_face_el[j])
+                    {
+                        min_l = vectorElement[i].Length_face_el[j];
+                    }
                 }
 
                 Q_Int += vectorElement[i].Q / vectorElement[i].Area_el /*/ vectorElement[i].Area_el*/;
@@ -1698,7 +1704,7 @@ void Approximation_Accuracy(bool activate)
         Field_Approx << fixed << setprecision(10) << max_el << " \t " << h1 << " \t " << h2 << " \t " << h3 << " \t "
             << max_l << " \t " << 2 * max_R << " \t " << max_S << " \t " << Section_value_MUSCL(xx_1, yy_1, "U_x") << " \t " 
             << vectorElement[num_el_1].Q / vectorElement[num_el_1].Area_el / vectorElement[num_el_1].Area_el << "\t" 
-            << Q_analytic << "\t" << Q_Int << "\t" << Np << "\t" << Re << "\t" << endl;
+            << Q_analytic << "\t" << Q_Int << "\t" << Np << "\t" << Re << "\t" << Re << "\t\t\t" << min_l << endl;
     }
 }
 
