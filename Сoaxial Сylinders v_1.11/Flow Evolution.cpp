@@ -435,7 +435,7 @@ void Flow_Evolution_new(string param) {
                 {
                     
                     // Псевдослучайное распределение маркеов в нужных границ по x(0, 1) и y(-1, 1)
-                    uniform_real_distribution<> dis_x(-1, 0);
+                    uniform_real_distribution<> dis_x(0, 1);
                     uniform_real_distribution<> dis_y(-1, 1);
 
                     uniformNoise_x = dis_x(gen);
