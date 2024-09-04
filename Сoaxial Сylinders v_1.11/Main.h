@@ -199,16 +199,16 @@ vector<Marker> vectorMarker;
 string File_Mesh_Name =
 //"Documents/Mesh/Approx/Mesh_Coaxial_Cylinders_WO_1_(El=3531).msh";
 //"Documents/Mesh/Mesh_Coaxial_Cylinders_WO_5_(El=5742).msh"; 
-"Documents/Mesh/0.3/Mesh_Coaxial_Cylinders_WO_4_45_0.3_(El=9257).msh";
+"Documents/Mesh/0.6_2/Mesh_Coaxial_Cylinders_WO_4_45_0.6_0.4_(El=11933).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
-bool Read_From_Save = false;
+bool Read_From_Save = true;
 string File_Save_Name =
-"Documents/Figure/Re=1.000000/El = 9257/Save/Save_(El=9257)_1.DAT";
+"Documents/Figure/Re=1.000000/El = 11933/Save/Save_(El=11933)_1.DAT";
 
 /* Расчет распределения маркерных частиц для постоянной скорости*/
-bool Start_Flow_Evolution = true;
+bool Start_Flow_Evolution = false;
 
 /* Расчет при переменной скорости*/
 bool Variable_Speed = false;
