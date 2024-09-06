@@ -365,7 +365,7 @@ void Flow_Evolution_new(string param) {
         double rotation = (_time_Flow_Evolution * omega_1) / 2.0 / Pi;
 
         // Переменная для перехода в СК, где крутится лопасть
-        bool WallRotate = false;
+        bool WallRotate = true;
 
         // Переменная для добавления шумма к начальным координатам
         bool AddDataNoise = true;
@@ -435,8 +435,8 @@ void Flow_Evolution_new(string param) {
                 {
                     
                     // Псевдослучайное распределение маркеов в нужных границ по x(0, 1) и y(-1, 1)
-                    uniform_real_distribution<> dis_x(0, 1);
-                    uniform_real_distribution<> dis_y(-1, 1);
+                    uniform_real_distribution<> dis_x(-1, 1);
+                    uniform_real_distribution<> dis_y(0, 1);
 
                     uniformNoise_x = dis_x(gen);
                     uniformNoise_y = dis_y(gen);
@@ -523,6 +523,15 @@ void Flow_Evolution_new(string param) {
         for (auto& marker : vectorMarker)
         {
             double x = marker.coord[0], y = marker.coord[1];
+
+            double r_point = sqrt(x * x + y * y);
+            if (r_point > 1.0) {
+
+                x = x / r_point * R1;
+                y = y / r_point * R1;
+
+            }
+
             double x_tmp_n, y_tmp_n;
             int CV = Find_element_for_point(x, y, marker.CV_marker);
 
@@ -531,8 +540,8 @@ void Flow_Evolution_new(string param) {
             if (CV == -1) 
             {                                
                 CV = marker.CV_marker;
-            }           
-            
+            }   
+
             double U_x = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_x");
             double U_y = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_y");
 

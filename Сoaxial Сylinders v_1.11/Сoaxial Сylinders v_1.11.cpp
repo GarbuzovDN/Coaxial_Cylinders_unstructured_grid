@@ -38,9 +38,13 @@ int main()
                 //double debug = cos(_time);
                 //omega_1 = 2.0 / 3.0 * (0.5 - debug);
 
-                // Скорость для сравнения с экспериментом Комоды
-                double debug = cos(Pi / 2.0 + 2 * Pi * _time);
-                omega_1 = debug;
+                // Старая скорость для сравнения с экспериментом Комоды
+                /*double debug = cos(Pi / 2.0 + 2 * Pi * _time);
+                omega_1 = debug;*/
+                
+                // Новая скорость для сравнения с экспериментом Комоды
+                double debug = cos(2 * Pi * _time);
+                omega_1 = Pi / 2.0 * (1.0 - debug);
             }
 
             Redistricting();
@@ -62,7 +66,7 @@ int main()
 
             if (!Variable_Speed) if (_time > 25.0) break;
 
-        } while (/*_time <= final_time */ E_U > 1.0E-5);
+        } while (_time <= final_time  /*E_U > 1.0E-5*/);
                 
         Write_End();
     }
