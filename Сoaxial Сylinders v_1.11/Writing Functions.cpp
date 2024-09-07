@@ -72,10 +72,10 @@ void Blank_new(double t = 0.0)
         if (vectorElement[i].Geom_el == 1 && (vectorElement[i].Num_bound != border.out_1 && vectorElement[i].Num_bound != border.out_2
             && vectorElement[i].Num_bound != border.calc))
         {
-            double debug_x = vectorElement[i].Coord_vert[0].x * cos(teta_0 + omega_1 * t) + vectorElement[i].Coord_vert[0].y * sin(teta_0 + omega_1 * t);
-            double debug_y = -vectorElement[i].Coord_vert[0].x * sin(teta_0 + omega_1 * t) + vectorElement[i].Coord_vert[0].y * cos(teta_0 + omega_1 * t);
-            double debug_x1 = vectorElement[i].Coord_vert[1].x * cos(teta_0 + omega_1 * t) + vectorElement[i].Coord_vert[1].y * sin(teta_0 + omega_1 * t);
-            double debug_y1 = -vectorElement[i].Coord_vert[1].x * sin(teta_0 + omega_1 * t) + vectorElement[i].Coord_vert[1].y * cos(teta_0 + omega_1 * t);
+            double debug_x = vectorElement[i].Coord_vert[0].x * cos(teta_0 + phi) + vectorElement[i].Coord_vert[0].y * sin(teta_0 + phi);
+            double debug_y = -vectorElement[i].Coord_vert[0].x * sin(teta_0 + phi) + vectorElement[i].Coord_vert[0].y * cos(teta_0 + phi);
+            double debug_x1 = vectorElement[i].Coord_vert[1].x * cos(teta_0 + phi) + vectorElement[i].Coord_vert[1].y * sin(teta_0 + phi);
+            double debug_y1 = -vectorElement[i].Coord_vert[1].x * sin(teta_0 + phi) + vectorElement[i].Coord_vert[1].y * cos(teta_0 + phi);
 
             if (debug_x != debug_x_temp && Local_it > 0) // «амыкаем фигуру, когда дошли ее начальной точки
             {

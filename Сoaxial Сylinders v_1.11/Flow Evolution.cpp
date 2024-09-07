@@ -365,7 +365,7 @@ void Flow_Evolution_new(string param) {
         double rotation = (_time_Flow_Evolution * omega_1) / 2.0 / Pi;
 
         // Переменная для перехода в СК, где крутится лопасть
-        bool WallRotate = true;
+        bool WallRotate = false;
 
         // Переменная для добавления шумма к начальным координатам
         bool AddDataNoise = true;
@@ -507,8 +507,8 @@ void Flow_Evolution_new(string param) {
                 if (!WallRotate)
                 {
                     /* Перевод координат в СК, где крутится лопасть */
-                    double debug_x = x * cos(omega_1 * t) + y * sin(omega_1 * t);
-                    double debug_y = -x * sin(omega_1 * t) + y * cos(omega_1 * t);
+                    double debug_x = x * cos(phi) + y * sin(phi);
+                    double debug_y = -x * sin(phi) + y * cos(phi);
                     Flow_Evo << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                     Flow_Evo_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                 }

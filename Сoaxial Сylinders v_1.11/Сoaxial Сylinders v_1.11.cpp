@@ -43,8 +43,13 @@ int main()
                 omega_1 = debug;*/
                 
                 // Новая скорость для сравнения с экспериментом Комоды
-                double debug = cos(2 * Pi * _time);
-                omega_1 = Pi / 2.0 * (1.0 - debug);
+                omega_1 = Pi * Pi * sin(2 * Pi * _time);
+                epselon = 2 * Pi * Pi * Pi * cos(2 * Pi * _time);
+                phi = Pi / 2.0 * (1 - cos(2 * Pi * _time));
+
+                omega_1 = 1.0;
+                epselon = 0.0;
+                phi = omega_1 * _time_Flow_Evolution;
             }
 
             Redistricting();

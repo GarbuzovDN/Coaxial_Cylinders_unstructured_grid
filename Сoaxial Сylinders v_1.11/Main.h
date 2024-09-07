@@ -171,7 +171,10 @@ double E_U;
 int E_U_Num_el;
 
 /* Коэффициент учета силы Кориолиса */
-int alfa_k = 0.0;
+int alfa_k = 1.0;
+double epselon = 0.0;
+double phi = 0.0;
+
 
 /* Максимальная поправка давления */
 double maxP_Corr = 0.0;
@@ -197,7 +200,7 @@ vector<Marker> vectorMarker;
 
 /* Директория файла с сеткой */
 string File_Mesh_Name = 
-"Documents/Mesh/Komoda/Mesh_Coaxial_Cylinders_WO_4_0.7_Komoda(El=11069).msh";
+"Documents/Mesh/Komoda/Mesh_Coaxial_Cylinders_WO_4_0.7_Komoda(El=1805).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */

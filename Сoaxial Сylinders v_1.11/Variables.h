@@ -38,6 +38,8 @@ extern double xx_1, yy_1;
 extern double E_U;
 extern int E_U_Num_el;
 extern int alfa_k;
+extern double epselon;
+extern double phi;
 
 /* Максимальная поправка давления */
 extern double maxP_Corr;

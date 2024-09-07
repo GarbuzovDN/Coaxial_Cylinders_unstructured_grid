@@ -1122,8 +1122,14 @@ void Calculation_Velocity_U()
                 }
 
                 // Коэффициенты Кориолиса
-                Sk_x = alfa_k * (2 * vectorElement[i].U_y + vectorElement[i].Coord_center_el.x) * vectorElement[i].Area_el;
-                Sk_y = alfa_k * (-2 * vectorElement[i].U_x + vectorElement[i].Coord_center_el.y) * vectorElement[i].Area_el;
+                /*Sk_x = alfa_k * (2 * vectorElement[i].U_y + vectorElement[i].Coord_center_el.x) * vectorElement[i].Area_el;
+                Sk_y = alfa_k * (-2 * vectorElement[i].U_x + vectorElement[i].Coord_center_el.y) * vectorElement[i].Area_el;*/
+
+                Sk_x = alfa_k * (2 * vectorElement[i].U_y * omega_1 + vectorElement[i].Coord_center_el.x * omega_1 * omega_1
+                    + vectorElement[i].Coord_center_el.y * epselon) * vectorElement[i].Area_el;
+                Sk_y = alfa_k * (-2 * vectorElement[i].U_x * omega_1 + vectorElement[i].Coord_center_el.y * omega_1 * omega_1
+                    - vectorElement[i].Coord_center_el.x * epselon) * vectorElement[i].Area_el;
+
 
                 vectorElement[i].U_x = (temp_sum_ux - Sp_x + vectorElement[i].Area_el / dt * vectorElement[i].u_x + Sd_x / Re - Sc_x + Sk_x) / vectorElement[i].A_0;
                 vectorElement[i].U_y = (temp_sum_uy - Sp_y + vectorElement[i].Area_el / dt * vectorElement[i].u_y + Sd_y / Re - Sc_y + Sk_y) / vectorElement[i].A_0;
