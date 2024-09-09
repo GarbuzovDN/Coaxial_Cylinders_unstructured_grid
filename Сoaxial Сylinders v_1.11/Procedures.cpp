@@ -527,10 +527,10 @@ void Initial_Conditions()
                 double r_temp = pow(vectorElement[i].Coord_center_el.x * vectorElement[i].Coord_center_el.x + vectorElement[i].Coord_center_el.y * vectorElement[i].Coord_center_el.y, 0.5);
                 double U_an = ((omega_1 * R1 * R1 - omega_0 * R0 * R0) * r_temp + R0 * R0 * R1 * R1 * (omega_0 - omega_1) / r_temp) / (R1 * R1 - R0 * R0);
                               
-                vectorElement[i].u_y = 0.0 + alfa_k * omega_1 * vectorElement[i].Coord_center_el.x;
+                vectorElement[i].u_y = 0.0; // + alfa_k * omega_1 * vectorElement[i].Coord_center_el.x;
                 vectorElement[i].U_y = vectorElement[i].u_y;
 
-                vectorElement[i].u_x = 0.0 - alfa_k * omega_1 * vectorElement[i].Coord_center_el.y;
+                vectorElement[i].u_x = 0.0; // -alfa_k * omega_1 * vectorElement[i].Coord_center_el.y;
                 vectorElement[i].U_x = vectorElement[i].u_x;
 
                 vectorElement[i].P = 0.0;
@@ -1125,14 +1125,16 @@ void Calculation_Velocity_U()
                 /*Sk_x = alfa_k * (2 * vectorElement[i].U_y + vectorElement[i].Coord_center_el.x) * vectorElement[i].Area_el;
                 Sk_y = alfa_k * (-2 * vectorElement[i].U_x + vectorElement[i].Coord_center_el.y) * vectorElement[i].Area_el;*/
 
-                Sk_x = alfa_k * (2 * vectorElement[i].U_y * omega_1 + vectorElement[i].Coord_center_el.x * omega_1 * omega_1
-                    + vectorElement[i].Coord_center_el.y * epselon) * vectorElement[i].Area_el;
-                Sk_y = alfa_k * (-2 * vectorElement[i].U_x * omega_1 + vectorElement[i].Coord_center_el.y * omega_1 * omega_1
-                    - vectorElement[i].Coord_center_el.x * epselon) * vectorElement[i].Area_el;
+                Sk_x = alfa_k * (-2 * vectorElement[i].U_y * omega_1 + vectorElement[i].Coord_center_el.x * omega_1 * omega_1
+                    - vectorElement[i].Coord_center_el.y * epselon) * vectorElement[i].Area_el;
+                Sk_y = alfa_k * (+2 * vectorElement[i].U_x * omega_1 + vectorElement[i].Coord_center_el.y * omega_1 * omega_1
+                    + vectorElement[i].Coord_center_el.x * epselon) * vectorElement[i].Area_el;
 
 
                 vectorElement[i].U_x = (temp_sum_ux - Sp_x + vectorElement[i].Area_el / dt * vectorElement[i].u_x + Sd_x / Re - Sc_x + Sk_x) / vectorElement[i].A_0;
                 vectorElement[i].U_y = (temp_sum_uy - Sp_y + vectorElement[i].Area_el / dt * vectorElement[i].u_y + Sd_y / Re - Sc_y + Sk_y) / vectorElement[i].A_0;
+
+                double debug = 0.0;
             }
         }
     }
