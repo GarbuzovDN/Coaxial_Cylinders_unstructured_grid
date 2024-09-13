@@ -25,28 +25,13 @@ int main()
             if (Variable_Speed)
             {
                 Flow_Evolution_new("array"); //"line" или "array"
-
-                // Отношение периода к амплитуде равнозначно с Камодой
-                /*double debug = cos(2.0 * Pi * Pi * _time / 4.0);
-                omega_1 = 0.5 * (1.0 - debug);*/
-
-                // Период изменения скорости - один полный оборот (2*Pi)
-                /*double debug = cos(_time);
-                omega_1 = 0.5 * (1.0 - debug);*/
-
-                // Знакоперменная скорость
-                //double debug = cos(_time);
-                //omega_1 = 2.0 / 3.0 * (0.5 - debug);
-
-                // Старая скорость для сравнения с экспериментом Комоды
-                /*double debug = cos(Pi / 2.0 + 2 * Pi * _time);
-                omega_1 = debug;*/
                 
                 // Новая скорость для сравнения с экспериментом Комоды
-                omega_1 = Pi * Pi * sin(2 * Pi * _time);
-                epselon = 2 * Pi * Pi * Pi * cos(2 * Pi * _time);
+                omega_1 = -Pi * Pi * sin(2 * Pi * _time);
+                epselon = -2 * Pi * Pi * Pi * cos(2 * Pi * _time);
                 phi = -Pi / 2.0 * (1 - cos(2 * Pi * _time));
 
+                // Параметры для постоянной скорости
                 //omega_1 = 1.0;
                 //epselon = 0.0;
                 //phi = omega_1 * _time_Flow_Evolution;

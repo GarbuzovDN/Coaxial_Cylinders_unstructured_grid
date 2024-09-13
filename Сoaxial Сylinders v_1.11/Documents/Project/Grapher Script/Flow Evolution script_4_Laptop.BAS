@@ -10,7 +10,7 @@ Set GrapherApp = CreateObject("Grapher.Application")
 GrapherApp.Visible = False
 
 Dim i As Integer
-i = 0
+i = 1
 
 'Create a new plot document named "Plot"
 Set Plot = GrapherApp.Documents.Add(grfPlotDoc)
@@ -104,7 +104,7 @@ Evo_Black.Delete
 Obst.Delete
 Wks.Close
 
-	i = i + 5
+	i = i + 1
 
 Wend
 

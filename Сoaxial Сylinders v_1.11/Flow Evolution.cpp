@@ -370,8 +370,11 @@ void Flow_Evolution_new(string param) {
         // Переменная для добавления шумма к начальным координатам
         bool AddDataNoise = true;
 
+        // Для сравнения с экспериментом Комоды необходимо начальное условие задавать иначе
+        bool InitForExpKomoda = true;
+
         /* Начально условие */
-        if (Iter_Glob == 1)
+        if (Iter_Glob == 1 && !InitForExpKomoda)
         {
             CreateDirectoryA(_path.c_str(), NULL);
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::trunc);
@@ -466,12 +469,37 @@ void Flow_Evolution_new(string param) {
             }
         }
 
+        if ((Iter_Glob == 0 || Iter_Glob % 10 == 0) && InitForExpKomoda)
+        //if (Iter_Glob == 0)
+        {
+            CreateDirectoryA(_path.c_str(), NULL);
+            ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::trunc);
+            Integral_Char << "time\t" << "rotation\t" << "gamma\t" << "N1\t" << "N2\t" << "exp_moving"
+                << "\t\t" << "Re = " << Re << "\tMesh: " << max_el << endl;
+
+            double x = -0.60769231;
+            double y = 0.584;
+
+            double debug_x = x * cos(phi) - y * sin(phi);
+            double debug_y = x * sin(phi) + y * cos(phi);
+
+            int num_CV_for_cheсk = Find_element_for_point(debug_x, debug_y);
+
+            marker.coord[0] = debug_x;
+            marker.coord[1] = debug_y;
+
+            marker.CV_marker = num_CV_for_cheсk;
+
+            vectorMarker.push_back(marker);
+
+        }
+
         /* Запись в файл */
         int write_step = 0.0;
 
         // Первые 50 у.е. по времени записываем часто, чтобы визуализировать результат в GIF, 
         // дальше записываем реже, чтобы не тратить много памяти
-        if (_time_Flow_Evolution <= 50) write_step = 50;
+        if (_time_Flow_Evolution <= 50) write_step = 5;
         if (_time_Flow_Evolution > 50) write_step = 10000;
 
         if (Iter_Glob % write_step == 0 || Iter_Glob == 1)

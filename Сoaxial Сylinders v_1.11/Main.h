@@ -26,7 +26,7 @@ int Iter_Glob;
 
 /* Граничные условия */
 double omega_0 = 0.0;
-double omega_1 = 1.0;
+double omega_1 = 0.0;
 
 /* Структура точек и структура элементов*/
 struct Point
@@ -200,7 +200,7 @@ vector<Marker> vectorMarker;
 
 /* Директория файла с сеткой */
 string File_Mesh_Name = 
-"Documents/Mesh/Komoda/Mesh_Coaxial_Cylinders_WO_4_0.7_Komoda(El=1805).msh";
+"Documents/Mesh/Komoda/Mesh_Coaxial_Cylinders_WO_4_0.7_Komoda(El=11069).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
@@ -215,8 +215,8 @@ bool Start_Flow_Evolution = false;
 bool Variable_Speed = true;
 
 /* Шаг и счетчик времени */
-double dt = 0.0001;
+double dt = 0.001;
 double _time = 0.0;
 double _time_Flow_Evolution = 0.0;
 
-double final_time = 1.60;
+double final_time = 250;
