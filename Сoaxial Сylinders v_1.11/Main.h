@@ -12,21 +12,24 @@ using namespace std;
 
 double Pi = 3.14159;
 
-double R0 = 0.06;
+double R0 = 0.2;
 double R1 = 1.0;
 
 /* Количество элементов */
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 10.0;
+double Re = 1.0;
+
+/* Степень нелинейности */
+double n = 0.6;
 
 /* Счетчик итераций */
 int Iter_Glob;
 
 /* Граничные условия */
 double omega_0 = 0.0;
-double omega_1 = 0.0;
+double omega_1 = 1.0;
 
 /* Структура точек и структура элементов*/
 struct Point
@@ -123,6 +126,9 @@ struct Element
     /* Диссипативная функция */
     double Q;
 
+    /* Значение вязкости */
+    double Visc;
+
 };
 
 // Нумерация элепментов границ
@@ -171,7 +177,7 @@ double E_U;
 int E_U_Num_el;
 
 /* Коэффициент учета силы Кориолиса */
-int alfa_k = 1.0;
+int alfa_k = 0.0;
 double epselon = 0.0;
 double phi = 0.0;
 
@@ -200,19 +206,19 @@ vector<Marker> vectorMarker;
 
 /* Директория файла с сеткой */
 string File_Mesh_Name = 
-"Documents/Mesh/Komoda/Mesh_Coaxial_Cylinders_WO_4_0.7_Komoda(El=11069).msh";
+"Documents/Mesh/Conf_0/Mesh_Coaxial_Cylinders_WO_0_(El=4739).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
-bool Read_From_Save = false;
+bool Read_From_Save = true;
 string File_Save_Name =
-"Documents/Figure/Re=1.000000/El = 11933/Save/Save_(El=11933)_1.DAT";
+"Documents/Figure/Re=1.000000/El = 4739/Save/Save_(El=4739)_1.DAT";
 
 /* Расчет распределения маркерных частиц для постоянной скорости*/
 bool Start_Flow_Evolution = false;
 
 /* Расчет при переменной скорости*/
-bool Variable_Speed = true;
+bool Variable_Speed = false;
 
 /* Шаг и счетчик времени */
 double dt = 0.001;

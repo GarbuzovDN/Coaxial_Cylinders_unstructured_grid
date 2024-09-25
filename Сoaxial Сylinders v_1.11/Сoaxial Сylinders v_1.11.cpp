@@ -56,7 +56,7 @@ int main()
 
             if (!Variable_Speed) if (_time > 25.0) break;
 
-        } while (_time <= final_time  /*E_U > 1.0E-5*/);
+        } while (/*_time <= final_time*/  E_U > 1.0E-5);
                 
         Write_End();
     }
@@ -87,5 +87,5 @@ int main()
     }
 
     // Необходимо ставить консоль после расчета на паузу при запуске через exe 
-    system("pause");
+    //system("pause");
 }

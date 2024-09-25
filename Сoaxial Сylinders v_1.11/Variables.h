@@ -20,6 +20,9 @@ extern int max_str, max_node, max_el;
 /* Число Рейнольдса */
 extern double Re;
 
+/* Степень нелинейности */
+extern double n;
+
 /* Счетчик итераций */
 extern int Iter_Glob;
 
@@ -174,6 +177,9 @@ struct Element
 
     /* Диссипативная функция */
     double Q;
+
+    /* Значение вязкости */
+    double Visc;
 
 };
 

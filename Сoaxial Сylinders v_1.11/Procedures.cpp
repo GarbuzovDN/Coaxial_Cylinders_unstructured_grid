@@ -1529,14 +1529,14 @@ void Dissipative_Function()
 
     string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
     ofstream Field_Q(_path + "/1. Field_Q_(El = " + to_string(max_el) + ").DAT");
-    ofstream Field_Q_debug(_path + "/1. Field_Q_debug(El = " + to_string(max_el) + ").DAT");
+    //ofstream Field_Q_debug(_path + "/1. Field_Q_debug(El = " + to_string(max_el) + ").DAT");
 
     Field_Q << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
         << "Q" << "\t" << "Q_analytic " << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
     
-    Field_Q_debug << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
-        << "U_ik_x_nx" << "\t" << "U_ik_y_ny " << "\t" << "U_ik_x_ny " << "\t" << "U_ik_y_nx " << "\t"
-        << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+    //Field_Q_debug << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
+    //    << "U_ik_x_nx" << "\t" << "U_ik_y_ny " << "\t" << "U_ik_x_ny " << "\t" << "U_ik_y_nx " << "\t"
+    //    << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
 
     /* Нахождение функции диссипиации Q */
     for (int i = 1; i < max_el; i++)
@@ -1611,12 +1611,98 @@ void Dissipative_Function()
             Field_Q << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
                 << vectorElement[i].Q / vectorElement[i].Area_el / vectorElement[i].Area_el << " \t "<< Q_analytic << " \t " << vectorElement[i].Num_el << endl;
 
-            Field_Q_debug << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
-                << U_ik_x_nx << " \t " << U_ik_y_ny << " \t " << U_ik_x_ny << " \t " << U_ik_y_nx << " \t " << vectorElement[i].Num_el << endl;
+            //Field_Q_debug << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+            //    << U_ik_x_nx << " \t " << U_ik_y_ny << " \t " << U_ik_x_ny << " \t " << U_ik_y_nx << " \t " << vectorElement[i].Num_el << endl;
         }
     }
 
     Field_Q.close();
+}
+
+void Calculation_Viscosity_Visc() {
+
+    string _path = "Documents/Figure/Re=" + to_string(Re) + "/El = " + to_string(max_el);
+    ofstream Field_Visc(_path + "/1. Field_Visc_(El = " + to_string(max_el) + ").DAT");
+
+    Field_Visc << fixed << setprecision(4) << "Coord_center_el.x" << " \t " << "Coord_center_el.y" << " \t "
+        << "Visc" << "\t" << "Visc_analytic " << "\t" << "Time: " << _time << "\t" << "Mesh (Number of cells): " << max_el << endl;
+
+    /* Нахождение вязкости */
+    for (int i = 1; i < max_el; i++)
+    {
+        if (vectorElement[i].Geom_el == 2)
+        {
+
+            double U_ik_x = 0.0, U_ik_y = 0.0;
+            double U_ik_x_nx = 0.0, U_ik_y_ny = 0.0;
+            double U_ik_x_ny = 0.0, U_ik_y_nx = 0.0;
+
+            for (int j = 0; j < 3; j++)
+            {
+
+                int jj_temp = j + 1;
+                if (j + 1 == 3) jj_temp = 0;
+
+                double x_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].x + vectorElement[i].Coord_vert[j].x);
+                double y_ik = 0.5 * (vectorElement[i].Coord_vert[jj_temp].y + vectorElement[i].Coord_vert[j].y);
+
+                if (vectorElement[i].Neighb_el[j] != -1)
+                {
+                    U_ik_x = Section_value_MUSCL_Face(x_ik, y_ik, "U_x", i);
+                    U_ik_y = Section_value_MUSCL_Face(x_ik, y_ik, "U_y", i);
+
+                    U_ik_x_nx += U_ik_x * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+                    U_ik_y_ny += U_ik_y * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+
+                    U_ik_x_ny += U_ik_x * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+                    U_ik_y_nx += U_ik_y * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+
+                    if (vectorElement[i].Num_bound == 1)
+                    {
+                        i = i;
+                    }
+                }
+                else
+                {
+                    U_ik_x = Value_bound(x_ik, y_ik, i, j, "U_x");
+                    U_ik_y = Value_bound(x_ik, y_ik, i, j, "U_y");
+
+                    U_ik_x_nx += U_ik_x * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+                    U_ik_y_ny += U_ik_y * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+
+                    U_ik_x_ny += U_ik_x * vectorElement[i].Normal[j][1] * vectorElement[i].Length_face_el[j];
+                    U_ik_y_nx += U_ik_y * vectorElement[i].Normal[j][0] * vectorElement[i].Length_face_el[j];
+
+                    if (vectorElement[i].Num_bound == 1)
+                    {
+                        i = i;
+                    }
+
+                }
+
+
+            }
+
+            // FIXME: Без умножения на 4 не бьется с аналитикой для безлопастной мешалки
+            //vectorElement[i].Q = 4 * 2 * (U_ik_x_nx * U_ik_x_nx + U_ik_y_ny * U_ik_y_ny) + pow(U_ik_x_ny + U_ik_y_nx, 2);
+
+            vectorElement[i].Visc = pow(4.0 * (2 * U_ik_x_nx * U_ik_x_nx + 2 * U_ik_y_ny * U_ik_y_ny +
+                pow(U_ik_x_ny + U_ik_y_nx, 2)) / vectorElement[i].Area_el / vectorElement[i].Area_el, ((n - 1.0) / 2.0));
+
+            double r = sqrt(pow(vectorElement[i].Coord_center_el.x, 2) + pow(vectorElement[i].Coord_center_el.y, 2));
+            double Visc_analytic = pow(4 * pow(1.0 / 12.0 * 1 / r / r, 2), ((n - 1.0) / 2.0));
+
+            if (vectorElement[i].Num_bound == 1)
+            {
+                i = i;
+            }
+
+            Field_Visc << fixed << setprecision(10) << vectorElement[i].Coord_center_el.x << " \t " << vectorElement[i].Coord_center_el.y << " \t "
+                << vectorElement[i].Visc << " \t " << Visc_analytic << " \t " << vectorElement[i].Num_el << endl;
+
+        }
+    }
+
 }
 
 void Approximation_Accuracy(bool activate)

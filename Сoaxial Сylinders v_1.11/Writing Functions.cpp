@@ -226,7 +226,7 @@ void Write_Figure()
 
     }
 
-    double section = 0;
+    double section = -90;
 
     Profile_P_MUSCL << fixed << setprecision(4) << "r" << " \t P" << " \t Time: " << _time << " \t Mesh (Number of cells): " << max_el << "\tAngle: " << section << endl;
     Profile_U_x_MUSCL << fixed << setprecision(4) << "r" << " \t U_x" << " \t U_r" << " \t Time: " << _time << " \t Mesh (Number of cells): " << max_el << "\tAngle: " << section << endl;
@@ -325,6 +325,7 @@ void Write_End()
 {
 
     Dissipative_Function();
+    Calculation_Viscosity_Visc();
     Stream_Function();
     Approximation_Accuracy(true);
     Write_Figure();

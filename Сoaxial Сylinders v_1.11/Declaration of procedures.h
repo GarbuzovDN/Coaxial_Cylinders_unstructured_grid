@@ -24,6 +24,8 @@ void Stream_Function();
 
 void Dissipative_Function();
 
+void Calculation_Viscosity_Visc();
+
 void Approximation_Accuracy(bool activate);
 
 void Redistricting1();
