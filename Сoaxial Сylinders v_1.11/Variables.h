@@ -58,6 +58,9 @@ struct Marker
 
     /* Псоледний КО, в котором находтлся маркер */
     int CV_marker;
+
+    /* Тег области */
+    string color;
 };
 extern double dt_m;
 extern double exp_moving_old;

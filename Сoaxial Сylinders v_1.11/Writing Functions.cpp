@@ -238,8 +238,6 @@ void Write_Figure()
     do
     {        
         double angle = section * Pi / 180.0;
-        double test_1 = cos(angle);
-        double test_2 = sin(angle);
 
         double x = (R0 + ii * h) * cos(angle);
         double y = (R0 + ii * h) * sin(angle);

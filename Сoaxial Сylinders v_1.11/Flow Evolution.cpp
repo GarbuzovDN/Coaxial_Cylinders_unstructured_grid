@@ -438,8 +438,8 @@ void Flow_Evolution_new(string param) {
                 {
                     
                     // Псевдослучайное распределение маркеов в нужных границ по x(0, 1) и y(-1, 1)
-                    uniform_real_distribution<> dis_x(-1, 1);
-                    uniform_real_distribution<> dis_y(0, 1);
+                    uniform_real_distribution<> dis_x(0, 1);
+                    uniform_real_distribution<> dis_y(-1, 1);
 
                     uniformNoise_x = dis_x(gen);
                     uniformNoise_y = dis_y(gen);
@@ -460,8 +460,17 @@ void Flow_Evolution_new(string param) {
                             marker.coord[1] = y;
 
                             marker.CV_marker = num_CV_for_cheсk;
+                            marker.color = "none";
+
+                            /* Разделяем вектор маркеров на подобалсти */
+                            double r = sqrt(x * x + y * y);
+                            if (r <= 0.5 && x >= 0) marker.color = "red";
+                            if (r >= 0.5 && x >= 0) marker.color = "black";
+                            if (r <= 0.5 && x <= 0) marker.color = "blue";
+                            if (r >= 0.5 && x <= 0) marker.color = "green";
 
                             vectorMarker.push_back(marker);
+
                         }
                     }
 
@@ -469,16 +478,16 @@ void Flow_Evolution_new(string param) {
             }
         }
 
+        /* Начальное условие для эксперимента Комоды */
         if ((Iter_Glob == 0 || Iter_Glob % 10 == 0) && InitForExpKomoda)
-        //if (Iter_Glob == 0)
         {
             CreateDirectoryA(_path.c_str(), NULL);
             ofstream Integral_Char(_path + "/Integral_Char.DAT", ios_base::trunc);
             Integral_Char << "time\t" << "rotation\t" << "gamma\t" << "N1\t" << "N2\t" << "exp_moving"
                 << "\t\t" << "Re = " << Re << "\tMesh: " << max_el << endl;
 
-            double x = -0.60769231;
-            double y = 0.584;
+            double x = -0.65;
+            double y = 0.65;
 
             double debug_x = x * cos(phi) - y * sin(phi);
             double debug_y = x * sin(phi) + y * cos(phi);
@@ -499,11 +508,12 @@ void Flow_Evolution_new(string param) {
 
         // Первые 50 у.е. по времени записываем часто, чтобы визуализировать результат в GIF, 
         // дальше записываем реже, чтобы не тратить много памяти
-        if (_time_Flow_Evolution <= 50) write_step = 5;
+        if (_time_Flow_Evolution <= 50) write_step = 50;
         if (_time_Flow_Evolution > 50) write_step = 10000;
 
         if (Iter_Glob % write_step == 0 || Iter_Glob == 1)
         {
+            /* Запись общего набора маркеров */
             int temp_time = Iter_Glob;
             ofstream Flow_Evo(_path + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
             ofstream Flow_Evo_test(_path + "/Flow Evolution.DAT", ios_base::trunc);
@@ -511,6 +521,30 @@ void Flow_Evolution_new(string param) {
                 << "\tRe = " << Re << "\trotation = " << rotation << endl;
             Flow_Evo_test << "time = " << (_time_Flow_Evolution + dt_m) 
                 << "\tRe = " << Re << "\trotation = " << rotation << endl;
+
+            /* Запись наборов маркеров по подобластям */
+            string path_section = _path + "/Section";
+            CreateDirectoryA(path_section.c_str(), NULL);
+
+            string path_new = _path + "/Section/Red";
+            CreateDirectoryA(path_new.c_str(), NULL);
+            ofstream Flow_Evo_red(path_new + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
+            ofstream Flow_Evo_red_test(path_new + "/Flow Evolution.DAT", ios_base::trunc);
+
+            path_new = _path + "/Section/Black";
+            CreateDirectoryA(path_new.c_str(), NULL);
+            ofstream Flow_Evo_black(path_new + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
+            ofstream Flow_Evo_black_test(path_new + "/Flow Evolution.DAT", ios_base::trunc);
+
+            path_new = _path + "/Section/Blue";
+            CreateDirectoryA(path_new.c_str(), NULL);
+            ofstream Flow_Evo_blue(path_new + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
+            ofstream Flow_Evo_blue_test(path_new + "/Flow Evolution.DAT", ios_base::trunc);
+
+            path_new = _path + "/Section/Green";
+            CreateDirectoryA(path_new.c_str(), NULL);
+            ofstream Flow_Evo_green(path_new + "/Flow Evolution " + to_string(temp_time / 10) + ".DAT", ios_base::trunc);
+            ofstream Flow_Evo_green_test(path_new + "/Flow Evolution.DAT", ios_base::trunc);
 
             if (!WallRotate) 
             {
@@ -534,9 +568,36 @@ void Flow_Evolution_new(string param) {
                 
                 if (!WallRotate)
                 {
+                    //phi = omega_1 * _time_Flow_Evolution;
                     /* Перевод координат в СК, где крутится лопасть */
                     double debug_x = x * cos(phi) + y * sin(phi);
                     double debug_y = -x * sin(phi) + y * cos(phi);
+
+                    /* Запись наборов маркеров по подобластям */
+                    if (marker.color == "red") 
+                    {
+                        Flow_Evo_red << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                        Flow_Evo_red_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                    }                   
+
+                    if (marker.color == "black") 
+                    {
+                        Flow_Evo_black << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                        Flow_Evo_black_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                    } 
+                    
+                    if (marker.color == "blue") 
+                    {
+                        Flow_Evo_blue << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                        Flow_Evo_blue_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                    }
+
+                    if (marker.color == "green") 
+                    {
+                        Flow_Evo_green << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                        Flow_Evo_green_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
+                    }
+
                     Flow_Evo << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                     Flow_Evo_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                 }
@@ -568,7 +629,7 @@ void Flow_Evolution_new(string param) {
             if (CV == -1) 
             {                                
                 CV = marker.CV_marker;
-            }   
+            }  
 
             double U_x = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_x");
             double U_y = Section_value_MUSCL_Flow_Evo(x, y, CV, "U_y");

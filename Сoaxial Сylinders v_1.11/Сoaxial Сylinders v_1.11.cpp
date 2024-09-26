@@ -22,6 +22,8 @@ int main()
         {
             Time();
 
+            phi = omega_1 * _time_Flow_Evolution;
+
             if (Variable_Speed)
             {
                 Flow_Evolution_new("array"); //"line" или "array"
@@ -70,13 +72,12 @@ int main()
         do
         {
             Iter_Glob++;
-
-            Flow_Evolution_new("array"); //"line" или "array"
+            phi = omega_1 * _time_Flow_Evolution;
 
             /* Параметр, который передается в бланикровку для поворота лопасти */
-            t = _time_Flow_Evolution + dt_m;
-            Blank_new(t);
+            Blank_new(_time_Flow_Evolution);
 
+            Flow_Evolution_new("array"); //"line" или "array"                                
             Time();
 
         } while (_time_Flow_Evolution <= final_time);

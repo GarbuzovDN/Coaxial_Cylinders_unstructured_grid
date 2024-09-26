@@ -19,7 +19,7 @@ double R1 = 1.0;
 int max_str, max_node, max_el;
 
 /* Число Рейнольдса */
-double Re = 1.0;
+double Re = 25.0;
 
 /* Степень нелинейности */
 double n = 0.6;
@@ -196,6 +196,9 @@ struct Marker
 
     /* Псоледний КО, в котором находился маркер */
     int CV_marker;
+
+    /* Тег области */
+    string color;
 };
 double dt_m = 0.001;
 double exp_moving_old = 1.0;
@@ -206,19 +209,19 @@ vector<Marker> vectorMarker;
 
 /* Директория файла с сеткой */
 string File_Mesh_Name = 
-"Documents/Mesh/Conf_0/Mesh_Coaxial_Cylinders_WO_0_(El=4739).msh";
+"Documents/Mesh/Komoda/Mesh_Coaxial_Cylinders_WO_4_0.7_Komoda(El=10265).msh";
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
-bool Read_From_Save = true;
+bool Read_From_Save = false;
 string File_Save_Name =
-"Documents/Figure/Re=1.000000/El = 4739/Save/Save_(El=4739)_1.DAT";
+"Documents/Figure/Re=1.000000/El = 9081/Save/Save_(El=9081)_1.DAT";
 
 /* Расчет распределения маркерных частиц для постоянной скорости*/
 bool Start_Flow_Evolution = false;
 
 /* Расчет при переменной скорости*/
-bool Variable_Speed = false;
+bool Variable_Speed = true;
 
 /* Шаг и счетчик времени */
 double dt = 0.001;
