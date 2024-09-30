@@ -771,7 +771,7 @@ double Firsov_M(int num_i, string param)
     return test;
 }
 
-void Redistricting()
+void Redistricting_U()
 {
 
     for (int i = 0; i < max_el; i++)
@@ -782,7 +782,7 @@ void Redistricting()
 
 }
 
-void Redistricting1()
+void Redistricting_grads()
 {
 
     for (int i = 0; i < max_el; i++)

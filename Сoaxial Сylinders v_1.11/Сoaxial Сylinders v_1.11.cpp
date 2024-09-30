@@ -11,7 +11,7 @@ int main()
 
     Section_value_MUSCL(xx_1, yy_1, "NULL");
 
-    Redistricting1();
+    Redistricting_grads();
     Write();
 
     double test = 0.0;
@@ -39,17 +39,17 @@ int main()
                 //phi = omega_1 * _time_Flow_Evolution;
             }
 
-            Redistricting();
+            Redistricting_U();
             Iter_Glob++;
 
             //for (int Iter = 0; Iter <= 100; Iter++)
             {
 
-                Redistricting1();
+                Redistricting_grads();
                 Calculation_Velocity_U();
-                Redistricting1();
+                Redistricting_grads();
                 Calculation_Pressure_P();
-                Redistricting1();
+                Redistricting_grads();
 
             }
 
@@ -66,7 +66,7 @@ int main()
     if (Start_Flow_Evolution == true)
     {
         auto start_time = chrono::high_resolution_clock::now();
-        Redistricting1();
+        Redistricting_grads();
         double t = 0.0;
 
         do

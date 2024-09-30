@@ -10,7 +10,7 @@ void Blank();
 
 void Blank_new(double t);
 
-void Redistricting();
+void Redistricting_U();
 
 void Initial_Conditions();
 
@@ -28,7 +28,7 @@ void Calculation_Viscosity_Visc();
 
 void Approximation_Accuracy(bool activate);
 
-void Redistricting1();
+void Redistricting_grads();
 
 double beta(int ii, int jj);
 
