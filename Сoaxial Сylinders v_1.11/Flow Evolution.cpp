@@ -370,8 +370,11 @@ void Flow_Evolution_new(string param) {
         // Переменная для добавления шумма к начальным координатам
         bool AddDataNoise = true;
 
-        // Для сравнения с экспериментом Комоды необходимо начальное условие задавать иначе
+        // Переменная для сравнения с экспериментом Комоды необходимо начальное условие задавать иначе
         bool InitForExpKomoda = true;
+
+        // Переменная для записи распределения маркеров по подобластям с разными цветами
+        bool FlowEvoSection = false;
 
         /* Начально условие */
         if (Iter_Glob == 1 && !InitForExpKomoda)
@@ -501,6 +504,54 @@ void Flow_Evolution_new(string param) {
 
             vectorMarker.push_back(marker);
 
+            double h = 0.1;
+            /* Добавление и удаление маркеров */
+            for (int i = 1; i < vectorMarker.size(); i++)
+            {
+                double x0 = vectorMarker[i - 1].coord[0];
+                double x1 = vectorMarker[i].coord[0];
+
+                double y0 = vectorMarker[i - 1].coord[1];
+                double y1 = vectorMarker[i].coord[1];
+
+                double dx = (x1 - x0) * (x1 - x0);
+                double dy = (y1 - y0) * (y1 - y0);
+
+                double debug_0 = pow(x0 * x0 + y0 * y0, 0.5);
+                double debug_1 = pow(x1 * x1 + y1 * y1, 0.5);
+
+                double ds = sqrt(dx + dy);
+
+                // Добавление 
+                if (ds > h + 0.01)
+                {
+                    vectorMarker.resize(vectorMarker.size() + 1);
+
+                    // Смещение от элементов вектора маркеров вправо на 1
+                    for (int j = vectorMarker.size() - 1; j >= i + 1; j--)
+                    {
+                        vectorMarker[j] = vectorMarker[j - 1];
+                    }
+
+                    // Вставка нового маркера
+                    double x_new = 0.5 * (x0 + x1);
+                    double y_new = 0.5 * (y0 + y1);
+
+                    vectorMarker[i].coord[0] = x_new;
+                    vectorMarker[i].coord[1] = y_new;
+
+                    int num_CV_for_cheсk = Find_element_for_point(debug_x, debug_y);
+                    vectorMarker[i].CV_marker = num_CV_for_cheсk;
+
+                    //cout << "Добавление маркера в промежутке: " << x_new << "; " << y_new << "; " << num_CV_for_cheсk << endl;
+                }
+
+                // Удаление
+                if (ds < 0.5 * h)
+                {
+                    vectorMarker.erase(vectorMarker.begin() + i);
+                }
+            }
         }
 
         /* Запись в файл */
@@ -523,8 +574,15 @@ void Flow_Evolution_new(string param) {
                 << "\tRe = " << Re << "\trotation = " << rotation << endl;
 
             /* Запись наборов маркеров по подобластям */
-            string path_section = _path + "/Section";
-            CreateDirectoryA(path_section.c_str(), NULL);
+            if (FlowEvoSection)
+            {
+                /* Если !FlowEvoSection, то начальная дериктория создаваться не будет
+                   и последующим фалам будет некуда записываться */
+
+                string path_section = _path + "/Section";
+                CreateDirectoryA(path_section.c_str(), NULL);
+            }
+
 
             string path_new = _path + "/Section/Red";
             CreateDirectoryA(path_new.c_str(), NULL);
@@ -574,25 +632,25 @@ void Flow_Evolution_new(string param) {
                     double debug_y = -x * sin(phi) + y * cos(phi);
 
                     /* Запись наборов маркеров по подобластям */
-                    if (marker.color == "red") 
+                    if (marker.color == "red" && FlowEvoSection)
                     {
                         Flow_Evo_red << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                         Flow_Evo_red_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                     }                   
 
-                    if (marker.color == "black") 
+                    if (marker.color == "black" && FlowEvoSection)
                     {
                         Flow_Evo_black << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                         Flow_Evo_black_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                     } 
                     
-                    if (marker.color == "blue") 
+                    if (marker.color == "blue" && FlowEvoSection)
                     {
                         Flow_Evo_blue << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                         Flow_Evo_blue_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                     }
 
-                    if (marker.color == "green") 
+                    if (marker.color == "green" && FlowEvoSection)
                     {
                         Flow_Evo_green << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;
                         Flow_Evo_green_test << fixed << setprecision(6) << debug_x << "\t" << debug_y << "\t" << CV << "\t" << endl;

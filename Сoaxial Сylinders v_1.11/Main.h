@@ -213,7 +213,7 @@ string File_Mesh_Name =
 ifstream File_Mesh(File_Mesh_Name);
 
 /* Директория файла с Save */
-bool Read_From_Save = false;
+bool Read_From_Save = true;
 string File_Save_Name =
 "Documents/Figure/Re=1.000000/El = 9081/Save/Save_(El=9081)_1.DAT";
 
@@ -221,7 +221,7 @@ string File_Save_Name =
 bool Start_Flow_Evolution = false;
 
 /* Расчет при переменной скорости*/
-bool Variable_Speed = true;
+bool Variable_Speed = false;
 
 /* Шаг и счетчик времени */
 double dt = 0.001;
